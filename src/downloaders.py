@@ -22,9 +22,11 @@ def dlProgress(count, blockSize, totalSize):
 def getExtension(link):
     imageTypes = ['jpg','png','mp4','webm','gif']
     parsed = link.split('.')
-    if not parsed in imageTypes:
+    for TYPE in imageTypes:
+        if TYPE in parsed:
+            return "."+parsed[-1]
+    else:
         return '.jpg'
-    return "."+parsed[-1]
 
 def getFile(fileDir,tempDir,imageURL,redditID,indent=0):
     if not (os.path.isfile(fileDir)):
@@ -34,10 +36,10 @@ def getFile(fileDir,tempDir,imageURL,redditID,indent=0):
                                            tempDir,
                                            reporthook=dlProgress)
                 os.rename(tempDir,fileDir)
-                print(" "*indent+"Downloaded"+" "*10,end="\n\n")
+                print(" "*indent+"Downloaded"+" "*10)
                 break
             except ConnectionResetError as exception:
-                print(" "*indent + exception)
+                print(" "*indent + str(exception))
                 print(" "*indent + "Trying again\n")
             except FileNotFoundError:
                 Ext = fileDir.parts[-1].split(".")[-1]
@@ -115,6 +117,7 @@ class Imgur:
 
                 try:
                     getFile(fileDir,tempDir,imageURL,post['postId'],indent=2)
+                    print()
                 except FileAlreadyExistsError:
                     print("  The file already exists" + " "*10,end="\n\n")
                     duplicates += 1

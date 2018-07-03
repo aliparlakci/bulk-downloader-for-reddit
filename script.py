@@ -174,8 +174,8 @@ def downloader(submissions):
     FAILED_FILE = createLogFile("FAILED")
 
     if not GLOBAL.arguments.NoBackupFile:
-        print("Creating a backup file called 'FAILED.json' " \
-              "in case program exist unexpectedly...\n")
+        print("\nCreating a backup file called 'FAILED.json' " \
+              "in case program exists unexpectedly...")
         for x in range(len(submissions)):
             BACKUP[int(x+1)] = ['NOT DOWNLOADED YET',
                                 submissions[x]]
@@ -184,7 +184,7 @@ def downloader(submissions):
         BACKUP_FILE.add(BACKUP)
 
     for i in range(subsLenght):
-        print("({}/{})".format(i+1,subsLenght))
+        print("\n({}/{})".format(i+1,subsLenght))
         print(
             "https://reddit.com/r/{subreddit}/comments/{id}".format(
                 subreddit=submissions[i]['postSubreddit'],
@@ -194,10 +194,11 @@ def downloader(submissions):
 
         if postExists(submissions[i]):
             result = False
-            print("It already exists\n")
+            print("It already exists")
             duplicates += 1
             downloadedCount -= 1
             if not GLOBAL.arguments.NoBackupFile:
+                print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
                 BACKUP_FILE.delete(str(i+1))
             continue
 
@@ -222,16 +223,21 @@ def downloader(submissions):
                 try:
                     Imgur(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
-                except FileAlreadyExistsError:
-                    print("It already exists\n")
                     if not GLOBAL.arguments.NoBackupFile:
+                        print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
+                        BACKUP_FILE.delete(str(i+1))
+                except FileAlreadyExistsError:
+                    print("It already exists")
+                    if not GLOBAL.arguments.NoBackupFile:
+                        print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
                         BACKUP_FILE.delete(str(i+1))
                     duplicates += 1
                     downloadedCount -= 1
                 except Exception as exception:
-                    print(exception,"\n")
+                    print(exception)
                     FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                     if not GLOBAL.arguments.NoBackupFile:
+                        print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
                         BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
                     downloadedCount -= 1
             else:
@@ -252,9 +258,13 @@ def downloader(submissions):
             try:
                 Gfycat(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
+                if not GLOBAL.arguments.NoBackupFile:
+                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
+                    BACKUP_FILE.delete(str(i+1))
             except FileAlreadyExistsError:
                 print("It already exists")
                 if not GLOBAL.arguments.NoBackupFile:
+                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
                     BACKUP_FILE.delete(str(i+1))
                 duplicates += 1
                 downloadedCount -= 1
@@ -263,9 +273,10 @@ def downloader(submissions):
                 BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
             except Exception as exception:
-                print(exception,"\n")
+                print(exception)
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 if not GLOBAL.arguments.NoBackupFile:
+                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
                     BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
 
@@ -275,21 +286,25 @@ def downloader(submissions):
                 Direct(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
                 if not GLOBAL.arguments.NoBackupFile:
+                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
                     BACKUP_FILE.delete(str(i+1))
             except FileAlreadyExistsError:
                 print("It already exists")
                 if not GLOBAL.arguments.NoBackupFile:
+                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
                     BACKUP_FILE.delete(str(i+1))
+                
                 downloadedCount -= 1
                 duplicates += 1
             except Exception as exception:
-                print(exception,"\n")
+                print(exception)
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 if not GLOBAL.arguments.NoBackupFile:
+                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
                     BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
         else:
-            print("No match found, skipping \n")
+            print("No match found, skipping...")
             if not GLOBAL.arguments.NoBackupFile:
                 BACKUP_FILE.delete(str(i+1))
             downloadedCount -= 1
@@ -323,10 +338,10 @@ def main():
 
     if GLOBAL.arguments.log is not None:
         logDir = Path(GLOBAL.arguments.log)
-        RESULT = downloader(postFromLog(logDir))
+        downloader(postFromLog(logDir))
 
     else:
-        RESULT = downloader(getPosts())
+        downloader(getPosts())
     
 if __name__ == "__main__":
     try:
