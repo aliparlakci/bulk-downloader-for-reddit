@@ -154,12 +154,6 @@ def redditSearcher(posts):
     )
     return subList
 
-def createPostsFile():
-    logFilename = 'POSTS_'+strftime("%d-%m-%Y_%H-%M-%S", localtime())+'.json'
-    if not os.path.exists(Path('logs')):
-        os.makedirs(Path('logs'))
-    return jsonFile(Path('logs') / Path(logFilename))
-
 def printSubmission(SUB,validNumber,totalNumber):
     print(validNumber,end=") ")
     print(totalNumber,end=" ")

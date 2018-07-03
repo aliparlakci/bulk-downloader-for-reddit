@@ -175,20 +175,17 @@ class Gfycat:
 
         POST['postExt'] = getExtension(POST['mediaURL'])
 
-        try:
-            if not os.path.exists(directory): os.makedirs(directory)
-            title = nameCorrector(POST['postTitle'])
-            print(title+"_"+POST['postId']+POST['postExt'])
+        if not os.path.exists(directory): os.makedirs(directory)
+        title = nameCorrector(POST['postTitle'])
+        print(title+"_"+POST['postId']+POST['postExt'])
 
-            fileDir = title+"_"+POST['postId']+POST['postExt']
-            fileDir = directory / fileDir
+        fileDir = title+"_"+POST['postId']+POST['postExt']
+        fileDir = directory / fileDir
 
-            tempDir = title+"_"+POST['postId']+".tmp"
-            tempDir = directory / tempDir
+        tempDir = title+"_"+POST['postId']+".tmp"
+        tempDir = directory / tempDir
 
-            getFile(fileDir,tempDir,POST['mediaURL'],POST['postId'])
-        except FileAlreadyExistsError:
-            raise
+        getFile(fileDir,tempDir,POST['mediaURL'],POST['postId'])
       
     def getLink(self, url, query='<source id="mp4Source" src=', lineNumber=105):
         if '.webm' in url or '.mp4' in url or '.gif' in url:
