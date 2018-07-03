@@ -30,6 +30,9 @@ def debug(*post):
     downloader([*post])
 
 def getConfig(configFileName):
+    """Read credentials from
+    """
+
     keys = ['reddit_username',
             'reddit_password',
             'reddit_client_id',
@@ -48,6 +51,7 @@ def getConfig(configFileName):
                 print(key,": ")
                 FILE.add({key:input()})
         return jsonFile(configFileName).read()
+
     else:
         FILE = jsonFile(configFileName)
         configDictionary = {}
@@ -57,6 +61,8 @@ def getConfig(configFileName):
         return FILE.read()
 
 def parseArguments():
+    """Add arguments
+    """
     parser = argparse.ArgumentParser(allow_abbrev=False,
                                      description="This program downloads " \
                                                  "media from reddit " \
@@ -76,9 +82,12 @@ def parseArguments():
                         metavar="LOG FILE")
 
     parser.add_argument("--subreddit",
-                        required="--sort" in sys.argv or "--limit" in sys.argv or "--search" in sys.argv,
+                        required="--sort" in sys.argv or \
+                                 "--limit" in sys.argv or \
+                                 "--search" in sys.argv,
                         nargs="+",
-                        help="Triggers subreddit mode and takes subreddit's name without r/. use \"me\" for frontpage",
+                        help="Triggers subreddit mode and takes subreddit's" \
+                             " name without r/. use \"me\" for frontpage",
                         metavar="SUBREDDIT",
                         type=str)
 
@@ -95,7 +104,8 @@ def parseArguments():
                         type=str)
 
     parser.add_argument("--sort",
-                        help="Either hot, top, new, controversial or rising. default: hot",
+                        help="Either hot, top, new, controversial or rising." \
+                             " default: hot",
                         choices=["hot","top","new","controversial","rising"],
                         metavar="SORT TYPE",
                         default="hot",
@@ -108,46 +118,69 @@ def parseArguments():
                         type=int)
 
     parser.add_argument("--time",
-                        help="Either hour, day, week, month, year or all. default: all",
+                        help="Either hour, day, week, month, year or all." \
+                             " default: all",
                         choices=["all","hour","day","week","month","year"],
                         metavar="TIME_LIMIT",
                         default="all",
                         type=str)
 
     parser.add_argument("--NoBackupFile",
-                        help="It will no longer creates any FAILED.json files"
-                         + " (it may result in faster downloads when downloading a lot of posts)",
+                        help="It will no longer creates any FAILED.json" \
+                             " files (it may result in faster downloads when" \
+                             " downloading a lot of posts)",
                         action="store_true",
                         default=False)
     
     parser.add_argument("--NoDownload",
-                        help="Just gets the posts and store them in a file for downloading later",
+                        help="Just gets the posts and store them in a file" \
+                             " for downloading later",
                         action="store_true",
                         default=False)
 
     return parser.parse_args()
 
 def checkConflicts():
-    if GLOBAL.arguments.saved is False and GLOBAL.arguments.subreddit is None and GLOBAL.arguments.log is None:
+    """Check if command-line arguments are given correcly,
+    if not, raise errors
+    """
+
+    if GLOBAL.arguments.saved is False and \
+       GLOBAL.arguments.subreddit is None and \
+       GLOBAL.arguments.log is None:
         print("NO PROGRAM MODE IS GIVEN\nWhat were you expecting, anyways?")
         quit()
-    if GLOBAL.arguments.search is not None and (GLOBAL.arguments.saved is True or GLOBAL.arguments.log is not None):
+
+    if GLOBAL.arguments.search is not None and \
+       (GLOBAL.arguments.saved is True or \
+        GLOBAL.arguments.log is not None):
         print("I cannot search in {}, currently.\nSorry :(".format(mode))
         quit()
 
 def postFromLog(fileName):
+    """Analyze a log file and return a list of dictionaries containing
+    submissions
+    """
+
     content = jsonFile(fileName).read()
+
     try:
         del content["HEADER"]
     except KeyError:
         pass
+
     posts = []
+
     for post in content:
         if not content[post][-1]['postType'] == None:
             posts.append(content[post][-1])
+
     return posts
 
 def postExists(POST):
+    """Figure out a file's name and checks if the file already exists
+    """
+
     title = nameCorrector(POST['postTitle'])
     FILENAME = title + "_" + POST['postId']
     PATH = GLOBAL.directory / POST["postSubreddit"]
@@ -163,7 +196,20 @@ def postExists(POST):
     else:
         return False
 
+def updateBackup(FILE,key,mode):
+    """Update the BACKUP file if NoBackupFile mode is trigger
+    """
+
+    if not GLOBAL.arguments.NoBackupFile:
+        print("Updating the BACKUP file. Use --NoBackupFile " \
+                "if this line is taking too long.")
+        getattr(FILE,mode) (key)
+
 def downloader(submissions):
+    """Analyze list of submissions and call the right function
+    to download each one, catch errors, update the log files
+    """
+
     directory = GLOBAL.directory
     subsLenght = len(submissions)
     lastRequestTime = 0
@@ -197,60 +243,61 @@ def downloader(submissions):
             print("It already exists")
             duplicates += 1
             downloadedCount -= 1
-            if not GLOBAL.arguments.NoBackupFile:
-                print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                BACKUP_FILE.delete(str(i+1))
+            updateBackup(BACKUP_FILE,str(i+1),delete)
             continue
 
         if submissions[i]['postType'] == 'imgur':
-
             credit = Imgur.get_credits()
             IMGUR_RESET_TIME = credit['UserReset']-time.time()
-            USER_RESET = "after " \
-                         + str(int(IMGUR_RESET_TIME/60)) \
-                         + " Minutes " \
-                         + str(int(IMGUR_RESET_TIME%60)) \
-                         + " Seconds"
-            print("IMGUR => Client: {} - User: {} - Reset {}" \
-                  .format(credit['ClientRemaining'],
-                          credit['UserRemaining'],
-                          USER_RESET))
+            USER_RESET = ("after " \
+                          + str(int(IMGUR_RESET_TIME/60)) \
+                          + " Minutes " \
+                          + str(int(IMGUR_RESET_TIME%60)) \
+                          + " Seconds") 
+            print(
+                "IMGUR => Client: {} - User: {} - Reset {}".format(
+                    credit['ClientRemaining'],
+                    credit['UserRemaining'],
+                    USER_RESET
+                )
+            )
 
-            if not (credit['UserRemaining'] == 0 or credit['ClientRemaining'] == 0):
+            if not (credit['UserRemaining'] == 0 or \
+                    credit['ClientRemaining'] == 0):
                 while int(time.time() - lastRequestTime) <= 2:
                     pass
+
                 lastRequestTime = time.time()
+
                 try:
                     Imgur(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
-                    if not GLOBAL.arguments.NoBackupFile:
-                        print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                        BACKUP_FILE.delete(str(i+1))
+                   updateBackup(BACKUP_FILE,str(i+1),delete)
+
                 except FileAlreadyExistsError:
                     print("It already exists")
-                    if not GLOBAL.arguments.NoBackupFile:
-                        print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                        BACKUP_FILE.delete(str(i+1))
+                    updateBackup(BACKUP_FILE,str(i+1),delete)
                     duplicates += 1
                     downloadedCount -= 1
+
                 except Exception as exception:
                     print(exception)
                     FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                    if not GLOBAL.arguments.NoBackupFile:
-                        print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                        BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                    updateBackup(BACKUP_FILE,str(i+1),add)
                     downloadedCount -= 1
+
             else:
                 if credit['UserRemaining'] == 0:
                     KEYWORD = "user"
                 elif credit['ClientRemaining'] == 0:
                     KEYWORD = "client"
+
                 print('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
-                FAILED_FILE.add({int(i+1):['{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()),
-                                           submissions[i]]})
-                if not GLOBAL.arguments.NoBackupFile:
-                    BACKUP_FILE.add({int(i+1):['{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()),
-                                               submissions[i]]})
+                FAILED_FILE.add(
+                    {int(i+1):['{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()),
+                               submissions[i]]}
+                )
+                updateBackup(BACKUP_FILE,str(i+1),add)
                 downloadedCount -= 1
 
         elif submissions[i]['postType'] == 'gfycat':
@@ -258,26 +305,24 @@ def downloader(submissions):
             try:
                 Gfycat(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
-                if not GLOBAL.arguments.NoBackupFile:
-                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                    BACKUP_FILE.delete(str(i+1))
+                updateBackup(BACKUP_FILE,str(i+1),delete)
+
             except FileAlreadyExistsError:
                 print("It already exists")
-                if not GLOBAL.arguments.NoBackupFile:
-                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                    BACKUP_FILE.delete(str(i+1))
+                updateBackup(BACKUP_FILE,str(i+1),delete)
                 duplicates += 1
                 downloadedCount -= 1
+                
             except NotADownloadableLinkError as exception:
                 print("Could not read the page source")
-                BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                updateBackup(BACKUP_FILE,str(i+1),add)
                 downloadedCount -= 1
+
             except Exception as exception:
                 print(exception)
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                if not GLOBAL.arguments.NoBackupFile:
-                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                    BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                updateBackup(BACKUP_FILE,str(i+1),add)
                 downloadedCount -= 1
 
         elif submissions[i]['postType'] == 'direct':
@@ -285,34 +330,31 @@ def downloader(submissions):
             try:
                 Direct(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
-                if not GLOBAL.arguments.NoBackupFile:
-                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                    BACKUP_FILE.delete(str(i+1))
+                updateBackup(BACKUP_FILE,str(i+1),delete)
+
             except FileAlreadyExistsError:
                 print("It already exists")
-                if not GLOBAL.arguments.NoBackupFile:
-                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                    BACKUP_FILE.delete(str(i+1))
-                
+                updateBackup(BACKUP_FILE,str(i+1),delete)
                 downloadedCount -= 1
                 duplicates += 1
+
             except Exception as exception:
                 print(exception)
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                if not GLOBAL.arguments.NoBackupFile:
-                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
-                    BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                updateBackup(BACKUP_FILE,str(i+1),add)
                 downloadedCount -= 1
+                
         else:
             print("No match found, skipping...")
-            if not GLOBAL.arguments.NoBackupFile:
-                BACKUP_FILE.delete(str(i+1))
+            updateBackup(BACKUP_FILE,str(i+1),delete)
             downloadedCount -= 1
 
     if duplicates:
         print("\n There was {} duplicates".format(duplicates))
+
     if downloadedCount == 0:
         print(" Nothing downloaded :(")
+
     else:
         print(" Total of {} links downloaded!".format(downloadedCount))
 

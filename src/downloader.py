@@ -13,6 +13,9 @@ from src.errors import (FileAlreadyExistsError, NotADownloadableLinkError,
 print = printToFile
 
 def dlProgress(count, blockSize, totalSize):
+    """Function for writing download progress to console
+    """
+
     downloadedMbs = int(count*blockSize*(10**(-6)))
     fileSize = int(totalSize*(10**(-6)))
     sys.stdout.write("\r{}Mb/{}Mb".format(downloadedMbs,fileSize))
@@ -20,6 +23,10 @@ def dlProgress(count, blockSize, totalSize):
     sys.stdout.flush()
 
 def getExtension(link):
+    """Extract file extension from image link.
+    If didn't find any, return '.jpg'
+    """
+
     imageTypes = ['jpg','png','mp4','webm','gif']
     parsed = link.split('.')
     for TYPE in imageTypes:
@@ -29,6 +36,16 @@ def getExtension(link):
         return '.jpg'
 
 def getFile(fileDir,tempDir,imageURL,redditID,indent=0):
+    """Downloads given file to given directory.
+
+    fileDir -- Full file directory
+    tempDir -- Full file directory with the extension of '.tmp'
+    imageURL -- URL to the file to be downloaded
+
+    redditID -- Post's reddit id if renaming the file is necessary.
+                As too long file names seem not working.
+    """
+
     if not (os.path.isfile(fileDir)):
         for i in range(3):
             try:

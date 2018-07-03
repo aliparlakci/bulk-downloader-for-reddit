@@ -6,6 +6,9 @@ from pathlib import Path
 
 
 class GLOBAL:
+    """Declare global variables
+    """
+
     RUN_TIME = 0
     config = None
     arguments = None
@@ -13,6 +16,13 @@ class GLOBAL:
     printVanilla = print
 
 class jsonFile:
+    """ Write and read JSON files
+
+    Use add(self,toBeAdded) to add to files
+
+    Use delete(self,*deletedKeys) to delete keys
+    """
+    
     FILEDIR = ""
 
     def __init__(self,FILEDIR):
@@ -25,26 +35,28 @@ class jsonFile:
             return json.load(f)
 
     def add(self,toBeAdded):
+        """Takes a dictionary and merges it with json file.
+        It uses new key's value if a key already exists.
+        Returns the new content as a dictionary.
+        """
+
         data = self.read()
         data = {**data, **toBeAdded}
         self.__writeToFile(data)
         return self.read()
 
-    def delete(self,deletedKeys):
+    def delete(self,*deleteKeys):
+        """Delete given keys from JSON file.
+        Returns the new content as a dictionary.
+        """
+
         data = self.read()
-        if type(deletedKeys) is str:
-            if deletedKeys in data:
-                del data[deletedKeys]
-                self.__writeToFile(data)
-            else:
-                return False
-        elif type(deletedKeys) is list:
-            for deletedKey in deletedKeys:
-                if deletedKey in data:
-                    del data[deletedKey]
-            else:
-                return False
-            self.__writeToFile(data)
+        for deleteKey in deleteKeys:
+            if deleteKey in data:
+                del data[deleteKey]
+        else:
+            return False
+        self.__writeToFile(data)
 
     def __writeToFile(self,content,create=False):
         if not create:
@@ -53,8 +65,12 @@ class jsonFile:
             json.dump(content, f, indent=4)
 
 def createLogFile(TITLE):
+    """Create a log file with given name
+    inside a folder time stampt in its name
+    """
+
     folderDirectory = GLOBAL.directory / str(time.strftime("%d-%m-%Y_%H-%M-%S",
-                                            time.localtime(GLOBAL.RUN_TIME)))
+                                             time.localtime(GLOBAL.RUN_TIME)))
     logFilename = TITLE.upper()+'.json'
 
     if not path.exists(folderDirectory):
@@ -63,17 +79,29 @@ def createLogFile(TITLE):
     return jsonFile(folderDirectory / Path(logFilename))
 
 def printToFile(*args, **kwargs):
-    TIME = str(time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime(GLOBAL.RUN_TIME)))
+    """Print to both CONSOLE and 
+    CONSOLE LOG file in a folder time stampt in the name
+    """
+    
+    TIME = str(time.strftime("%d-%m-%Y_%H-%M-%S",
+                             time.localtime(GLOBAL.RUN_TIME)))
     folderDirectory = GLOBAL.directory / TIME
     print(*args,**kwargs)
 
     if not path.exists(folderDirectory):
         makedirs(folderDirectory)
         
-    with io.open(folderDirectory / "CONSOLE_LOG.txt","a",encoding="utf-8") as FILE:
+    with io.open(
+        folderDirectory / "CONSOLE_LOG.txt","a",encoding="utf-8"
+    ) as FILE:
         print(*args, file=FILE, **kwargs) 
 
 def nameCorrector(string):
+    """Swap strange characters from given string 
+    with underscore (_) and shorten it.
+    Return the string
+    """
+
     stringLenght = len(string)
     if stringLenght > 200:
         string = string[:200]
