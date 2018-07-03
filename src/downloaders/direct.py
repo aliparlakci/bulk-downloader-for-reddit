@@ -20,6 +20,7 @@ class Direct:
                 return False
             else:
                 return result
+                
     def getExtension(self,link):
         imageTypes = ['jpg','png','mp4','webm','gif']
         parsed = link.split('.')

@@ -65,11 +65,7 @@ class Gfycat:
         exceptionType = None
         if not os.path.exists(directory): os.makedirs(directory)
         title = nameCorrector(post['postTitle'])
-        print(title
-              + "_"
-              + post['postId']
-              + "."
-              + post['gifURL'].split('.')[-1])
+        print(title+"_"+post['postId']+"."+post['gifURL'].split('.')[-1])
         fileDir = directory / (title
                                + "_"
                                + post['postId']
@@ -86,6 +82,8 @@ class Gfycat:
                                            reporthook=dlProgress)
                 os.rename(tempDir,fileDir)
                 print("Downloaded" + " "*10,end="\n\n")
+            # except ConnectionResetError:
+            #    If connection was cut off, try again
             except FileNotFoundError:
                 tempDir = directory / (post['postId'] + ".tmp")
                 fileDir = directory / (post['postId']
