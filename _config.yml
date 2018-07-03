@@ -2,3 +2,4 @@ theme: jekyll-theme-minimal
 show_downloads: true
 #title: Bulk Downloader for Reddit
 description: Code written by     Ali PARLAKCI
+google_analytics: UA-80780721-3
