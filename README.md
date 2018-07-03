@@ -152,27 +152,27 @@ optional arguments:
 
 ## Examples
 ```console
-$ py -3 script.py .\NEW_FOLDER --subreddit gifs --sort hot
+$ py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot
 ```
 
 ```console
-$ py -3 script.py .\NEW_FOLDER --subreddit me --sort top --search cats
+$ py -3 script.py .\\NEW_FOLDER --subreddit me --sort top --search cats
 ```
 
 ```console
-$ py -3 script.py .\NEW_FOLDER --subreddit gifs pics --sort top --time week --limit 250
+$ py -3 script.py .\\NEW_FOLDER --subreddit gifs pics --sort top --time week --limit 250
 ```
 
 ```console
-$ py -3 script.py .\NEW_FOLDER\ANOTHER_FOLDER --saved --limit 1000
+$ py -3 script.py .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
 ```
 
 ```console
-$ py -3 script.py C:\NEW_FOLDER\ANOTHER_FOLDER --log UNNAMED_FOLDER\FAILED.json --NoRateLimit
+$ py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\FAILED.json --NoRateLimit
 ```
 
 ```console
-$ py -3 script.py .\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDownload
+$ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDownload
 ```
 
 ---
