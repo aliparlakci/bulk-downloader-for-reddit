@@ -12,12 +12,12 @@ import sys
 import time
 from pathlib import Path
 
-from src.downloaders.direct import Direct
-from src.downloaders.gfycat import Gfycat
-from src.downloaders.imgur import Imgur
+from src.downloaders import Direct, Gfycat, Imgur
 from src.redditSearcher import getPosts
 from src.tools import (GLOBAL, createLogFile, jsonFile, nameCorrector,
                        printToFile)
+from src.errors import (FileAlreadyExistsError, NotADownloadableLinkError,
+                        AlbumNotDownloadedCompletely)
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
@@ -124,13 +124,8 @@ def parseArguments():
                         metavar="TIME_LIMIT",
                         default="all",
                         type=str)
-    
-    # parser.add_argument("--NoRateLimit",
-    #                     help="Waits for IMGUR Rate Limit to cool down until all the posts are downloaded",
-    #                     action="store_true",
-    #                     default=False)
 
-    parser.add_argument("--NoFailedFile",
+    parser.add_argument("--NoBackupFile",
                         help="It will no longer creates any FAILED.json files"
                          + " (it may result in faster downloads when downloading a lot of posts)",
                         action="store_true",
@@ -161,26 +156,23 @@ def postExists(POST):
 
 def downloader(submissions):
     directory = GLOBAL.directory
-    needToWait = False
-    logCount = 0
     subsLenght = len(submissions)
     lastRequestTime = 0
-    gfycat = Gfycat()
-    imgur = Imgur()
-    direct = Direct()
     downloadedCount = subsLenght
     duplicates = 0
     BACKUP = {}
 
-    if not GLOBAL.arguments.NoFailedFile:
-        print("Creating a backup file called 'FAILED.json' in case program exist unexpectedly...\n")
+    FAILED_FILE = createLogFile("FAILED")
+
+    if not GLOBAL.arguments.NoBackupFile:
+        print("Creating a backup file called 'FAILED.json' " \
+              "in case program exist unexpectedly...\n")
         for x in range(len(submissions)):
-            BACKUP[int(x+1)] = ['FAILED',    
-                                'NOT DOWNLOADED YET',
+            BACKUP[int(x+1)] = ['NOT DOWNLOADED YET',
                                 submissions[x]]
 
-        logFile = createLogFile("FAILED")
-        logFile.add(BACKUP)
+        BACKUP_FILE = createLogFile("BACKUP")
+        BACKUP_FILE.add(BACKUP)
 
     for i in range(subsLenght):
         print("({}/{})".format(i+1,subsLenght))
@@ -196,16 +188,14 @@ def downloader(submissions):
             print("It already exists\n")
             duplicates += 1
             downloadedCount -= 1
-            if not GLOBAL.arguments.NoFailedFile:
-                logFile.delete(str(i+1))
+            if not GLOBAL.arguments.NoBackupFile:
+                BACKUP_FILE.delete(str(i+1))
             continue
 
         if submissions[i]['postType'] == 'imgur':
-            global credit
-            credit = imgur.get_credits()
-            global IMGUR_RESET_TIME
-            IMGUR_RESET_TIME = credit['UserReset']-time.time()
 
+            credit = Imgur.get_credits()
+            IMGUR_RESET_TIME = credit['UserReset']-time.time()
             USER_RESET = "after " \
                          + str(int(IMGUR_RESET_TIME/60)) \
                          + " Minutes " \
@@ -220,60 +210,77 @@ def downloader(submissions):
                 while int(time.time() - lastRequestTime) <= 2:
                     pass
                 lastRequestTime = time.time()
-                result = imgur.download(
-                    GLOBAL.directory / submissions[i]['postSubreddit'],
-                    submissions[i]
-                )
-            else:    
+                try:
+                    Imgur(GLOBAL.directory / submissions[i]['postSubreddit'],
+                          submissions[i])
+                except FileAlreadyExistsError:
+                    print("It already exists\n")
+                    BACKUP_FILE.delete(str(i+1))
+                    duplicates += 1
+                except Exception as exception:
+                    print(exception,"\n")
+                    FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                    if not GLOBAL.arguments.NoBackupFile:
+                        BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                    downloadedCount -= 1
+                    time.sleep(2)
+            else:
                 if credit['UserRemaining'] == 0:
                     KEYWORD = "user"
                 elif credit['ClientRemaining'] == 0:
                     KEYWORD = "client"
                 print('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
-                result = "LIMIT"
-                needToWait = True
-                logFile.add({int(i+1):['FAILED',    
-                                        '{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()),
-                                        submissions[i]]})
+                FAILED_FILE.add({int(i+1):['{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()),
+                                           submissions[i]]})
+                if not GLOBAL.arguments.NoBackupFile:
+                    BACKUP_FILE.add({int(i+1):['{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()),
+                                               submissions[i]]})
+                downloadedCount -= 1
 
         elif submissions[i]['postType'] == 'gfycat':
             print("GFYCAT")
-            result = gfycat.download(
-                GLOBAL.directory / submissions[i]['postSubreddit'], submissions[i]
-            )
+            try:
+                Gfycat(GLOBAL.directory / submissions[i]['postSubreddit'],
+                          submissions[i])
+            except FileAlreadyExistsError:
+                print("It already exists")
+                BACKUP_FILE.delete(str(i+1))
+                duplicates += 1
+            except NotADownloadableLinkError as exception:
+                print("Could not read the page source")
+                BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                downloadedCount -= 1
+            except Exception as exception:
+                    print(exception,"\n")
+                    FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                    if not GLOBAL.arguments.NoBackupFile:
+                        BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                    downloadedCount -= 1
+                    time.sleep(2)
 
         elif submissions[i]['postType'] == 'direct':
             print("DIRECT")
-            result = direct.download(
-                GLOBAL.directory / submissions[i]['postSubreddit'], submissions[i]
-            )
-
-        logCount += 1
-
-        if result is not None:
-            if result is False:
+            try:
+                Direct(GLOBAL.directory / submissions[i]['postSubreddit'],
+                          submissions[i])
+                BACKUP_FILE.delete(str(i+1))
+            except FileAlreadyExistsError:
+                print("It already exists")
+                BACKUP_FILE.delete(str(i+1))
                 duplicates += 1
-            elif result == "LIMIT":
-                if not GLOBAL.arguments.NoFailedFile:
-                    logFile.delete(str(i+1))
-            logFile.add({int(i+1):['FAILED',    
-                                    str(result),
-                                    submissions[i]]})
-            downloadedCount -= 1
-        else:
-            if not GLOBAL.arguments.NoFailedFile:
-                logFile.delete(str(i+1))
-
+            except Exception as exception:
+                    print(exception,"\n")
+                    FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                    if not GLOBAL.arguments.NoBackupFile:
+                        BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                    downloadedCount -= 1
+                    time.sleep(2)
+    if duplicates:
+        print("\n There was {} duplicates".format(duplicates))
     if downloadedCount == 0:
-        print("\n There was {} duplicates".format(duplicates))
         print(" Nothing downloaded :(")
-
     else:
-        print("\n There was {} duplicates".format(duplicates))
         print(" Total of {} links downloaded!".format(downloadedCount))
-    
-    if needToWait:
-        return not needToWait
 
 def main():
     GLOBAL.config = getConfig('config.json')
@@ -311,28 +318,6 @@ def main():
 
     else:
         RESULT = downloader(getPosts())
-
-    # while RESULT is False and GLOBAL.arguments.NoRateLimit is True:
-    #     folderDirectory = GLOBAL.directory / str(time.strftime("%d-%m-%Y_%H-%M-%S",
-    #                                         time.localtime(GLOBAL.RUN_TIME)))
-    #     GLOBAL.RUN_TIME = time.time()
-    #     print("Waiting for IMGUR cooldown to download remaining images\r")
-
-    #     IMGUR_RESET_TIME = credit['UserReset']-time.time()
-    #     while IMGUR_RESET_TIME > 0 and credit['UserRemaining']:
-    #         TIME_LEFT = str(int(IMGUR_RESET_TIME/60)) \
-    #                         + " Minutes " \
-    #                         + str(int(IMGUR_RESET_TIME%60)) \
-    #                         + " Seconds Remaining\r"
-    #         printVanilla(TIME_LEFT,end="")
-    #         time.sleep(1)
-    #         printVanilla("",end="\r")
-    #         printVanilla(" "*len(TIME_LEFT),end="\r")
-    #         IMGUR_RESET_TIME = credit['UserReset']-time.time()
-
-    #     printVanilla()
-    #     time.sleep(2)
-    #     RESULT = downloader(postFromLog(folderDirectory / "FAILED.json"))
     
 if __name__ == "__main__":
     try:

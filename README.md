@@ -93,7 +93,7 @@ py -3 script.py [-h]
                 [--sort Sort]  
                 [--limit Limit]  
                 [--time Time]  
-                [--NoFailedFile]
+                [--NoBackupFile]
                 [--NoDownload]  
                 Directory
 ```
@@ -117,7 +117,7 @@ $ py -3 script.py --help
 usage: script.py [-h] [--saved] [--log LOG FILE]
                  [--subreddit SUBREDDIT [SUBREDDIT ...]] [--search SEARCH]
                  [--sort SORT TYPE] [--limit Limit] [--time TIME_LIMIT]
-                 [--NoFailedFile] [--NoDownload]
+                 [--NoBackupFile] [--NoDownload]
                  DIRECTORY
 
 This program downloads media from reddit posts
@@ -139,7 +139,7 @@ optional arguments:
   --limit Limit         default: unlimited
   --time TIME_LIMIT     Either hour, day, week, month, year or all. default:
                         all
-  --NoFailedFile        It will no longer creates any FAILED.json files (it may
+  --NoBackupFile        It will no longer creates any FAILED.json files (it may
                         result in faster downloads when downloading a lot of
                         posts)
   --NoDownload          Just gets the posts and store them in a file for
