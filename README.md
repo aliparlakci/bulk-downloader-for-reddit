@@ -70,11 +70,14 @@ You can also use search in this mode. See [`py -3 script.py --help`](#using-the-
   
 *: *Multiple subreddits can be given*
 ### log read mode
-Two log files are created each time *script.py* runs. One for all the posts without filtering and one for the posts that couldn't be downloaded.  
+**Three** log files are created each time *script.py* runs.
+- **POSTS** Saves all the posts regardlessly.
+- **BACKUP** It contains the posts that aren't downloaded yet.
+- **FAILED** Keeps track of posts that are tried to be downloaded but failed.
   
 In log mode, the program takes a log file which created by itself, reads posts and tries downloading them again.
 
-Running log read mode once after the download complete is **HIGHLY** recommended as unexpected problems may occur.
+Running log read mode for FAILED.json file once after the download is complete is **HIGHLY** recommended as unexpected problems may occur.
 
 ---
 

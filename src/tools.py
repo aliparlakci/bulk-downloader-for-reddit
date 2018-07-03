@@ -62,16 +62,16 @@ def createLogFile(TITLE):
 
     return jsonFile(folderDirectory / Path(logFilename))
 
-def printToFile(TEXT, *args, **kwargs):
+def printToFile(*args, **kwargs):
     TIME = str(time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime(GLOBAL.RUN_TIME)))
     folderDirectory = GLOBAL.directory / TIME
-    print(str(TEXT),*args,**kwargs)
+    print(*args,**kwargs)
 
     if not path.exists(folderDirectory):
         makedirs(folderDirectory)
         
     with io.open(folderDirectory / "CONSOLE_LOG.txt","a",encoding="utf-8") as FILE:
-        print(str(TEXT),file=FILE, *args, **kwargs) 
+        print(*args, file=FILE, **kwargs) 
 
 def nameCorrector(string):
     stringLenght = len(string)

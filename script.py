@@ -12,8 +12,8 @@ import sys
 import time
 from pathlib import Path
 
-from src.downloaders import Direct, Gfycat, Imgur
-from src.redditSearcher import getPosts
+from src.downloader import Direct, Gfycat, Imgur
+from src.searcher import getPosts
 from src.tools import (GLOBAL, createLogFile, jsonFile, nameCorrector,
                        printToFile)
 from src.errors import (FileAlreadyExistsError, NotADownloadableLinkError,
