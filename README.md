@@ -19,6 +19,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Starting for the first time](#starting-for-the-first-time)
   - [Using the command line arguments](#using-the-command-line-arguments)
 - [Examples](#examples)
+
 ---
 
 ## Requirements
