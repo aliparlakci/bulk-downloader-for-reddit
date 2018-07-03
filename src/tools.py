@@ -10,6 +10,7 @@ class GLOBAL:
     config = None
     arguments = None
     directory = None
+    printVanilla = print
 
 class jsonFile:
     FILEDIR = ""

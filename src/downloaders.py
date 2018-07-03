@@ -39,8 +39,13 @@ def getFile(fileDir,tempDir,imageURL,redditID,indent=0):
             except ConnectionResetError as exception:
                 print(" "*indent + exception)
                 print(" "*indent + "Trying again\n")
-            # except FileNotFoundError:
-            #    File name is too long, make it short
+            except FileNotFoundError:
+                Ext = fileDir.parts[-1].split(".")[-1]
+                fileDir = tempDir = Path()
+                for i in fileDir.parts[:-1]:
+                    fileDir = tempDir = fileDir.joinpath(i)
+                fileDir = fileDir.joinpath(redditID+"."+Ext)
+                tempDir = tempDir.joinpath(redditID+".tmp")
     else:
         raise FileAlreadyExistsError
 
@@ -214,18 +219,14 @@ class Gfycat:
 class Direct:
     def __init__(self,directory,POST):
         POST['postExt'] = getExtension(POST['postURL'])
-        try:
-            if not os.path.exists(directory): os.makedirs(directory)
-            title = nameCorrector(POST['postTitle'])
-            print(title+"_"+POST['postId']+POST['postExt'])
+        if not os.path.exists(directory): os.makedirs(directory)
+        title = nameCorrector(POST['postTitle'])
+        print(title+"_"+POST['postId']+POST['postExt'])
 
-            fileDir = title+"_"+POST['postId']+POST['postExt']
-            fileDir = directory / fileDir
+        fileDir = title+"_"+POST['postId']+POST['postExt']
+        fileDir = directory / fileDir
 
-            tempDir = title+"_"+POST['postId']+".tmp"
-            tempDir = directory / tempDir
+        tempDir = title+"_"+POST['postId']+".tmp"
+        tempDir = directory / tempDir
 
-            getFile(fileDir,tempDir,POST['postURL'],POST['postId'])
-        except FileAlreadyExistsError:
-            raise
-
+        getFile(fileDir,tempDir,POST['postURL'],POST['postId'])

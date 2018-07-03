@@ -43,30 +43,28 @@ def getPosts():
     global HEADER
 
     if args.saved is True:
-        HEADER = (
-            "SAVED POSTS OF {username}\n"
-            .format(username=config['reddit_username'])
-        )
+        HEADER = ("SAVED POSTS OF {username}\n"
+                  .format(username=config['reddit_username']))
         print(HEADER)
         return redditSearcher(beginPraw(config)
                               .user.me().saved(limit=args.limit))
 
     elif args.subreddit.lower() == "me":
         HEADER = ("FIRST {limit} {sort} POSTS FROM FRONTPAGE, {time}\n"
-                    .format(limit=PSUDO_LIMIT,
-                            sort=args.sort.upper(),
-                            subreddit=args.subreddit.upper(),
-                            time=args.time.upper()))
+                  .format(limit=PSUDO_LIMIT,
+                          sort=args.sort.upper(),
+                          subreddit=args.subreddit.upper(),
+                          time=args.time.upper()))
         print(HEADER)
         return redditSearcher(getattr(beginPraw(config)
                                         .front,args.sort) (**keyword_params))
 
     else:  
         HEADER = ("FIRST {limit} {sort} POSTS OF R/{subreddit}, {time}\n"
-                .format(limit=PSUDO_LIMIT,
-                        sort=args.sort.upper(),
-                        subreddit=args.subreddit.upper(),
-                        time=args.time.upper()))
+                  .format(limit=PSUDO_LIMIT,
+                          sort=args.sort.upper(),
+                          subreddit=args.subreddit.upper(),
+                          time=args.time.upper()))
         print(HEADER)
         return redditSearcher(getattr(beginPraw(config)
                                     .subreddit(args.subreddit),

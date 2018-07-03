@@ -56,17 +56,6 @@ def getConfig(configFileName):
         FILE.add(configDictionary)
         return FILE.read()
 
-def postFromLog(fileName):
-    content = jsonFile(fileName).read()
-    try:
-        del content["HEADER"]
-    except KeyError:
-        pass
-    posts = []
-    for post in content:
-        posts.append(content[post][-1])
-    return posts
-
 def parseArguments():
     parser = argparse.ArgumentParser(allow_abbrev=False,
                                      description="This program downloads " \
@@ -137,6 +126,26 @@ def parseArguments():
                         default=False)
 
     return parser.parse_args()
+
+def checkConflicts():
+    if GLOBAL.arguments.saved is False and GLOBAL.arguments.subreddit is None and GLOBAL.arguments.log is None:
+        print("NO PROGRAM MODE IS GIVEN\nWhat were you expecting, anyways?")
+        quit()
+    if GLOBAL.arguments.search is not None and (GLOBAL.arguments.saved is True or GLOBAL.arguments.log is not None):
+        print("I cannot search in {}, currently.\nSorry :(".format(mode))
+        quit()
+
+def postFromLog(fileName):
+    content = jsonFile(fileName).read()
+    try:
+        del content["HEADER"]
+    except KeyError:
+        pass
+    posts = []
+    for post in content:
+        if not content[post][-1]['postType'] == None:
+            posts.append(content[post][-1])
+    return posts
 
 def postExists(POST):
     title = nameCorrector(POST['postTitle'])
@@ -215,15 +224,16 @@ def downloader(submissions):
                           submissions[i])
                 except FileAlreadyExistsError:
                     print("It already exists\n")
-                    BACKUP_FILE.delete(str(i+1))
+                    if not GLOBAL.arguments.NoBackupFile:
+                        BACKUP_FILE.delete(str(i+1))
                     duplicates += 1
+                    downloadedCount -= 1
                 except Exception as exception:
                     print(exception,"\n")
                     FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                     if not GLOBAL.arguments.NoBackupFile:
                         BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
                     downloadedCount -= 1
-                    time.sleep(2)
             else:
                 if credit['UserRemaining'] == 0:
                     KEYWORD = "user"
@@ -244,37 +254,46 @@ def downloader(submissions):
                           submissions[i])
             except FileAlreadyExistsError:
                 print("It already exists")
-                BACKUP_FILE.delete(str(i+1))
+                if not GLOBAL.arguments.NoBackupFile:
+                    BACKUP_FILE.delete(str(i+1))
                 duplicates += 1
+                downloadedCount -= 1
             except NotADownloadableLinkError as exception:
                 print("Could not read the page source")
                 BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
             except Exception as exception:
-                    print(exception,"\n")
-                    FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                    if not GLOBAL.arguments.NoBackupFile:
-                        BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                    downloadedCount -= 1
-                    time.sleep(2)
+                print(exception,"\n")
+                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                if not GLOBAL.arguments.NoBackupFile:
+                    BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                downloadedCount -= 1
 
         elif submissions[i]['postType'] == 'direct':
             print("DIRECT")
             try:
                 Direct(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
-                BACKUP_FILE.delete(str(i+1))
+                if not GLOBAL.arguments.NoBackupFile:
+                    BACKUP_FILE.delete(str(i+1))
             except FileAlreadyExistsError:
                 print("It already exists")
-                BACKUP_FILE.delete(str(i+1))
+                if not GLOBAL.arguments.NoBackupFile:
+                    BACKUP_FILE.delete(str(i+1))
+                downloadedCount -= 1
                 duplicates += 1
             except Exception as exception:
-                    print(exception,"\n")
-                    FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                    if not GLOBAL.arguments.NoBackupFile:
-                        BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                    downloadedCount -= 1
-                    time.sleep(2)
+                print(exception,"\n")
+                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                if not GLOBAL.arguments.NoBackupFile:
+                    BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                downloadedCount -= 1
+        else:
+            print("No match found, skipping \n")
+            if not GLOBAL.arguments.NoBackupFile:
+                BACKUP_FILE.delete(str(i+1))
+            downloadedCount -= 1
+
     if duplicates:
         print("\n There was {} duplicates".format(duplicates))
     if downloadedCount == 0:
@@ -285,31 +304,21 @@ def downloader(submissions):
 def main():
     GLOBAL.config = getConfig('config.json')
     GLOBAL.arguments = parseArguments()
+
     if GLOBAL.arguments.log is not None:
         GLOBAL.arguments.log = GLOBAL.arguments.log.name
+
     if GLOBAL.arguments.subreddit is not None:
         GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit)
+
     GLOBAL.directory = Path(GLOBAL.arguments.directory)
+
+    checkConflicts()
 
     print(sys.argv)
 
     if GLOBAL.arguments.NoDownload:
         getPosts()
-        quit()
-
-    if GLOBAL.arguments.saved is False and GLOBAL.arguments.subreddit is None and GLOBAL.arguments.log is None:
-        print("NO PROGRAM MODE IS GIVEN\nWhat were you expecting, anyways?")
-        quit()
-
-    elif GLOBAL.arguments.search is not None and (GLOBAL.arguments.saved is True or GLOBAL.arguments.log is not None):
-
-        if GLOBAL.arguments.saved is True:
-            mode = "saved posts"
-
-        elif GLOBAL.arguments.log is not None:
-            mode = "logged posts"
-
-        print("I cannot search in {}, currently.\nSorry :(".format(mode))
         quit()
 
     if GLOBAL.arguments.log is not None:
@@ -321,7 +330,6 @@ def main():
     
 if __name__ == "__main__":
     try:
-        printVanilla = print
         print = printToFile
         GLOBAL.RUN_TIME = time.time()
         main()
