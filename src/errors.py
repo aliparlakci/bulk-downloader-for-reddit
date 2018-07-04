@@ -6,3 +6,6 @@ class NotADownloadableLinkError(Exception):
 
 class AlbumNotDownloadedCompletely(Exception):
     pass
+
+class FileNameTooLong(Exception):
+    pass

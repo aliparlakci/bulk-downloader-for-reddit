@@ -7,7 +7,8 @@ from pathlib import Path
 from imgurpython import *
 
 from src.tools import GLOBAL, nameCorrector, printToFile
-from src.errors import (FileAlreadyExistsError, NotADownloadableLinkError,
+from src.errors import (FileAlreadyExistsError, FileNameTooLong,
+                        NotADownloadableLinkError,
                         AlbumNotDownloadedCompletely)
 
 print = printToFile
@@ -59,12 +60,7 @@ def getFile(fileDir,tempDir,imageURL,redditID,indent=0):
                 print(" "*indent + str(exception))
                 print(" "*indent + "Trying again\n")
             except FileNotFoundError:
-                Ext = fileDir.parts[-1].split(".")[-1]
-                fileDir = tempDir = Path()
-                for i in fileDir.parts[:-1]:
-                    fileDir = tempDir = fileDir.joinpath(i)
-                fileDir = fileDir.joinpath(redditID+"."+Ext)
-                tempDir = tempDir.joinpath(redditID+".tmp")
+                raise FileNameTooLong
     else:
         raise FileAlreadyExistsError
 
@@ -94,8 +90,12 @@ class Imgur:
 
             tempDir = title + "_" + post['postId'] + '.tmp'
             tempDir = directory / tempDir
-
-            getFile(fileDir,tempDir,post['mediaURL'],post['postId'])
+            try:
+                getFile(fileDir,tempDir,post['mediaURL'],post['postId'])
+            except FileNameTooLong:
+                fileDir = directory / post['postId'] + post['postExt']
+                tempDir = directory / post['postId'] + '.tmp'
+                getFile(fileDir,tempDir,post['mediaURL'],post['postId'])
 
         elif content['type'] == 'album':
             exceptionType = ""
@@ -109,7 +109,11 @@ class Imgur:
 
             folderDir = directory / (title+"_"+post['postId'])
 
-            if not os.path.exists(folderDir):
+            try:
+                if not os.path.exists(folderDir):
+                    os.makedirs(folderDir)
+            except FileNotFoundError:
+                folderDir = directory / post['postId']
                 os.makedirs(folderDir)
 
             for i in range(imagesLenght):
@@ -139,6 +143,21 @@ class Imgur:
                     print("  The file already exists" + " "*10,end="\n\n")
                     duplicates += 1
                     howManyDownloaded -= 1
+
+                # IF FILE NAME IS TOO LONG, IT WONT REGISTER
+                except FileNameTooLong:
+                    fileName = (str(i+1) + "_" + images[i]['id'])
+                    fileDir = folderDir / (fileName + images[i]['Ext'])
+                    tempDir = folderDir / (fileName + ".tmp")
+                    try:
+                        getFile(fileDir,tempDir,imageURL,post['postId'],indent=2)
+                    # IF STILL TOO LONG
+                    except FileNameTooLong:
+                        fileName = str(i+1)
+                        fileDir = folderDir / (fileName + images[i]['Ext'])
+                        tempDir = folderDir / (fileName + ".tmp")
+                        getFile(fileDir,tempDir,imageURL,post['postId'],indent=2)
+
                 except Exception as exception:
                     print("\n  Could not get the file")
                     print("  " + str(exception) + "\n")

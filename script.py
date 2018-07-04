@@ -26,8 +26,9 @@ __email__ = "parlakciali@gmail.com"
 
 def debug(*post):
     GLOBAL.config = getConfig('config.json')
-    GLOBAL.directory = Path("")
+    GLOBAL.directory = Path(".\\debug\\")
     downloader([*post])
+    quit()
 
 def getConfig(configFileName):
     """Read credentials from config.json file"""
@@ -196,11 +197,13 @@ def postExists(POST):
 
 def updateBackup(FILE,key,mode):
     """Update the BACKUP file if NoBackupFile mode is trigger"""
-
-    if not GLOBAL.arguments.NoBackupFile:
-        print("Updating the BACKUP file. Use --NoBackupFile " \
-                "if this line is taking too long.")
-        getattr(FILE,mode) (key)
+    try:
+        if not GLOBAL.arguments.NoBackupFile:
+            print("Updating the BACKUP file. Use --NoBackupFile " \
+                    "if this line is taking too long.")
+            getattr(FILE,mode) (key)
+    except AttributeError:
+        pass
 
 def downloader(submissions):
     """Analyze list of submissions and call the right function
@@ -215,17 +218,19 @@ def downloader(submissions):
     BACKUP = {}
 
     FAILED_FILE = createLogFile("FAILED")
+    try:
+        if not GLOBAL.arguments.NoBackupFile:
+            print("\nCreating a backup file called 'BACKUP.json' " \
+                "in case program exists unexpectedly...")
+            for x in range(len(submissions)):
+                BACKUP[int(x+1)] = ['NOT DOWNLOADED YET',
+                                    submissions[x]]
 
-    if not GLOBAL.arguments.NoBackupFile:
-        print("\nCreating a backup file called 'BACKUP.json' " \
-              "in case program exists unexpectedly...")
-        for x in range(len(submissions)):
-            BACKUP[int(x+1)] = ['NOT DOWNLOADED YET',
-                                submissions[x]]
-
-        BACKUP_FILE = createLogFile("BACKUP")
-        BACKUP_FILE.add(BACKUP)
-    else:
+            BACKUP_FILE = createLogFile("BACKUP")
+            BACKUP_FILE.add(BACKUP)
+        else:
+            BACKUP_FILE = None
+    except AttributeError:
         BACKUP_FILE = None
 
     for i in range(subsLenght):
@@ -359,6 +364,11 @@ def downloader(submissions):
 
 def main():
     GLOBAL.config = getConfig('config.json')
+
+    ####### UNCOMMENT TO DEBUG #######
+    # debug({})
+    ##################################
+
     GLOBAL.arguments = parseArguments()
 
     if GLOBAL.arguments.log is not None:
@@ -372,6 +382,7 @@ def main():
     checkConflicts()
 
     print(sys.argv)
+
 
     if GLOBAL.arguments.NoDownload:
         getPosts()
