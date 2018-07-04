@@ -23,16 +23,18 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 ---
 
 ## Requirements
-- Python 3.x (although the latest version of python is suggested, you can use 3.6.5 since it runs perfectly on that version)
+- Python 3.x*
 - imgurpython library  
 - praw library
 
 You can install Python 3 here: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+You have to check "**Add Python 3 to PATH**" option when installing in order it to run correctly.
 
 You can install libraries through [terminal](https://www.google.com.tr/search?q=how+to+open+terminal) via *pip*:
 ```
 pip install imgurpython praw
 ```
+*\*:Although the latest version of python is suggested, you can use 3.6.5 since it runs perfectly on that version*
 
 ---
 
