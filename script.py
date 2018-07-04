@@ -270,7 +270,10 @@ def downloader(submissions):
                 downloadedCount -= 1
             except NotADownloadableLinkError as exception:
                 print("Could not read the page source")
-                BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                if not GLOBAL.arguments.NoBackupFile:
+                    print("Updating BACKUP file. Use --NoBackupFile if this line is taking too long.")
+                    BACKUP_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
             except Exception as exception:
                 print(exception)
