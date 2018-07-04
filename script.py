@@ -30,8 +30,7 @@ def debug(*post):
     downloader([*post])
 
 def getConfig(configFileName):
-    """Read credentials from
-    """
+    """Read credentials from config.json file"""
 
     keys = ['reddit_username',
             'reddit_password',
@@ -61,8 +60,8 @@ def getConfig(configFileName):
         return FILE.read()
 
 def parseArguments():
-    """Add arguments
-    """
+    """Initialize argparse and add arguments"""
+
     parser = argparse.ArgumentParser(allow_abbrev=False,
                                      description="This program downloads " \
                                                  "media from reddit " \
@@ -178,8 +177,7 @@ def postFromLog(fileName):
     return posts
 
 def postExists(POST):
-    """Figure out a file's name and checks if the file already exists
-    """
+    """Figure out a file's name and checks if the file already exists"""
 
     title = nameCorrector(POST['postTitle'])
     FILENAME = title + "_" + POST['postId']
@@ -197,8 +195,7 @@ def postExists(POST):
         return False
 
 def updateBackup(FILE,key,mode):
-    """Update the BACKUP file if NoBackupFile mode is trigger
-    """
+    """Update the BACKUP file if NoBackupFile mode is trigger"""
 
     if not GLOBAL.arguments.NoBackupFile:
         print("Updating the BACKUP file. Use --NoBackupFile " \
@@ -228,6 +225,8 @@ def downloader(submissions):
 
         BACKUP_FILE = createLogFile("BACKUP")
         BACKUP_FILE.add(BACKUP)
+    else:
+        BACKUP_FILE = None
 
     for i in range(subsLenght):
         print("\n({}/{})".format(i+1,subsLenght))
@@ -243,7 +242,7 @@ def downloader(submissions):
             print("It already exists")
             duplicates += 1
             downloadedCount -= 1
-            updateBackup(BACKUP_FILE,str(i+1),delete)
+            updateBackup(BACKUP_FILE,str(i+1),"delete")
             continue
 
         if submissions[i]['postType'] == 'imgur':
@@ -272,18 +271,18 @@ def downloader(submissions):
                 try:
                     Imgur(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
-                   updateBackup(BACKUP_FILE,str(i+1),delete)
+                    updateBackup(BACKUP_FILE,str(i+1),"delete")
 
                 except FileAlreadyExistsError:
                     print("It already exists")
-                    updateBackup(BACKUP_FILE,str(i+1),delete)
+                    updateBackup(BACKUP_FILE,str(i+1),"delete")
                     duplicates += 1
                     downloadedCount -= 1
 
                 except Exception as exception:
                     print(exception)
                     FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                    updateBackup(BACKUP_FILE,str(i+1),add)
+                    updateBackup(BACKUP_FILE,str(i+1),"add")
                     downloadedCount -= 1
 
             else:
@@ -297,7 +296,7 @@ def downloader(submissions):
                     {int(i+1):['{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()),
                                submissions[i]]}
                 )
-                updateBackup(BACKUP_FILE,str(i+1),add)
+                updateBackup(BACKUP_FILE,str(i+1),"add")
                 downloadedCount -= 1
 
         elif submissions[i]['postType'] == 'gfycat':
@@ -305,24 +304,24 @@ def downloader(submissions):
             try:
                 Gfycat(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
-                updateBackup(BACKUP_FILE,str(i+1),delete)
+                updateBackup(BACKUP_FILE,str(i+1),"delete")
 
             except FileAlreadyExistsError:
                 print("It already exists")
-                updateBackup(BACKUP_FILE,str(i+1),delete)
+                updateBackup(BACKUP_FILE,str(i+1),"delete")
                 duplicates += 1
                 downloadedCount -= 1
                 
             except NotADownloadableLinkError as exception:
                 print("Could not read the page source")
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                updateBackup(BACKUP_FILE,str(i+1),add)
+                updateBackup(BACKUP_FILE,str(i+1),"add")
                 downloadedCount -= 1
 
             except Exception as exception:
                 print(exception)
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                updateBackup(BACKUP_FILE,str(i+1),add)
+                updateBackup(BACKUP_FILE,str(i+1),"add")
                 downloadedCount -= 1
 
         elif submissions[i]['postType'] == 'direct':
@@ -330,23 +329,23 @@ def downloader(submissions):
             try:
                 Direct(GLOBAL.directory / submissions[i]['postSubreddit'],
                           submissions[i])
-                updateBackup(BACKUP_FILE,str(i+1),delete)
+                updateBackup(BACKUP_FILE,str(i+1),"delete")
 
             except FileAlreadyExistsError:
                 print("It already exists")
-                updateBackup(BACKUP_FILE,str(i+1),delete)
+                updateBackup(BACKUP_FILE,str(i+1),"delete")
                 downloadedCount -= 1
                 duplicates += 1
 
             except Exception as exception:
                 print(exception)
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                updateBackup(BACKUP_FILE,str(i+1),add)
+                updateBackup(BACKUP_FILE,str(i+1),"add")
                 downloadedCount -= 1
                 
         else:
             print("No match found, skipping...")
-            updateBackup(BACKUP_FILE,str(i+1),delete)
+            updateBackup(BACKUP_FILE,str(i+1),"delete")
             downloadedCount -= 1
 
     if duplicates:

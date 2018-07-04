@@ -152,11 +152,17 @@ class Imgur:
     
     @staticmethod
     def initImgur():
+        """Initialize imgur api"""
+
         config = GLOBAL.config
         return ImgurClient(config['imgur_client_id'],
                            config['imgur_client_secret'])
 
     def getId(self,submissionURL):
+        """Extract imgur post id
+        and determine if its a single image or album
+        """
+
         domainLenght = len("imgur.com/")
         if submissionURL[-1] == "/":
             submissionURL = submissionURL[:-1]
@@ -171,6 +177,9 @@ class Imgur:
             return {'id':imageId, 'type':'image'}
 
     def getLink(self,identity):
+        """Request imgur object from imgur api
+        """
+
         if identity['type'] == 'image':
             return {'object':self.imgurClient.get_image(identity['id']),
                     'type':'image'}
@@ -192,22 +201,20 @@ class Gfycat:
 
         POST['postExt'] = getExtension(POST['mediaURL'])
 
-        try:
-            if not os.path.exists(directory): os.makedirs(directory)
-            title = nameCorrector(POST['postTitle'])
-            print(title+"_"+POST['postId']+POST['postExt'])
+        if not os.path.exists(directory): os.makedirs(directory)
+        title = nameCorrector(POST['postTitle'])
+        print(title+"_"+POST['postId']+POST['postExt'])
 
-            fileDir = title+"_"+POST['postId']+POST['postExt']
-            fileDir = directory / fileDir
+        fileDir = directory / (title+"_"+POST['postId']+POST['postExt'])
+        tempDir = directory / (title+"_"+POST['postId']+".tmp")
 
-            tempDir = title+"_"+POST['postId']+".tmp"
-            tempDir = directory / tempDir
-
-            getFile(fileDir,tempDir,POST['mediaURL'],POST['postId'])
-        except FileAlreadyExistsError:
-            raise
+        getFile(fileDir,tempDir,POST['mediaURL'],POST['postId'])
       
     def getLink(self, url, query='<source id="mp4Source" src=', lineNumber=105):
+        """Extract direct link to the video from page's source
+        and return it
+        """
+
         if '.webm' in url or '.mp4' in url or '.gif' in url:
             return url
 
