@@ -45,6 +45,7 @@ Because this is not a commercial app, you need to create yourself a reddit and a
 * Go to https://www.reddit.com/prefs/apps/
 * Under **developer apps**, click on **create another app**
 * Enter a name into the **name** field.
+* Select **script**
 * In **redirect uri** field, enter your reddit profile URL.
 * Click **create app** button  
   
