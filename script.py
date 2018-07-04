@@ -154,7 +154,7 @@ def checkConflicts():
     if GLOBAL.arguments.search is not None and \
        (GLOBAL.arguments.saved is True or \
         GLOBAL.arguments.log is not None):
-        print("I cannot search in {}, currently.\nSorry :(".format(mode))
+        print("I cannot do that, currently.\nSorry :(")
         quit()
 
 def postFromLog(fileName):
