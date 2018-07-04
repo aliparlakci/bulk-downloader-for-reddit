@@ -126,7 +126,7 @@ def parseArguments():
                         type=str)
 
     parser.add_argument("--NoBackupFile",
-                        help="It will no longer creates any FAILED.json" \
+                        help="It will no longer creates any BACKUP.json" \
                              " files (it may result in faster downloads when" \
                              " downloading a lot of posts)",
                         action="store_true",
@@ -220,7 +220,7 @@ def downloader(submissions):
     FAILED_FILE = createLogFile("FAILED")
 
     if not GLOBAL.arguments.NoBackupFile:
-        print("\nCreating a backup file called 'FAILED.json' " \
+        print("\nCreating a backup file called 'BACKUP.json' " \
               "in case program exists unexpectedly...")
         for x in range(len(submissions)):
             BACKUP[int(x+1)] = ['NOT DOWNLOADED YET',
