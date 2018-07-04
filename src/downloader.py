@@ -36,7 +36,7 @@ def getExtension(link):
     else:
         return '.jpg'
 
-def getFile(fileDir,tempDir,imageURL,redditID,indent=0):
+def getFile(fileDir,tempDir,imageURL,indent=0):
     """Downloads given file to given directory.
 
     fileDir -- Full file directory
@@ -91,11 +91,11 @@ class Imgur:
             tempDir = title + "_" + post['postId'] + '.tmp'
             tempDir = directory / tempDir
             try:
-                getFile(fileDir,tempDir,post['mediaURL'],post['postId'])
+                getFile(fileDir,tempDir,post['mediaURL'])
             except FileNameTooLong:
                 fileDir = directory / post['postId'] + post['postExt']
                 tempDir = directory / post['postId'] + '.tmp'
-                getFile(fileDir,tempDir,post['mediaURL'],post['postId'])
+                getFile(fileDir,tempDir,post['mediaURL'])
 
         elif content['type'] == 'album':
             exceptionType = ""
@@ -137,7 +137,7 @@ class Imgur:
                 print("  {}".format(fileName+images[i]['Ext']))
 
                 try:
-                    getFile(fileDir,tempDir,imageURL,post['postId'],indent=2)
+                    getFile(fileDir,tempDir,imageURL,indent=2)
                     print()
                 except FileAlreadyExistsError:
                     print("  The file already exists" + " "*10,end="\n\n")
@@ -150,13 +150,13 @@ class Imgur:
                     fileDir = folderDir / (fileName + images[i]['Ext'])
                     tempDir = folderDir / (fileName + ".tmp")
                     try:
-                        getFile(fileDir,tempDir,imageURL,post['postId'],indent=2)
+                        getFile(fileDir,tempDir,imageURL,indent=2)
                     # IF STILL TOO LONG
                     except FileNameTooLong:
                         fileName = str(i+1)
                         fileDir = folderDir / (fileName + images[i]['Ext'])
                         tempDir = folderDir / (fileName + ".tmp")
-                        getFile(fileDir,tempDir,imageURL,post['postId'],indent=2)
+                        getFile(fileDir,tempDir,imageURL,indent=2)
 
                 except Exception as exception:
                     print("\n  Could not get the file")
@@ -227,7 +227,7 @@ class Gfycat:
         fileDir = directory / (title+"_"+POST['postId']+POST['postExt'])
         tempDir = directory / (title+"_"+POST['postId']+".tmp")
 
-        getFile(fileDir,tempDir,POST['mediaURL'],POST['postId'])
+        getFile(fileDir,tempDir,POST['mediaURL'])
       
     def getLink(self, url, query='<source id="mp4Source" src=', lineNumber=105):
         """Extract direct link to the video from page's source
@@ -275,4 +275,4 @@ class Direct:
         tempDir = title+"_"+POST['postId']+".tmp"
         tempDir = directory / tempDir
 
-        getFile(fileDir,tempDir,POST['postURL'],POST['postId'])
+        getFile(fileDir,tempDir,POST['postURL'])
