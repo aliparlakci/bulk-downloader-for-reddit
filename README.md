@@ -89,19 +89,21 @@ Running log read mode for FAILED.json file once after the download is complete i
   
 **WARNING** *DO NOT* let more than *1* instance of script run as it interferes with IMGUR Request Rate.  
   
+Open up the [terminal](https://www.reddit.com/r/NSFW411/comments/8vtnl8/meta_i_made_reddit_downloader_that_can_download/e1rnbnl) and [navigate]() to where script.py is. If you are unfamiliar with changing directories in terminal see Change Directories in [this article](https://lifehacker.com/5633909/who-needs-a-mouse-learn-to-use-the-command-line-for-almost-anything).
+  
 Run the script.py file from terminal as follows:  
 ```console
-py -3 script.py [-h]  
-                [--saved]  
-                [--log Log File]  
-                [--subreddit Sub]  
-                [--search SEARCH]  
-                [--sort Sort]  
-                [--limit Limit]  
-                [--time Time]  
-                [--NoBackupFile]
-                [--NoDownload]  
-                Directory
+$ py -3 script.py [-h]  
+                  [--saved]  
+                  [--log Log File]  
+                  [--subreddit Sub]  
+                  [--search SEARCH]  
+                  [--sort Sort]  
+                  [--limit Limit]  
+                  [--time Time]  
+                  [--NoBackupFile]
+                  [--NoDownload]  
+                  Directory
 ```
 
 ### Starting for the first time
