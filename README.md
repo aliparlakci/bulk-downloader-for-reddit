@@ -29,7 +29,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 
 You can install Python 3 here: https://www.python.org/downloads/
 
-You can install libraries via *pip*:
+You can install libraries through [terminal](https://www.google.com.tr/search?q=how+to+open+terminal) via *pip*:
 ```
 pip install imgurpython praw
 ```
