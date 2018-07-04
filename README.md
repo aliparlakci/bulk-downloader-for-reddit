@@ -18,7 +18,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - [Running the script](#running-the-script)
   - [Starting for the first time](#starting-for-the-first-time)
   - [Using the command line arguments](#using-the-command-line-arguments)
-- [Examples](#examples)
+  - [Examples](#examples)
 
 ---
 
@@ -71,7 +71,7 @@ In subreddit mode, the program gets posts from given subreddits* that is sorted 
   
 You can also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).
   
-*: *Multiple subreddits can be given*
+\* *Multiple subreddits can be given*
 ### log read mode
 **Three** log files are created each time *script.py* runs.
 - **POSTS** Saves all the posts regardlessly.
@@ -89,23 +89,6 @@ Running log read mode for FAILED.json file once after the download is complete i
   
 **WARNING** *DO NOT* let more than *1* instance of script run as it interferes with IMGUR Request Rate.  
   
-Open up the [terminal](https://www.reddit.com/r/NSFW411/comments/8vtnl8/meta_i_made_reddit_downloader_that_can_download/e1rnbnl) and navigate to where script.py is. If you are unfamiliar with changing directories in terminal see Change Directories in [this article](https://lifehacker.com/5633909/who-needs-a-mouse-learn-to-use-the-command-line-for-almost-anything).
-  
-Run the script.py file from terminal as follows:  
-```console
-$ py -3 script.py [-h]  
-                  [--saved]  
-                  [--log Log File]  
-                  [--subreddit Sub]  
-                  [--search SEARCH]  
-                  [--sort Sort]  
-                  [--limit Limit]  
-                  [--time Time]  
-                  [--NoBackupFile]
-                  [--NoDownload]  
-                  Directory
-```
-
 ### Starting for the first time
 **WARNING** When running the script for the first time, it will prompt you to enter your credentials into the *command line* where they might be stored. In order to prevent such behaviour, create a **config.json** file as shown below and enter your credentials inside **double quotes**:  
 ```json
@@ -118,8 +101,15 @@ $ py -3 script.py [-h]
     "imgur_client_secret": ""
 }
 ```
+
 ### Using the command line arguments
-*script.py* file runs with command line arguments. Here is the help page:
+
+Open up the [terminal](https://www.reddit.com/r/NSFW411/comments/8vtnl8/meta_i_made_reddit_downloader_that_can_download/e1rnbnl) and navigate to where script.py is. If you are unfamiliar with changing directories in terminal see Change Directories in [this article](https://lifehacker.com/5633909/who-needs-a-mouse-learn-to-use-the-command-line-for-almost-anything).
+  
+Run the script.py file from terminal with command-line arguments. Here is the help page:  
+  
+**ATTENTION** Use `.\` for current directory and `..\` when using short directories, otherwise it might act weird.
+
 ```console
 $ py -3 script.py --help
 usage: script.py [-h] [--saved] [--log LOG FILE]
@@ -153,8 +143,9 @@ optional arguments:
   --NoDownload          Just gets the posts and store them in a file for
                         downloading later
 ```
-
-## Examples
+  
+  
+### Examples
 ```console
 $ py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot
 ```
