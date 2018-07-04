@@ -13,6 +13,9 @@ from src.errors import (FileAlreadyExistsError, NotADownloadableLinkError,
 print = printToFile
 
 def dlProgress(count, blockSize, totalSize):
+    """Function for writing download progress to console
+    """
+
     downloadedMbs = int(count*blockSize*(10**(-6)))
     fileSize = int(totalSize*(10**(-6)))
     sys.stdout.write("\r{}Mb/{}Mb".format(downloadedMbs,fileSize))
@@ -20,6 +23,10 @@ def dlProgress(count, blockSize, totalSize):
     sys.stdout.flush()
 
 def getExtension(link):
+    """Extract file extension from image link.
+    If didn't find any, return '.jpg'
+    """
+
     imageTypes = ['jpg','png','mp4','webm','gif']
     parsed = link.split('.')
     for TYPE in imageTypes:
@@ -29,6 +36,16 @@ def getExtension(link):
         return '.jpg'
 
 def getFile(fileDir,tempDir,imageURL,redditID,indent=0):
+    """Downloads given file to given directory.
+
+    fileDir -- Full file directory
+    tempDir -- Full file directory with the extension of '.tmp'
+    imageURL -- URL to the file to be downloaded
+
+    redditID -- Post's reddit id if renaming the file is necessary.
+                As too long file names seem not working.
+    """
+
     if not (os.path.isfile(fileDir)):
         for i in range(3):
             try:
@@ -135,11 +152,17 @@ class Imgur:
     
     @staticmethod
     def initImgur():
+        """Initialize imgur api"""
+
         config = GLOBAL.config
         return ImgurClient(config['imgur_client_id'],
                            config['imgur_client_secret'])
 
     def getId(self,submissionURL):
+        """Extract imgur post id
+        and determine if its a single image or album
+        """
+
         domainLenght = len("imgur.com/")
         if submissionURL[-1] == "/":
             submissionURL = submissionURL[:-1]
@@ -154,6 +177,9 @@ class Imgur:
             return {'id':imageId, 'type':'image'}
 
     def getLink(self,identity):
+        """Request imgur object from imgur api
+        """
+
         if identity['type'] == 'image':
             return {'object':self.imgurClient.get_image(identity['id']),
                     'type':'image'}
@@ -179,15 +205,16 @@ class Gfycat:
         title = nameCorrector(POST['postTitle'])
         print(title+"_"+POST['postId']+POST['postExt'])
 
-        fileDir = title+"_"+POST['postId']+POST['postExt']
-        fileDir = directory / fileDir
-
-        tempDir = title+"_"+POST['postId']+".tmp"
-        tempDir = directory / tempDir
+        fileDir = directory / (title+"_"+POST['postId']+POST['postExt'])
+        tempDir = directory / (title+"_"+POST['postId']+".tmp")
 
         getFile(fileDir,tempDir,POST['mediaURL'],POST['postId'])
       
     def getLink(self, url, query='<source id="mp4Source" src=', lineNumber=105):
+        """Extract direct link to the video from page's source
+        and return it
+        """
+
         if '.webm' in url or '.mp4' in url or '.gif' in url:
             return url
 

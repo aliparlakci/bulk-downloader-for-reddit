@@ -10,6 +10,8 @@ from src.tools import GLOBAL, createLogFile, jsonFile, printToFile
 print = printToFile
 
 def beginPraw(config,user_agent = "newApp"):
+    """Start reddit instance"""
+
     return praw.Reddit(client_id = config['reddit_client_id'], \
                        client_secret = config['reddit_client_secret'], \
                        password = config['reddit_password'], \
@@ -17,6 +19,10 @@ def beginPraw(config,user_agent = "newApp"):
                        username = config['reddit_username'])
 
 def getPosts():
+    """Call PRAW regarding to arguments and pass it to redditSearcher.
+    Return what redditSearcher has returned.
+    """
+
     config = GLOBAL.config
     args = GLOBAL.arguments
     
@@ -34,7 +40,7 @@ def getPosts():
             "time_filter":args.time,
             "limit":args.limit
         }
-
+    # OTHER SORT TYPES DON'T TAKE TIME_FILTER
     else:
          keyword_params = {
              "limit":args.limit
@@ -43,62 +49,94 @@ def getPosts():
     global HEADER
 
     if args.saved is True:
-        HEADER = ("SAVED POSTS OF {username}\n"
-                  .format(username=config['reddit_username']))
+        HEADER = (
+            "SAVED POSTS OF {username}\n".format(
+                username=config['reddit_username']
+            )
+        )
         print(HEADER)
         return redditSearcher(beginPraw(config)
                               .user.me().saved(limit=args.limit))
 
     elif args.subreddit.lower() == "me":
-        HEADER = ("FIRST {limit} {sort} POSTS FROM FRONTPAGE, {time}\n"
-                  .format(limit=PSUDO_LIMIT,
-                          sort=args.sort.upper(),
-                          subreddit=args.subreddit.upper(),
-                          time=args.time.upper()))
+        HEADER = (
+            "FIRST {limit} {sort} POSTS FROM FRONTPAGE, {time}\n".format(
+                limit=PSUDO_LIMIT,
+                sort=args.sort.upper(),
+                subreddit=args.subreddit.upper(),
+                time=args.time.upper()
+            )
+        )
         print(HEADER)
-        return redditSearcher(getattr(beginPraw(config)
-                                        .front,args.sort) (**keyword_params))
+        return redditSearcher(
+            getattr(beginPraw(config).front,args.sort) (**keyword_params)
+        )
 
     else:  
-        HEADER = ("FIRST {limit} {sort} POSTS OF R/{subreddit}, {time}\n"
-                  .format(limit=PSUDO_LIMIT,
-                          sort=args.sort.upper(),
-                          subreddit=args.subreddit.upper(),
-                          time=args.time.upper()))
+        HEADER = (
+            "FIRST {limit} {sort} POSTS OF R/{subreddit}, {time}\n".format(
+                limit=PSUDO_LIMIT,
+                sort=args.sort.upper(),
+                subreddit=args.subreddit.upper(),
+                time=args.time.upper()
+            )
+        )
         print(HEADER)
-        return redditSearcher(getattr(beginPraw(config)
-                                    .subreddit(args.subreddit),
-                                    args.sort) (**keyword_params))
+        return redditSearcher(
+            getattr(
+                beginPraw(config).subreddit(args.subreddit),args.sort
+            ) (**keyword_params)
+        )
 
     if args.search is not None:
         if args.subreddit.lower() == "me":
-            HEADER = ("SEARCHING FOR {query} IN FIRST {limit} {sort} POSTS FROM FRONTPAGE," \
-                    " {time}\n".format(query=args.search.upper(),
-                                                    limit=PSUDO_LIMIT,
-                                                    sort=args.sort.upper(),
-                                                    subreddit=args.subreddit.upper(),
-                                                    time=args.time.upper()))
+            HEADER = (
+                "SEARCHING FOR {query} IN FIRST {limit} {sort} POSTS FROM" \
+                "FRONTPAGE, {time}\n".format(
+                    query=args.search.upper(),
+                    limit=PSUDO_LIMIT,
+                    sort=args.sort.upper(),
+                    subreddit=args.subreddit.upper(),
+                    time=args.time.upper()
+                )
+            )
             print(HEADER)
-            return redditSearcher(getattr(beginPraw(config).front,
-                                          search)(args.search,
-                                                  limit=args.limit,
-                                                  sort=args.sort,
-                                                  time_filter=args.time))
+            return redditSearcher(
+                getattr(
+                    beginPraw(config).front,search
+                )(args.search,
+                  limit=args.limit,
+                  sort=args.sort,
+                  time_filter=args.time)
+            )
+
         else:
-            HEADER = ("SEARCHING FOR {query} IN FIRST {limit} {sort} POSTS OF R/" \
-                  "{subreddit}, {time}\n".format(query=args.search.upper(),
-                                                 limit=PSUDO_LIMIT,
-                                                 sort=args.sort.upper(),
-                                                 subreddit=args.subreddit.upper(),
-                                                 time=args.time.upper()))
+            HEADER = (
+                "SEARCHING FOR {query} IN FIRST {limit} {sort} POSTS OF R/" \
+                "{subreddit}, {time}\n".format(
+                    query=args.search.upper(),
+                    limit=PSUDO_LIMIT,
+                    sort=args.sort.upper(),
+                    subreddit=args.subreddit.upper(),
+                    time=args.time.upper()
+                )
+            )
             print(HEADER)
-            return redditSearcher(beginPraw(config).subreddit(args.subreddit)
-                                                   .search(args.search,
-                                                           limit=args.limit,
-                                                           sort=args.sort,
-                                                           time_filter=args.time))
+            return redditSearcher(
+                beginPraw(config).subreddit(args.subreddit).search(
+                    args.search,
+                    limit=args.limit,
+                    sort=args.sort,
+                    time_filter=args.time
+                )
+            )
 
 def redditSearcher(posts):
+    """Check posts and decide if it can be downloaded.
+    If so, create a dictionary with post details and append them to a list.
+    Write all of posts to file. Return the list
+    """
+
     subList = []
     subCount = 0
     orderCount = 0
@@ -127,12 +165,14 @@ def redditSearcher(posts):
         if ('gfycat' in submission.domain) or \
            ('imgur' in submission.domain):
             found = True
+
             if 'gfycat' in submission.domain:
                 details['postType'] = 'gfycat'
                 gfycatCount += 1
             elif 'imgur' in submission.domain:
                 details['postType'] = 'imgur'
                 imgurCount += 1
+                
             orderCount += 1
             printSubmission(submission,subCount,orderCount)
 
@@ -155,10 +195,19 @@ def redditSearcher(posts):
     return subList
 
 def printSubmission(SUB,validNumber,totalNumber):
+    """Print post's link, title and media link to screen"""
+
     print(validNumber,end=") ")
     print(totalNumber,end=" ")
-    print("https://www.reddit.com/"+"r/"+SUB.subreddit.display_name+"/comments/"+SUB.id)
-    print(" "*(len(str(validNumber))+(len(str(totalNumber)))+3),end="")
+    print(
+        "https://www.reddit.com/"
+        +"r/"
+        +SUB.subreddit.display_name
+        +"/comments/"
+        +SUB.id
+    )
+    print(" "*(len(str(validNumber))
+          +(len(str(totalNumber)))+3),end="")
 
     try:
         print(SUB.title)
@@ -171,6 +220,11 @@ def printSubmission(SUB,validNumber,totalNumber):
     print(SUB.url,end="\n\n")
 
 def isDirectLink(URL):
+    """Check if link is a direct image link.
+    If so, return True,
+    if not, return False
+    """
+
     imageTypes = ['.jpg','.png','.mp4','.webm','.gif']
     if URL[-1] == "/":
         URL = URL[:-1]
