@@ -168,7 +168,7 @@ $ py -3 script.py .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
 ```
 
 ```console
-$ py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\FAILED.json --NoRateLimit
+$ py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json --NoRateLimit
 ```
 
 ```console
