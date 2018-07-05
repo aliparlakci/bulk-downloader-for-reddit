@@ -124,31 +124,12 @@ def nameCorrector(string):
     
     if len(string.split('\n')) > 1:
         string = "".join(string.split('\n'))
+    
+    BAD_CHARS = ['\\','/',':','*','?','"','<','>','|','.',]
+    
+    if any(x in string for x in BAD_CHARS):
+        for char in string:
+            if char in BAD_CHARS:
+                string = string.replace(char,"_")
 
-    if '\\' in string or \
-    '/' in string or \
-    ':' in string or \
-    '*' in string or \
-    '?' in string or \
-    '"' in string or \
-    '<' in string or \
-    '>' in string or \
-    '|' in string or \
-    '.' in string:
-        for a in range(len(string)):
-            if string[a] == '\\' or \
-            string[a] == '/' or \
-            string[a] == ':' or \
-            string[a] == '*' or \
-            string[a] == '?' or \
-            string[a] == '"' or \
-            string[a] == '<' or \
-            string[a] == '>' or \
-            string[a] == '|' or \
-            string[a] == '.':
-                correctedString.append("_")
-            else:
-                correctedString.append(string[a])
-        return ''.join(correctedString)    
-    else:
-        return string
+    return string
