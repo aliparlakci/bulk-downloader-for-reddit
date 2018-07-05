@@ -72,7 +72,8 @@ class jsonFile:
 
 def createLogFile(TITLE):
     """Create a log file with given name
-    inside a folder time stampt in its name
+    inside a folder time stampt in its name and
+    put given arguments inside \"HEADER\" key
     """
 
     folderDirectory = GLOBAL.directory / str(time.strftime("%d-%m-%Y_%H-%M-%S",
@@ -82,7 +83,11 @@ def createLogFile(TITLE):
     if not path.exists(folderDirectory):
         makedirs(folderDirectory)
 
-    return jsonFile(folderDirectory / Path(logFilename))
+    FILE = jsonFile(folderDirectory / Path(logFilename))
+    HEADER = " ".join(sys.argv)
+    FILE.add({"HEADER":HEADER})
+
+    return FILE
 
 def printToFile(*args, **kwargs):
     """Print to both CONSOLE and 
@@ -125,31 +130,12 @@ def nameCorrector(string):
     
     if len(string.split('\n')) > 1:
         string = "".join(string.split('\n'))
+    
+    BAD_CHARS = ['\\','/',':','*','?','"','<','>','|','.',]
+    
+    if any(x in string for x in BAD_CHARS):
+        for char in string:
+            if char in BAD_CHARS:
+                string = string.replace(char,"_")
 
-    if '\\' in string or \
-    '/' in string or \
-    ':' in string or \
-    '*' in string or \
-    '?' in string or \
-    '"' in string or \
-    '<' in string or \
-    '>' in string or \
-    '|' in string or \
-    '.' in string:
-        for a in range(len(string)):
-            if string[a] == '\\' or \
-            string[a] == '/' or \
-            string[a] == ':' or \
-            string[a] == '*' or \
-            string[a] == '?' or \
-            string[a] == '"' or \
-            string[a] == '<' or \
-            string[a] == '>' or \
-            string[a] == '|' or \
-            string[a] == '.':
-                correctedString.append("_")
-            else:
-                correctedString.append(string[a])
-        return ''.join(correctedString)    
-    else:
-        return string
+    return string
