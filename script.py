@@ -83,7 +83,6 @@ def parseArguments():
 
     parser.add_argument("--subreddit",
                         required="--sort" in sys.argv or \
-                                 "--limit" in sys.argv or \
                                  "--search" in sys.argv,
                         nargs="+",
                         help="Triggers subreddit mode and takes subreddit's" \
