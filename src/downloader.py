@@ -4,7 +4,13 @@ import time
 import urllib.request
 from pathlib import Path
 
-from imgurpython import *
+try:
+    from imgurpython import *
+except ModuleNotFoundError:
+    print("\nimgurpython not found on your computer, installing...\n")
+    from src.tools import install
+    install("imgurpython")
+    from imgurpython import *
 
 from src.tools import GLOBAL, nameCorrector, printToFile
 from src.errors import (FileAlreadyExistsError, FileNameTooLong,
