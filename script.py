@@ -72,6 +72,10 @@ def parseArguments():
                         "downloaded to",
                         metavar="DIRECTORY")
 
+    parser.add_argument("--link","-l",
+                        help="Get posts from link",
+                        metavar="link")
+
     parser.add_argument("--saved",
                         action="store_true",
                         help="Triggers saved mode")
@@ -132,14 +136,15 @@ def checkConflicts():
 
     if GLOBAL.arguments.saved is False and \
        GLOBAL.arguments.subreddit is None and \
-       GLOBAL.arguments.log is None:
+       GLOBAL.arguments.log is None
+       GLOBAL.arguments.link is None:
         print("NO PROGRAM MODE IS GIVEN\nWhat were you expecting, anyways?")
         quit()
 
     if GLOBAL.arguments.search is not None and \
        (GLOBAL.arguments.saved is True or \
         GLOBAL.arguments.log is not None):
-        print("I cannot search in {}, currently.\nSorry :(".format(mode))
+        print("I cannot do that, currently.\nSorry :(")
         quit()
 
 def postFromLog(fileName):
