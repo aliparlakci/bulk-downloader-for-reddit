@@ -3,7 +3,13 @@ import os
 from pathlib import Path
 from time import localtime, strftime
 
-import praw
+try:
+    import praw
+except ModuleNotFoundError:
+    print("\nPRAW not found on your computer, installing...\n")
+    from src.tools import install
+    install("praw")
+    import praw
 
 from src.tools import GLOBAL, createLogFile, jsonFile, printToFile
 
