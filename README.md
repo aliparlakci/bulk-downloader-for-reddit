@@ -174,5 +174,6 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 ## Changelog
   - 1.1
     - Changed "HEADER" value in the log files
+    - Refactored nameCorrector() (credit to /u/Lords_of_Lands)
   - 1.0.0
     - Initial release
