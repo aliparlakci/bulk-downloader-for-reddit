@@ -13,6 +13,7 @@ import time
 from pathlib import Path
 
 from src.downloader import Direct, Gfycat, Imgur
+from src.parser import LinkDesigner
 from src.searcher import getPosts
 from src.tools import (GLOBAL, createLogFile, jsonFile, nameCorrector,
                        printToFile)
@@ -27,7 +28,7 @@ __email__ = "parlakciali@gmail.com"
 def debug(*post):
     GLOBAL.config = getConfig('config.json')
     GLOBAL.directory = Path(".\\debug\\")
-    downloader([*post])
+    download([*post])
     quit()
 
 def getConfig(configFileName):
@@ -134,17 +135,37 @@ def checkConflicts():
     if not, raise errors
     """
 
-    if GLOBAL.arguments.saved is False and \
-       GLOBAL.arguments.subreddit is None and \
-       GLOBAL.arguments.log is None
-       GLOBAL.arguments.link is None:
-        print("NO PROGRAM MODE IS GIVEN\nWhat were you expecting, anyways?")
-        quit()
+    if GLOBAL.arguments.saved is False:
+        saved = 0
+    else: 
+        saved = 1
 
-    if GLOBAL.arguments.search is not None and \
-       (GLOBAL.arguments.saved is True or \
-        GLOBAL.arguments.log is not None):
-        print("I cannot do that, currently.\nSorry :(")
+    if GLOBAL.arguments.subreddit is None:
+        subreddit = 0
+    else:
+        subreddit = 1
+    
+    if GLOBAL.arguments.search is None:
+        search = 0
+    else:
+        search = 1
+
+    if GLOBAL.arguments.log is None:
+        log = 0
+    else:
+        log = 1
+
+    if GLOBAL.arguments.link is None:
+        link = 0
+    else:
+        link = 1
+
+    if not saved+subreddit+log+link == 1:
+        print("Program mode is invalid")
+        quit()
+    
+    if saved+subreddit == 2:
+        print("I cannot search in your saved posts")
         quit()
 
 def postFromLog(fileName):
@@ -185,7 +206,7 @@ def postExists(POST):
     else:
         return False
 
-def downloader(submissions):
+def download(submissions):
     """Analyze list of submissions and call the right function
     to download each one, catch errors, update the log files
     """
@@ -323,19 +344,24 @@ def main():
     ##################################
 
     GLOBAL.arguments = parseArguments()
+    
+    checkConflicts()
+    
+
+    GLOBAL.directory = Path(GLOBAL.arguments.directory)
+    
+
+    if GLOBAL.arguments.link is not None:
+        
+        attributes = LinkDesigner(GLOBAL.arguments.link)
+        
+    if GLOBAL.arguments.subreddit is not None:
+        GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit)
 
     if GLOBAL.arguments.log is not None:
         GLOBAL.arguments.log = GLOBAL.arguments.log.name
 
-    if GLOBAL.arguments.subreddit is not None:
-        GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit)
-
-    GLOBAL.directory = Path(GLOBAL.arguments.directory)
-
-    checkConflicts()
-
     print(sys.argv)
-
 
     if GLOBAL.arguments.NoDownload:
         getPosts()
@@ -343,10 +369,10 @@ def main():
 
     if GLOBAL.arguments.log is not None:
         logDir = Path(GLOBAL.arguments.log)
-        downloader(postFromLog(logDir))
+        download(postFromLog(logDir))
 
     else:
-        downloader(getPosts())
+        download(getPosts())
     
 if __name__ == "__main__":
     try:

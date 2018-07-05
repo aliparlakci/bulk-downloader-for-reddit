@@ -18,13 +18,12 @@ def beginPraw(config,user_agent = "newApp"):
                        user_agent = user_agent, \
                        username = config['reddit_username'])
 
-def getPosts():
+def getPosts(args):
     """Call PRAW regarding to arguments and pass it to redditSearcher.
     Return what redditSearcher has returned.
     """
 
     config = GLOBAL.config
-    args = GLOBAL.arguments
     
     if GLOBAL.arguments.limit is None:
         PSUDO_LIMIT = "UNLIMITED"
