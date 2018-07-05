@@ -66,7 +66,8 @@ class jsonFile:
 
 def createLogFile(TITLE):
     """Create a log file with given name
-    inside a folder time stampt in its name
+    inside a folder time stampt in its name and
+    put given arguments inside \"HEADER\" key
     """
 
     folderDirectory = GLOBAL.directory / str(time.strftime("%d-%m-%Y_%H-%M-%S",
@@ -76,7 +77,11 @@ def createLogFile(TITLE):
     if not path.exists(folderDirectory):
         makedirs(folderDirectory)
 
-    return jsonFile(folderDirectory / Path(logFilename))
+    FILE = jsonFile(folderDirectory / Path(logFilename))
+    HEADER = " ".join(sys.argv)
+    FILE.add({"HEADER":HEADER})
+
+    return FILE
 
 def printToFile(*args, **kwargs):
     """Print to both CONSOLE and 

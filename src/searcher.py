@@ -1,9 +1,16 @@
 import argparse
 import os
+import sys
 from pathlib import Path
 from time import localtime, strftime
 
-import praw
+try:
+    import praw
+except ModuleNotFoundError:
+    print("\nPRAW not found on your computer, installing...\n")
+    from src.tools import install
+    install("praw")
+    import praw
 
 from src.tools import GLOBAL, createLogFile, jsonFile, printToFile
 
@@ -46,20 +53,17 @@ def getPosts():
              "limit":args.limit
          }
 
-    global HEADER
-
     if args.saved is True:
-        HEADER = (
+        print (
             "SAVED POSTS OF {username}\n".format(
                 username=config['reddit_username']
             )
         )
-        print(HEADER)
         return redditSearcher(beginPraw(config)
                               .user.me().saved(limit=args.limit))
 
     elif args.subreddit.lower() == "me":
-        HEADER = (
+        print (
             "FIRST {limit} {sort} POSTS FROM FRONTPAGE, {time}\n".format(
                 limit=PSUDO_LIMIT,
                 sort=args.sort.upper(),
@@ -67,13 +71,12 @@ def getPosts():
                 time=args.time.upper()
             )
         )
-        print(HEADER)
         return redditSearcher(
             getattr(beginPraw(config).front,args.sort) (**keyword_params)
         )
 
     else:  
-        HEADER = (
+        print(
             "FIRST {limit} {sort} POSTS OF R/{subreddit}, {time}\n".format(
                 limit=PSUDO_LIMIT,
                 sort=args.sort.upper(),
@@ -81,7 +84,6 @@ def getPosts():
                 time=args.time.upper()
             )
         )
-        print(HEADER)
         return redditSearcher(
             getattr(
                 beginPraw(config).subreddit(args.subreddit),args.sort
@@ -90,7 +92,7 @@ def getPosts():
 
     if args.search is not None:
         if args.subreddit.lower() == "me":
-            HEADER = (
+            print (
                 "SEARCHING FOR {query} IN FIRST {limit} {sort} POSTS FROM" \
                 "FRONTPAGE, {time}\n".format(
                     query=args.search.upper(),
@@ -99,8 +101,7 @@ def getPosts():
                     subreddit=args.subreddit.upper(),
                     time=args.time.upper()
                 )
-            )
-            print(HEADER)
+            )           
             return redditSearcher(
                 getattr(
                     beginPraw(config).front,search
@@ -111,7 +112,7 @@ def getPosts():
             )
 
         else:
-            HEADER = (
+            print (
                 "SEARCHING FOR {query} IN FIRST {limit} {sort} POSTS OF R/" \
                 "{subreddit}, {time}\n".format(
                     query=args.search.upper(),
@@ -120,8 +121,7 @@ def getPosts():
                     subreddit=args.subreddit.upper(),
                     time=args.time.upper()
                 )
-            )
-            print(HEADER)
+            )            
             return redditSearcher(
                 beginPraw(config).subreddit(args.subreddit).search(
                     args.search,
@@ -146,7 +146,6 @@ def redditSearcher(posts):
     found = False
 
     postsFile = createLogFile("POSTS")
-    postsFile.add({"HEADER":HEADER})
 
     for submission in posts:
         subCount += 1
