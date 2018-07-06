@@ -168,35 +168,35 @@ optional arguments:
 ## Examples
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/top/"
+py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/top/"
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --search cats --limit 10 --link "www.reddit.com/hot/"
+py -3 script.py .\\NEW_FOLDER --search cats --limit 10 --link "www.reddit.com/hot/"
 ```
   
 ```console
-$ py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot --search cats
+py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot --search cats
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --subreddit frontpage --sort top --search cats
+py -3 script.py .\\NEW_FOLDER --subreddit frontpage --sort top --search cats
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --multireddit good_subs --user [USER_NAME] --sort top --time week --limit 250
+py -3 script.py .\\NEW_FOLDER --multireddit good_subs --user [USER_NAME] --sort top --time week --limit 250
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
+py -3 script.py .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
 ```
 
 ```console
-$ py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json --NoRateLimit
+py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json --NoRateLimit
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDownload
+py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDownload
 ```
 
 ---
