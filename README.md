@@ -121,7 +121,7 @@ Open up the [terminal](https://www.reddit.com/r/NSFW411/comments/8vtnl8/meta_i_m
   
 Run the script.py file from terminal with command-line arguments. Here is the help page:  
   
-**ATTENTION** Use `.\` for current directory and `..\` when using short directories, otherwise it might act weird.
+**ATTENTION** Use `.\` for current directory and `..\` for upper directory when using short directories, otherwise it might act weird.
 
 ```console
 $ py -3 script.py --help
