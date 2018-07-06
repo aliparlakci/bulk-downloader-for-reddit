@@ -73,9 +73,9 @@ In submitted mode, the program gets posts from given user's submitted posts.
 ### subreddit mode
 In subreddit mode, the program gets posts from given subreddits* that is sorted by given type and limited by given number.  
   
-*You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
+Multiple subreddits can be given
   
-Multiple subreddits can be given  
+*You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
 ### multireddit mode
 In multireddit mode, the program gets posts from given user's given multireddit that is sorted by given type and limited by given number.  
 ### link mode
