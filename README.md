@@ -25,7 +25,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Using the command line arguments](#using-the-command-line-arguments)
   - [Examples](#examples)
 - [Changelog](#changelog)
-  - [release-1.1.0-prerelease-1](#release110-prerelease-1)
+  - [release-1.1.0-prerelease-1](#release-110-prerelease-1)
   - [release-1.0.0](#release-100)
 ---
 
