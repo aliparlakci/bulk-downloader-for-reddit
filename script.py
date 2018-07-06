@@ -17,8 +17,7 @@ from src.parser import LinkDesigner
 from src.searcher import getPosts
 from src.tools import (GLOBAL, createLogFile, jsonFile, nameCorrector,
                        printToFile)
-from src.errors import (FileAlreadyExistsError, NotADownloadableLinkError,
-                        AlbumNotDownloadedCompletely)
+from src.errors import *
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
@@ -87,9 +86,6 @@ def parseArguments():
                         metavar="LOG FILE")
 
     parser.add_argument("--subreddit",
-                        required="--sort" in sys.argv or \
-                                 "--limit" in sys.argv or \
-                                 "--search" in sys.argv,
                         nargs="+",
                         help="Triggers subreddit mode and takes subreddit's" \
                              " name without r/. use \"me\" for frontpage",
@@ -101,11 +97,13 @@ def parseArguments():
                         type=str)
 
     parser.add_argument("--sort",
-                        help="Either hot, top, new, controversial or rising." \
-                             " default: hot",
-                        choices=["hot","top","new","controversial","rising"],
+                        help="Either hot, top, new, controversial, rising" \
+                             "or relevance default: hot",
+                        choices=[
+                            "hot","top","new","controversial","rising",
+                            "relevance"
+                        ],
                         metavar="SORT TYPE",
-                        default="hot",
                         type=str)
 
     parser.add_argument("--limit",
@@ -119,7 +117,6 @@ def parseArguments():
                              " default: all",
                         choices=["all","hour","day","week","month","year"],
                         metavar="TIME_LIMIT",
-                        default="all",
                         type=str)
     
     parser.add_argument("--NoDownload",
@@ -188,6 +185,55 @@ def postFromLog(fileName):
 
     return posts
 
+def prepareAttributes():
+    ATTRIBUTES = {}
+
+    if GLOBAL.arguments.search is not None:
+        ATTRIBUTES["search"] = GLOBAL.arguments.search
+
+    if GLOBAL.arguments.sort is not None:
+        ATTRIBUTES["sort"] = GLOBAL.arguments.sort
+    else:
+        ATTRIBUTES["sort"] = "hot"
+
+    if GLOBAL.arguments.time is not None:
+        ATTRIBUTES["time"] = GLOBAL.arguments.time
+    else:
+        ATTRIBUTES["time"] = "all"
+
+    GLOBAL.directory = Path(GLOBAL.arguments.directory)
+
+    if GLOBAL.arguments.link is not None:
+        del ATTRIBUTES["sort"]
+        del ATTRIBUTES["time"]
+
+        try:
+            ATTRIBUTES = LinkDesigner(GLOBAL.arguments.link)
+        except InvalidRedditLink:
+            print("Invalid reddit link")
+            quit()
+
+        if GLOBAL.arguments.sort is not None:
+            ATTRIBUTES["sort"] = GLOBAL.arguments.sort
+
+        if GLOBAL.arguments.time is not None:
+            ATTRIBUTES["time"] = GLOBAL.arguments.time
+
+    elif GLOBAL.arguments.subreddit is not None:
+        GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit)
+
+        ATTRIBUTES["subreddit"] = GLOBAL.arguments.subreddit
+
+    elif GLOBAL.arguments.saved is not None:
+        ATTRIBUTES["saved"] = True
+
+    elif GLOBAL.arguments.log is not None:
+        GLOBAL.arguments.log = GLOBAL.arguments.log.name
+    
+    ATTRIBUTES["limit"] = GLOBAL.arguments.limit
+
+    return ATTRIBUTES
+
 def postExists(POST):
     """Figure out a file's name and checks if the file already exists"""
 
@@ -237,7 +283,16 @@ def download(submissions):
             continue
 
         if submissions[i]['postType'] == 'imgur':
-            credit = Imgur.get_credits()
+            print("IMGUR",end="")
+            try:
+                credit = Imgur.get_credits()
+            except ImgurLoginError:
+                exception = "\nImgurLoginError"
+                print(exception)
+                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                downloadedCount -= 1
+                continue
+
             IMGUR_RESET_TIME = credit['UserReset']-time.time()
             USER_RESET = ("after " \
                           + str(int(IMGUR_RESET_TIME/60)) \
@@ -245,7 +300,7 @@ def download(submissions):
                           + str(int(IMGUR_RESET_TIME%60)) \
                           + " Seconds") 
             print(
-                "IMGUR => Client: {} - User: {} - Reset {}".format(
+                " => Client: {} - User: {} - Reset {}".format(
                     credit['ClientRemaining'],
                     credit['UserRemaining'],
                     USER_RESET
@@ -344,38 +399,44 @@ def main():
     ##################################
 
     GLOBAL.arguments = parseArguments()
-    
     checkConflicts()
-    
 
-    GLOBAL.directory = Path(GLOBAL.arguments.directory)
-    
-
-    if GLOBAL.arguments.link is not None:
-        
-        attributes = LinkDesigner(GLOBAL.arguments.link)
-        
-    if GLOBAL.arguments.subreddit is not None:
-        GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit)
-
-    if GLOBAL.arguments.log is not None:
-        GLOBAL.arguments.log = GLOBAL.arguments.log.name
-
+    mode = prepareAttributes()
+       
     print(sys.argv)
-
-    if GLOBAL.arguments.NoDownload:
-        getPosts()
-        quit()
 
     if GLOBAL.arguments.log is not None:
         logDir = Path(GLOBAL.arguments.log)
         download(postFromLog(logDir))
+        quit()
+
+    try:
+        POSTS = getPosts(mode)
+    except NoMatchingSubmissionFound:
+        print("No matching submission was found")
+        quit()
+    except NoRedditSupoort:
+        print("Reddit does not support that")
+        quit()
+    except NoPrawSupport:
+        print("PRAW does not support that")
+        quit()
+    except MultiredditNotFound:
+        print("Multireddit not found")
+        quit()
+    except InvalidSortingType:
+        print("Invalid sorting type has given")
+        quit()
+
+    if GLOBAL.arguments.NoDownload:
+        quit()
 
     else:
-        download(getPosts())
-    
+        download(POSTS)
+
 if __name__ == "__main__":
     try:
+        VanillaPrint = print
         print = printToFile
         GLOBAL.RUN_TIME = time.time()
         main()

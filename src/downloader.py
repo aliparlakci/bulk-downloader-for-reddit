@@ -9,7 +9,9 @@ from imgurpython import *
 from src.tools import GLOBAL, nameCorrector, printToFile
 from src.errors import (FileAlreadyExistsError, FileNameTooLong,
                         NotADownloadableLinkError,
-                        AlbumNotDownloadedCompletely)
+                        AlbumNotDownloadedCompletely, ImgurLoginError)
+from ssl import SSLError as ssl_SSLError
+from requests.exceptions import SSLError as requests_exceptions_SSLError
 
 print = printToFile
 
@@ -174,8 +176,15 @@ class Imgur:
         """Initialize imgur api"""
 
         config = GLOBAL.config
-        return ImgurClient(config['imgur_client_id'],
-                           config['imgur_client_secret'])
+        try:
+            return ImgurClient(
+                config['imgur_client_id'],
+                config['imgur_client_secret']
+            )
+        except ssl_SSLError:
+            raise ImgurLoginError
+        except requests_exceptions_SSLError:
+            raise ImgurLoginError
 
     def getId(self,submissionURL):
         """Extract imgur post id

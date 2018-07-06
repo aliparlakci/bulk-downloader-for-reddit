@@ -1,11 +1,23 @@
 import argparse
 import os
+import sys
 from pathlib import Path
 from time import localtime, strftime
 
-import praw
+try:
+    import praw
+except ModuleNotFoundError:
+    print("\nPRAW not found on your computer, installing...\n")
+    from src.tools import install
+    install("praw")
+    import praw
+
+from prawcore.exceptions import NotFound
 
 from src.tools import GLOBAL, createLogFile, jsonFile, printToFile
+from src.errors import (NoMatchingSubmissionFound, NoPrawSupport,
+                        NoRedditSupoort, MultiredditNotFound,
+                        InvalidSortingType)
 
 print = printToFile
 
@@ -24,133 +36,173 @@ def getPosts(args):
     """
 
     config = GLOBAL.config
-    
-    if GLOBAL.arguments.limit is None:
-        PSUDO_LIMIT = "UNLIMITED"
-    else:
-        PSUDO_LIMIT = GLOBAL.arguments.limit
+    reddit = beginPraw(config)
+
+    if args["sort"] == "best":
+        raise NoPrawSupport
 
     print("\nSEARCHING STARTED\n")
-    if args.time is None:
-        args.time = "all"
 
-    if args.sort == "top" or args.sort == "controversial":
-        keyword_params = {
-            "time_filter":args.time,
-            "limit":args.limit
-        }
-    # OTHER SORT TYPES DON'T TAKE TIME_FILTER
-    else:
-         keyword_params = {
-             "limit":args.limit
-         }
+    try:
+        if args["sort"] == "top" or args["sort"] == "controversial":
+            keyword_params = {
+                "time_filter":args["time"],
+                "limit":args["limit"]
+            }
+        # OTHER SORT TYPES DON'T TAKE TIME_FILTER
+        else:
+            keyword_params = {
+                "limit":args["limit"]
+            }
+    except KeyError:
+        pass
 
-    global HEADER
+    if "search" in args:
+        if args["sort"] in ["rising","controversial"]:
+            raise InvalidSortingType
 
-    if args.saved is True:
-        HEADER = (
-            "SAVED POSTS OF {username}\n".format(
-                username=config['reddit_username']
+        if "subreddit" in args:
+            print (
+                "search for {search}search in\n" \
+                "subreddit: {subreddit}\nsort: {sort}\n" \
+                "time: {time}\nlimit: {limit}\n".format(
+                    search=args["search"],
+                    limit=args["limit"],
+                    sort=args["sort"],
+                    subreddit=args["subreddit"],
+                    time=args["time"]
+                ).upper()
+            )            
+            return redditSearcher(
+                reddit.subreddit(args["subreddit"]).search(
+                    args["search"],
+                    limit=args["limit"],
+                    sort=args["sort"],
+                    time_filter=args["time"]
+                )
             )
-        )
-        print(HEADER)
-        return redditSearcher(beginPraw(config)
-                              .user.me().saved(limit=args.limit))
 
-    elif args.subreddit.lower() == "me":
-        HEADER = (
-            "FIRST {limit} {sort} POSTS FROM FRONTPAGE, {time}\n".format(
-                limit=PSUDO_LIMIT,
-                sort=args.sort.upper(),
-                subreddit=args.subreddit.upper(),
-                time=args.time.upper()
-            )
-        )
-        print(HEADER)
-        return redditSearcher(
-            getattr(beginPraw(config).front,args.sort) (**keyword_params)
-        )
+        elif "multireddit" in args:
+            raise NoPrawSupport
+        
+        elif "user" in args:
+            raise NoPrawSupport
 
-    else:  
-        HEADER = (
-            "FIRST {limit} {sort} POSTS OF R/{subreddit}, {time}\n".format(
-                limit=PSUDO_LIMIT,
-                sort=args.sort.upper(),
-                subreddit=args.subreddit.upper(),
-                time=args.time.upper()
-            )
+        elif "saved" in args:
+            raise NoRedditSupoort
+    
+    if args["sort"] == "relevance":
+        raise InvalidSortingType
+
+    if "saved" in args:
+        print(
+            "saved posts\nuser:{username}\nlimit={limit}\n".format(
+                username=config['reddit_username'],
+                limit=args["limit"]
+            ).upper()
         )
-        print(HEADER)
+        return redditSearcher(reddit.user.me().saved(limit=args["limit"]))
+
+    if "subreddit" in args:
+
+        if args["subreddit"] == "frontpage":
+
+            print (
+                "subreddit: {subreddit}\nsort: {sort}\n" \
+                "time: {time}\nlimit: {limit}\n".format(
+                    limit=args["limit"],
+                    sort=args["sort"],
+                    subreddit=args["subreddit"],
+                    time=args["time"]
+                ).upper()
+            )
+            return redditSearcher(
+                getattr(reddit.front,args["sort"]) (**keyword_params)
+            )
+
+        else:  
+            print (
+                "subreddit: {subreddit}\nsort: {sort}\n" \
+                "time: {time}\nlimit: {limit}\n".format(
+                    limit=args["limit"],
+                    sort=args["sort"],
+                    subreddit=args["subreddit"],
+                    time=args["time"]
+                ).upper()
+            )
+            return redditSearcher(
+                getattr(
+                    reddit.subreddit(args["subreddit"]),args["sort"]
+                ) (**keyword_params)
+            )
+
+    elif "multireddit" in args:
+        print (
+            "multireddit: {user}, {subreddit}\nsort: {sort}\n" \
+            "time: {time}\nlimit: {limit}\n".format(
+                user=args["user"],
+                limit=args["limit"],
+                sort=args["sort"],
+                subreddit=args["subreddit"],
+                time=args["time"]
+            ).upper()
+        )
+        try:
+            return redditSearcher(
+                getattr(
+                    reddit.multireddit(
+                        args["user"], args["multireddit"]
+                    ),args["sort"]
+                ) (**keyword_params)
+            )
+        except NotFound:
+            raise MultiredditNotFound
+
+    elif "submitted" in args:
+        print (
+            "submitted posts of {user}\nsort: {sort}\n" \
+            "time: {time}\nlimit: {limit}\n".format(
+                limit=args["limit"],
+                sort=args["sort"],
+                user=args["user"],
+                time=args["time"]
+            ).upper()
+        )
         return redditSearcher(
             getattr(
-                beginPraw(config).subreddit(args.subreddit),args.sort
+                reddit.redditor(args["user"]).submissions,args["sort"]
             ) (**keyword_params)
         )
 
-    if args.search is not None:
-        if args.subreddit.lower() == "me":
-            HEADER = (
-                "SEARCHING FOR {query} IN FIRST {limit} {sort} POSTS FROM" \
-                "FRONTPAGE, {time}\n".format(
-                    query=args.search.upper(),
-                    limit=PSUDO_LIMIT,
-                    sort=args.sort.upper(),
-                    subreddit=args.subreddit.upper(),
-                    time=args.time.upper()
-                )
-            )
-            print(HEADER)
-            return redditSearcher(
-                getattr(
-                    beginPraw(config).front,search
-                )(args.search,
-                  limit=args.limit,
-                  sort=args.sort,
-                  time_filter=args.time)
-            )
+    elif "post" in args:
+        print("post: {post}\n".format(post=args["post"]).upper())
+        return redditSearcher(
+            reddit.submission(url=args["post"]),SINGLE_POST=True
+        )
 
-        else:
-            HEADER = (
-                "SEARCHING FOR {query} IN FIRST {limit} {sort} POSTS OF R/" \
-                "{subreddit}, {time}\n".format(
-                    query=args.search.upper(),
-                    limit=PSUDO_LIMIT,
-                    sort=args.sort.upper(),
-                    subreddit=args.subreddit.upper(),
-                    time=args.time.upper()
-                )
-            )
-            print(HEADER)
-            return redditSearcher(
-                beginPraw(config).subreddit(args.subreddit).search(
-                    args.search,
-                    limit=args.limit,
-                    sort=args.sort,
-                    time_filter=args.time
-                )
-            )
-
-def redditSearcher(posts):
+def redditSearcher(posts,SINGLE_POST=False):
     """Check posts and decide if it can be downloaded.
     If so, create a dictionary with post details and append them to a list.
     Write all of posts to file. Return the list
     """
 
     subList = []
+    global subCount
     subCount = 0
+    global orderCount
     orderCount = 0
+    global gfycatCount
     gfycatCount = 0
+    global imgurCount
     imgurCount = 0
+    global directCount
     directCount = 0
-    found = False
 
     postsFile = createLogFile("POSTS")
-    postsFile.add({"HEADER":HEADER})
 
-    for submission in posts:
-        subCount += 1
-        found = False
-
+    if SINGLE_POST:
+        submission = posts
+        subCount += 1 
         try:
             details = {'postId':submission.id,
                        'postTitle':submission.title,
@@ -159,39 +211,81 @@ def redditSearcher(posts):
                        'postURL':submission.url,
                        'postSubreddit':submission.subreddit.display_name}
         except AttributeError:
-            continue
-
-        if ('gfycat' in submission.domain) or \
-           ('imgur' in submission.domain):
-            found = True
-
-            if 'gfycat' in submission.domain:
-                details['postType'] = 'gfycat'
-                gfycatCount += 1
-            elif 'imgur' in submission.domain:
-                details['postType'] = 'imgur'
-                imgurCount += 1
-                
-            orderCount += 1
-            printSubmission(submission,subCount,orderCount)
-
-        elif isDirectLink(submission.url) is True:
-            found = True
-            orderCount += 1
-            directCount += 1
-            details['postType'] = 'direct'
-            printSubmission(submission,subCount,orderCount)
-
-        if found:
-            subList.append(details)
+            pass
 
         postsFile.add({subCount:[details]})
-        
-    print(
-        "\nTotal of {} submissions found!\n{} GFYCATs, {} IMGURs and {} DIRECTs\n"
-        .format(len(subList),gfycatCount,imgurCount,directCount)
-    )
-    return subList
+        details = checkIfMatching(submission)
+
+        if details is not None:
+            orderCount += 1
+            printSubmission(submission,subCount,orderCount)
+            subList.append(details)
+
+    else:
+        for submission in posts:
+            subCount += 1
+
+            try:
+                details = {'postId':submission.id,
+                           'postTitle':submission.title,
+                           'postSubmitter':str(submission.author),
+                           'postType':None,
+                           'postURL':submission.url,
+                           'postSubreddit':submission.subreddit.display_name}
+            except AttributeError:
+                continue
+
+            postsFile.add({subCount:[details]})
+            details = checkIfMatching(submission)
+
+            if details is not None:
+                orderCount += 1
+                printSubmission(submission,subCount,orderCount)
+                subList.append(details)
+
+    if not len(subList) == 0:    
+        print(
+            "\nTotal of {} submissions found!\n"\
+            "{} GFYCATs, {} IMGURs and {} DIRECTs\n"
+            .format(len(subList),gfycatCount,imgurCount,directCount)
+        )
+        return subList
+    else:
+        raise NoMatchingSubmissionFound
+
+def checkIfMatching(submission):
+    global gfycatCount
+    global imgurCount
+    global directCount
+
+    try:
+        details = {'postId':submission.id,
+                   'postTitle':submission.title,
+                   'postSubmitter':str(submission.author),
+                   'postType':None,
+                   'postURL':submission.url,
+                   'postSubreddit':submission.subreddit.display_name}
+    except AttributeError:
+        return None
+
+    if ('gfycat' in submission.domain) or \
+        ('imgur' in submission.domain):
+
+        if 'gfycat' in submission.domain:
+            details['postType'] = 'gfycat'
+            gfycatCount += 1
+            return details
+
+        elif 'imgur' in submission.domain:
+            details['postType'] = 'imgur'
+            
+            imgurCount += 1
+            return details
+
+    elif isDirectLink(submission.url) is True:
+        details['postType'] = 'direct'
+        directCount += 1
+        return details
 
 def printSubmission(SUB,validNumber,totalNumber):
     """Print post's link, title and media link to screen"""
