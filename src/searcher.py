@@ -217,9 +217,12 @@ def redditSearcher(posts,SINGLE_POST=False):
         details = checkIfMatching(submission)
 
         if details is not None:
-            orderCount += 1
-            printSubmission(submission,subCount,orderCount)
-            subList.append(details)
+            if not details["postType"] == "self":
+                orderCount += 1
+                printSubmission(submission,subCount,orderCount)
+                subList.append(details)
+            else:
+                postsFile.add({subCount:[details]})
 
     else:
         for submission in posts:
@@ -239,9 +242,12 @@ def redditSearcher(posts,SINGLE_POST=False):
             details = checkIfMatching(submission)
 
             if details is not None:
-                orderCount += 1
-                printSubmission(submission,subCount,orderCount)
-                subList.append(details)
+                if not details["postType"] == "self":
+                    orderCount += 1
+                    printSubmission(submission,subCount,orderCount)
+                    subList.append(details)
+                else:
+                    postsFile.add({subCount:[details]})
 
     if not len(subList) == 0:    
         print(
@@ -285,6 +291,10 @@ def checkIfMatching(submission):
     elif isDirectLink(submission.url) is True:
         details['postType'] = 'direct'
         directCount += 1
+        return details
+
+    elif submission.is_self:
+        details['postType'] = 'self'
         return details
 
 def printSubmission(SUB,validNumber,totalNumber):
