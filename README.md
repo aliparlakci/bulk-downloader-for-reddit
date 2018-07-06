@@ -158,10 +158,14 @@ optional arguments:
   --time TIME_LIMIT     Either hour, day, week, month, year or all. default:
                         all
   --NoDownload          Just gets the posts and store them in a file for
-                        downloading later```
+                        downloading later
+```  
   
-  
-### Examples
+---
+
+
+## Examples
+
 ```console
 $ py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/top/"
 ```
