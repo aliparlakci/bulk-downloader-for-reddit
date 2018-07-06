@@ -25,9 +25,8 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Using the command line arguments](#using-the-command-line-arguments)
   - [Examples](#examples)
 - [Changelog](#changelog)
-  - [release-1.1.0 (haven't been released yet)](#release1-1-0)
-    - [prerelease-1](#prerelease1)
-  - [release-1.0.0](#release1-0-0)
+  - [release-1.1.0-prerelease-1](#release110-prerelease-1)
+  - [release-1.0.0](#release-100)
 ---
 
 ## Requirements
@@ -203,8 +202,7 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 ---
 
 ## Changelog
-### release-1.1.0 (hasn't been released yet)
-#### [prerelease-1](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/release-1.1.0-prerelease-1)
+### [release-1.1.0-prerelease-1](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/release-1.1.0-prerelease-1)
   
 - Added link mode
   - It can parse reddit links now
