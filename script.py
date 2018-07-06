@@ -97,7 +97,6 @@ def parseArguments():
                         type=str)
     
     parser.add_argument("--multireddit",
-                        nargs="+",
                         help="Triggers multreddit mode and takes "\
                              "multreddit's name without r/." \
                              " use \"me\" for frontpage",
@@ -239,6 +238,10 @@ def prepareAttributes():
             ATTRIBUTES = LinkDesigner(GLOBAL.arguments.link)
         except InvalidRedditLink:
             print("Invalid reddit link")
+            quit()
+
+        if "search" in ATTRIBUTES:
+            print("It is already a search link")
             quit()
 
         if GLOBAL.arguments.sort is not None:

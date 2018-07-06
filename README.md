@@ -69,9 +69,18 @@ In saved mode, the program gets posts from given user's saved posts.
 ### subreddit mode
 In subreddit mode, the program gets posts from given subreddits* that is sorted by given type and limited by given number.  
   
-You can also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).
+*You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
   
-\* *Multiple subreddits can be given*
+Multiple subreddits can be given  
+### multireddit mode
+In multireddit mode, the program gets posts from given user's given multireddit that is sorted by given type and limited by given number.  
+### link mode
+In link mode, the program gets posts from given reddit link.  
+  
+You may customize the behaviour with `--sort`, `--time`, `--limit`.
+  
+*You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
+  
 ### log read mode
 **Three** log files are created each time *script.py* runs.
 - **POSTS** Saves all the posts regardlessly.
@@ -112,8 +121,9 @@ Run the script.py file from terminal with command-line arguments. Here is the he
 
 ```console
 $ py -3 script.py --help
-usage: script.py [-h] [--saved] [--log LOG FILE]
-                 [--subreddit SUBREDDIT [SUBREDDIT ...]] [--search SEARCH]
+usage: script.py [-h] [--link link] [--saved] [--submitted] [--log LOG FILE]
+                 [--subreddit SUBREDDIT [SUBREDDIT ...]]
+                 [--multireddit MULTIREDDIT] [--user USER] [--search SEARCH]
                  [--sort SORT TYPE] [--limit Limit] [--time TIME_LIMIT]
                  [--NoDownload]
                  DIRECTORY
@@ -126,33 +136,46 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  --link link, -l link  Get posts from link
   --saved               Triggers saved mode
+  --submitted           Gets posts of --user
   --log LOG FILE        Triggers log read mode and takes a log file
   --subreddit SUBREDDIT [SUBREDDIT ...]
                         Triggers subreddit mode and takes subreddit's name
+                        without r/. use "frontpage" for frontpage
+  --multireddit MULTIREDDIT
+                        Triggers multreddit mode and takes multreddit's name
                         without r/. use "me" for frontpage
+  --user USER           reddit username if needed
   --search SEARCH       Searches for given query in given subreddits
-  --sort SORT TYPE      Either hot, top, new, controversial or rising.
-                        default: hot
+  --sort SORT TYPE      Either hot, top, new, controversial, risingor
+                        relevance default: hot
   --limit Limit         default: unlimited
   --time TIME_LIMIT     Either hour, day, week, month, year or all. default:
                         all
   --NoDownload          Just gets the posts and store them in a file for
-                        downloading later
-```
+                        downloading later```
   
   
 ### Examples
 ```console
-$ py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot
+$ py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/top/"
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --subreddit me --sort top --search cats
+$ py -3 script.py .\\NEW_FOLDER --search cats --limit 10 --link "www.reddit.com/hot/"
+```
+  
+```console
+$ py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot --search cats
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --subreddit gifs pics --sort top --time week --limit 250
+$ py -3 script.py .\\NEW_FOLDER --subreddit frontpage --sort top --search cats
+```
+
+```console
+$ py -3 script.py .\\NEW_FOLDER --multireddit good_subs --user [USER_NAME] --sort top --time week --limit 250
 ```
 
 ```console
