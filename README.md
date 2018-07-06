@@ -24,7 +24,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Examples](#examples)
 - [Changelog](#changelog)
   - [1.1.0 (haven't been released yet)](#1-1-0-haven-t-been-released-yet-)
-    - [1.1.0-alpha.1](#-v1-1-0-alpha-1-)
+    - [1.1.0-alpha.1](#v110-alpha1)
   - [1.0.0](#1-0-0)
 ---
 
