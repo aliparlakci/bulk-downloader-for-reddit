@@ -197,6 +197,8 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 
 ## Changelog
 ### 1.1.0 (haven't been released yet)
+[v1.1.0-alpha.1](/releases/tag/v1.1.0-alpha.1)
+  
 - Added link mode
   - It can parse reddit links now
 - Added multireddit mode
