@@ -10,7 +10,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - [Requirements](#requirements)
 - [Configuring the APIs](#configuring-the-apis)
   - [Creating a reddit app](#creating-a-reddit-app)
-  - [Creating a imgur app](#creating-a-imgur-app)
+  - [Creating an imgur app](#creating-an-imgur-app)
 - [Program Modes](#program-modes)
   - [saved mode](#saved-mode)
   - [submitted mode](#submitted-mode)
@@ -158,10 +158,14 @@ optional arguments:
   --time TIME_LIMIT     Either hour, day, week, month, year or all. default:
                         all
   --NoDownload          Just gets the posts and store them in a file for
-                        downloading later```
+                        downloading later
+```  
   
-  
-### Examples
+---
+
+
+## Examples
+
 ```console
 $ py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/top/"
 ```
