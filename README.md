@@ -196,7 +196,7 @@ py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDownload
+py -3 script.py .\\NEW_FOLDER --subreddit gifs pics funny --sort top --NoDownload
 ```
 
 ---
