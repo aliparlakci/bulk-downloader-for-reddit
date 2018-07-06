@@ -19,21 +19,17 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Starting for the first time](#starting-for-the-first-time)
   - [Using the command line arguments](#using-the-command-line-arguments)
   - [Examples](#examples)
-
+- [Changelog](#changelog)
+  - [1.0.0](#1-0-0)
 ---
 
 ## Requirements
 - Python 3.x*
-- imgurpython library  
-- praw library
 
 You can install Python 3 here: [https://www.python.org/downloads/](https://www.python.org/downloads/)  
+  
 You have to check "**Add Python 3 to PATH**" option when installing in order it to run correctly.
 
-You can install libraries through [terminal](https://www.reddit.com/r/NSFW411/comments/8vtnl8/meta_i_made_reddit_downloader_that_can_download/e1rnbnl) via *pip*:
-```console
-$ pip install imgurpython praw
-```
 *\*:Although the latest version of python is suggested, you can use 3.6.5 since it runs perfectly on that version*
 
 ---
@@ -45,6 +41,7 @@ Because this is not a commercial app, you need to create yourself a reddit and a
 * Go to https://www.reddit.com/prefs/apps/
 * Under **developer apps**, click on **create another app**
 * Enter a name into the **name** field.
+* Select **script**
 * In **redirect uri** field, enter your reddit profile URL.
 * Click **create app** button  
   
@@ -191,3 +188,7 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 ```
 
 ---
+
+## Changelog
+### 1.0.0
+- Initial release
