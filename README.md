@@ -87,9 +87,8 @@ You may customize the behaviour with `--sort`, `--time`, `--limit`.
 *You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
   
 ### log read mode
-**Three** log files are created each time *script.py* runs.
-- **POSTS** Saves all the posts regardlessly.
-- **BACKUP** It contains the posts that aren't downloaded yet.
+Two log files are created each time *script.py* runs.
+- **POSTS** Saves all the posts without filtering.
 - **FAILED** Keeps track of posts that are tried to be downloaded but failed.
   
 In log mode, the program takes a log file which created by itself, reads posts and tries downloading them again.
