@@ -24,6 +24,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Examples](#examples)
 - [Changelog](#changelog)
   - [1.1.0 (haven't been released yet)](#1-1-0-haven-t-been-released-yet-)
+    - [1.1.0-alpha.1](#-v1-1-0-alpha-1-releases-tag-v1-1-0-alpha-1-)
   - [1.0.0](#1-0-0)
 ---
 
@@ -197,7 +198,7 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 
 ## Changelog
 ### 1.1.0 (haven't been released yet)
-[v1.1.0-alpha.1](/releases/tag/v1.1.0-alpha.1)
+#### [v1.1.0-alpha.1](/releases/tag/v1.1.0-alpha.1)
   
 - Added link mode
   - It can parse reddit links now
@@ -208,6 +209,7 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 - Added search options for suitable modes
 - Detects argument conflicts more accurately
 - Bug fixes
+
 
 ### 1.0.0
 - Initial release
