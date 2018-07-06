@@ -198,7 +198,7 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 
 ## Changelog
 ### 1.1.0 (haven't been released yet)
-#### [v1.1.0-alpha.1](/releases/tag/v1.1.0-alpha.1)
+#### v1.1.0-alpha.1
   
 - Added link mode
   - It can parse reddit links now
@@ -211,5 +211,5 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 - Added support for Two Factor Authorization
 - Bug fixes
 
-### [1.0.0](/releases/tag/v1.0.0)
+### [1.0.0](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/v1.0.0)
 - Initial release
