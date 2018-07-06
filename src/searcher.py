@@ -21,14 +21,24 @@ from src.errors import (NoMatchingSubmissionFound, NoPrawSupport,
 
 print = printToFile
 
-def beginPraw(config,user_agent = "newApp"):
+def beginPraw(config,user_agent = "newApp",TwoFA=False):
     """Start reddit instance"""
-
-    return praw.Reddit(client_id = config['reddit_client_id'], \
-                       client_secret = config['reddit_client_secret'], \
-                       password = config['reddit_password'], \
-                       user_agent = user_agent, \
-                       username = config['reddit_username'])
+    if not TwoFA:
+        return praw.Reddit(client_id = config['reddit_client_id'],
+                           client_secret = (config['reddit_client_secret']),
+                           password = config['reddit_password'],
+                           user_agent = user_agent,
+                           username = config['reddit_username'])
+    if not TwoFA:
+        return praw.Reddit(client_id = config['reddit_client_id'],
+                           client_secret = (config['reddit_client_secret']),
+                           password = (
+                               config['reddit_password']
+                               + ":"
+                               + TwoFA
+                           ),
+                           user_agent = user_agent,
+                           username = config['reddit_username'])
 
 def getPosts(args):
     """Call PRAW regarding to arguments and pass it to redditSearcher.
@@ -36,7 +46,10 @@ def getPosts(args):
     """
 
     config = GLOBAL.config
-    reddit = beginPraw(config)
+    if GLOBAL.arguments.auth is not None:
+        reddit = beginPraw(config,GLOBAL.arguments.auth)
+    else:
+        reddit = beginPraw(config)
 
     if args["sort"] == "best":
         raise NoPrawSupport

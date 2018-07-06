@@ -208,8 +208,8 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
   - It can get posts from user's posts now
 - Added search options for suitable modes
 - Detects argument conflicts more accurately
+- Added support for Two Factor Authorization
 - Bug fixes
-
 
 ### 1.0.0
 - Initial release
