@@ -10,7 +10,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - [Requirements](#requirements)
 - [Configuring the APIs](#configuring-the-apis)
   - [Creating a reddit app](#creating-a-reddit-app)
-  - [Creating a imgur app](#creating-an-imgur-app)
+  - [Creating an imgur app](#creating-an-imgur-app)
 - [Program Modes](#program-modes)
   - [saved mode](#saved-mode)
   - [submitted mode](#submitted-mode)
