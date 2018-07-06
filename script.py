@@ -103,8 +103,7 @@ def parseArguments():
     
     parser.add_argument("--multireddit",
                         help="Triggers multreddit mode and takes "\
-                             "multreddit's name without r/." \
-                             " use \"me\" for frontpage",
+                             "multreddit's name without m/.",
                         metavar="MULTIREDDIT",
                         type=str)
 
