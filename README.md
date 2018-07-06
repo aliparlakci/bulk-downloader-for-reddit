@@ -23,6 +23,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Using the command line arguments](#using-the-command-line-arguments)
   - [Examples](#examples)
 - [Changelog](#changelog)
+  - [1.1.0 (haven't been released yet)](#1-1-0-haven-t-been-released-yet-)
   - [1.0.0](#1-0-0)
 ---
 
@@ -205,5 +206,6 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 - Added search options for suitable modes
 - Detects argument conflicts more accurately
 - Bug fixes
+
 ### 1.0.0
 - Initial release
