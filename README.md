@@ -13,7 +13,10 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Creating a imgur app](#creating-a-imgur-app)
 - [Program Modes](#program-modes)
   - [saved mode](#saved-mode)
+  - [submitted mode](#submitted-mode)
   - [subreddit mode](#subreddit-mode)
+  - [multireddit mode](#multireddit-mode)
+  - [link mode](#link-mode)
   - [log read mode](#log-read-mode)
 - [Running the script](#running-the-script)
   - [Starting for the first time](#starting-for-the-first-time)
@@ -63,6 +66,8 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 All the program modes are activated with command-line arguments as shown [here](#using-the-command-line-arguments)  
 ### saved mode
 In saved mode, the program gets posts from given user's saved posts.
+### submitted mode
+In submitted mode, the program gets posts from given user's submitted posts.
 ### subreddit mode
 In subreddit mode, the program gets posts from given subreddits* that is sorted by given type and limited by given number.  
   
@@ -190,5 +195,15 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 ---
 
 ## Changelog
+### 1.1.0 (haven't been released yet)
+- Added link mode
+  - It can parse reddit links now
+- Added multireddit mode
+  - It can get posts from multireddits now
+- Added submitted mode
+  - It can get posts from user's posts now
+- Added search options for suitable modes
+- Detects argument conflicts more accurately
+- Bug fixes
 ### 1.0.0
 - Initial release
