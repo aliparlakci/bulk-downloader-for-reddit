@@ -1,5 +1,7 @@
 # [Bulk Downloader for Reddit](https://aliparlakci.github.io/bulk-downloader-for-reddit)  
 This program downloads imgur, gfycat and direct image and video links of saved posts from a reddit account. It is written in Python 3.
+  
+**PLEASE** post any issue you had with the script to [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) tab. Since I don't have any testers or contributers I need your feedback.
 
 ## [`py -3 script.py`](#running-the-script)
 
