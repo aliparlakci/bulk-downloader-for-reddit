@@ -55,7 +55,7 @@ Your **reddit_client_id** is on the right of the app's icon. And your **reddit_c
 ### Creating an imgur app
 * Go to https://api.imgur.com/oauth2/addclient
 * Enter a name into the **Application Name** field.
-* Pick **OAuth 2 authorization without a callback URL** as an **Authorization type**
+* Pick **Anonymous usage without user authorization** as an **Authorization type**
 * Enter your email into the Email field.
 * Correct CHAPTCHA
 * Click **submit** button  
