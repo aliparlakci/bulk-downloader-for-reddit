@@ -80,6 +80,10 @@ def parseArguments():
                         action="store_true",
                         help="Triggers saved mode")
 
+    parser.add_argument("--submitted",
+                        action="store_true",
+                        help="Gets posts of --user")
+
     parser.add_argument("--log",
                         help="Triggers log read mode and takes a log file",
                         type=argparse.FileType('r'),
@@ -87,11 +91,25 @@ def parseArguments():
 
     parser.add_argument("--subreddit",
                         nargs="+",
-                        help="Triggers subreddit mode and takes subreddit's" \
-                             " name without r/. use \"me\" for frontpage",
+                        help="Triggers subreddit mode and takes subreddit's " \
+                             "name without r/. use \"frontpage\" for frontpage",
                         metavar="SUBREDDIT",
                         type=str)
     
+    parser.add_argument("--multireddit",
+                        nargs="+",
+                        help="Triggers multreddit mode and takes "\
+                             "multreddit's name without r/." \
+                             " use \"me\" for frontpage",
+                        metavar="MULTIREDDIT",
+                        type=str)
+
+    parser.add_argument("--user",
+                        help="reddit username if needed",
+                        required="--multireddit" in sys.argv or \
+                                 "--submitted" in sys.argv,
+                        type=str)
+
     parser.add_argument("--search",
                         help="Searches for given query in given subreddits",
                         type=str)
@@ -141,6 +159,11 @@ def checkConflicts():
         subreddit = 0
     else:
         subreddit = 1
+
+    if GLOBAL.arguments.submitted is False:
+        submitted = 0
+    else:
+        submitted = 1
     
     if GLOBAL.arguments.search is None:
         search = 0
@@ -157,12 +180,16 @@ def checkConflicts():
     else:
         link = 1
 
-    if not saved+subreddit+log+link == 1:
+    if not saved+subreddit+log+link+submitted == 1:
         print("Program mode is invalid")
         quit()
     
     if saved+subreddit == 2:
-        print("I cannot search in your saved posts")
+        print("You cannot search in your saved posts")
+        quit()
+
+    if saved+submitted == 2:
+        print("You cannot search in submitted posts")
         quit()
 
 def postFromLog(fileName):
@@ -188,6 +215,9 @@ def postFromLog(fileName):
 def prepareAttributes():
     ATTRIBUTES = {}
 
+    if GLOBAL.arguments.user is not None:
+        ATTRIBUTES["user"] = GLOBAL.arguments.user
+
     if GLOBAL.arguments.search is not None:
         ATTRIBUTES["search"] = GLOBAL.arguments.search
 
@@ -200,8 +230,6 @@ def prepareAttributes():
         ATTRIBUTES["time"] = GLOBAL.arguments.time
     else:
         ATTRIBUTES["time"] = "all"
-
-    GLOBAL.directory = Path(GLOBAL.arguments.directory)
 
     if GLOBAL.arguments.link is not None:
         del ATTRIBUTES["sort"]
@@ -224,8 +252,15 @@ def prepareAttributes():
 
         ATTRIBUTES["subreddit"] = GLOBAL.arguments.subreddit
 
-    elif GLOBAL.arguments.saved is not None:
+    elif GLOBAL.arguments.saved is True:
         ATTRIBUTES["saved"] = True
+
+    elif GLOBAL.arguments.submitted is not None:
+        ATTRIBUTES["submitted"] = True
+
+        if GLOBAL.arguments.sort == "rising":
+            print("Invalid sorting type")
+            quit()
 
     elif GLOBAL.arguments.log is not None:
         GLOBAL.arguments.log = GLOBAL.arguments.log.name
@@ -399,6 +434,8 @@ def main():
     ##################################
 
     GLOBAL.arguments = parseArguments()
+    GLOBAL.directory = Path(GLOBAL.arguments.directory)
+
     checkConflicts()
 
     mode = prepareAttributes()
