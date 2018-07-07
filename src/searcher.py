@@ -232,6 +232,8 @@ def getPosts(args):
             raise MultiredditNotFound
 
     elif "submitted" in args:
+        # TODO
+        # USE REDDIT.USER.ME() INSTEAD WHEN "ME" PASSED AS A --USER
         print (
             "submitted posts of {user}\nsort: {sort}\n" \
             "time: {time}\nlimit: {limit}\n".format(
