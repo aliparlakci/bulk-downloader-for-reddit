@@ -91,7 +91,7 @@ def parseArguments():
 
     parser.add_argument("--log",
                         help="Triggers log read mode and takes a log file",
-                        type=argparse.FileType('r'),
+                    #    type=argparse.FileType('r'),
                         metavar="LOG FILE")
 
     parser.add_argument("--subreddit",
@@ -269,9 +269,6 @@ def prepareAttributes():
         if GLOBAL.arguments.sort == "rising":
             print("Invalid sorting type")
             quit()
-
-    elif GLOBAL.arguments.log is not None:
-        GLOBAL.arguments.log = GLOBAL.arguments.log.name
     
     ATTRIBUTES["limit"] = GLOBAL.arguments.limit
 
