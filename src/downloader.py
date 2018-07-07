@@ -16,8 +16,8 @@ from src.tools import GLOBAL, nameCorrector, printToFile
 from src.errors import (FileAlreadyExistsError, FileNameTooLong,
                         NotADownloadableLinkError,
                         AlbumNotDownloadedCompletely, ImgurLoginError)
-from ssl import SSLError as ssl_SSLError
-from requests.exceptions import SSLError as requests_exceptions_SSLError
+import ssl.SSLError
+import requests.exceptions.SSLError
 
 print = printToFile
 
@@ -187,9 +187,9 @@ class Imgur:
                 config['imgur_client_id'],
                 config['imgur_client_secret']
             )
-        except ssl_SSLError:
+        except ssl.SSLError:
             raise ImgurLoginError
-        except requests_exceptions_SSLError:
+        except requests.exceptions.SSLError:
             raise ImgurLoginError
 
     def getId(self,submissionURL):

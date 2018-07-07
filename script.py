@@ -365,6 +365,13 @@ def download(submissions):
                     duplicates += 1
                     downloadedCount -= 1
 
+                except ImgurLoginError:
+                    print(
+                        "Imgur login failed. Quitting the program "\
+                        "as unexpected errors might occur."
+                    )
+                    quit()
+
                 except Exception as exception:
                     print(exception)
                     FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})

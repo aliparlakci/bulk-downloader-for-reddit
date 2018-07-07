@@ -1,5 +1,7 @@
 # [Bulk Downloader for Reddit](https://aliparlakci.github.io/bulk-downloader-for-reddit)  
 This program downloads imgur, gfycat and direct image and video links of saved posts from a reddit account. It is written in Python 3.
+  
+**PLEASE** post any issue you had with the script to [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) tab. Since I don't have any testers or contributers I need your feedback.
 
 ## [`py -3 script.py`](#running-the-script)
 
@@ -23,9 +25,9 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Using the command line arguments](#using-the-command-line-arguments)
   - [Examples](#examples)
 - [Changelog](#changelog)
-  - [1.1.0 (haven't been released yet)](#1-1-0-haven-t-been-released-yet-)
-    - [1.1.0-alpha.1](#v110-alpha1)
-  - [1.0.0](#100)
+  - [release-1.1.0-prerelease-2](#release-110-prerelease-1)
+  - [release-1.1.0-prerelease-1](#release-110-prerelease-1)
+  - [release-1.0.0](#release-100)
 ---
 
 ## Requirements
@@ -73,9 +75,9 @@ In submitted mode, the program gets posts from given user's submitted posts.
 ### subreddit mode
 In subreddit mode, the program gets posts from given subreddits* that is sorted by given type and limited by given number.  
   
-*You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
+Multiple subreddits can be given
   
-Multiple subreddits can be given  
+*You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
 ### multireddit mode
 In multireddit mode, the program gets posts from given user's given multireddit that is sorted by given type and limited by given number.  
 ### link mode
@@ -86,9 +88,8 @@ You may customize the behaviour with `--sort`, `--time`, `--limit`.
 *You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
   
 ### log read mode
-**Three** log files are created each time *script.py* runs.
-- **POSTS** Saves all the posts regardlessly.
-- **BACKUP** It contains the posts that aren't downloaded yet.
+Two log files are created each time *script.py* runs.
+- **POSTS** Saves all the posts without filtering.
 - **FAILED** Keeps track of posts that are tried to be downloaded but failed.
   
 In log mode, the program takes a log file which created by itself, reads posts and tries downloading them again.
@@ -121,12 +122,12 @@ Open up the [terminal](https://www.reddit.com/r/NSFW411/comments/8vtnl8/meta_i_m
   
 Run the script.py file from terminal with command-line arguments. Here is the help page:  
   
-**ATTENTION** Use `.\` for current directory and `..\` when using short directories, otherwise it might act weird.
+**ATTENTION** Use `.\` for current directory and `..\` for upper directory when using short directories, otherwise it might act weird.
 
 ```console
 $ py -3 script.py --help
-usage: script.py [-h] [--link link] [--saved] [--submitted] [--log LOG FILE]
-                 [--subreddit SUBREDDIT [SUBREDDIT ...]]
+usage: script.py [-h] [--link link] [--auth auth] [--saved] [--submitted]
+                 [--log LOG FILE] [--subreddit SUBREDDIT [SUBREDDIT ...]]
                  [--multireddit MULTIREDDIT] [--user USER] [--search SEARCH]
                  [--sort SORT TYPE] [--limit Limit] [--time TIME_LIMIT]
                  [--NoDownload]
@@ -141,6 +142,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --link link, -l link  Get posts from link
+  --auth.               2FA key
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
   --log LOG FILE        Triggers log read mode and takes a log file
@@ -167,42 +169,43 @@ optional arguments:
 ## Examples
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/top/"
+py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/top/"
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --search cats --limit 10 --link "www.reddit.com/hot/"
+py -3 script.py .\\NEW_FOLDER --search cats --limit 10 --link "www.reddit.com/hot/"
 ```
   
 ```console
-$ py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot --search cats
+py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot --search cats
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --subreddit frontpage --sort top --search cats
+py -3 script.py .\\NEW_FOLDER --subreddit frontpage --sort top --search cats
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --multireddit good_subs --user [USER_NAME] --sort top --time week --limit 250
+py -3 script.py .\\NEW_FOLDER --multireddit good_subs --user [USER_NAME] --sort top --time week --limit 250
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
+py -3 script.py .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
 ```
 
 ```console
-$ py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json --NoRateLimit
+py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json --NoRateLimit
 ```
 
 ```console
-$ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDownload
+py -3 script.py .\\NEW_FOLDER --subreddit gifs pics funny --sort top --NoDownload
 ```
 
 ---
 
 ## Changelog
-### 1.1.0 (haven't been released yet)
-#### [v1.1.0-alpha.1](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/v1.1.0-alpha.1)
+### [release-1.1.0-prerelease-2]()
+
+### [release-1.1.0-prerelease-1](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/release-1.1.0-prerelease-1)
   
 - Added link mode
   - It can parse reddit links now
@@ -215,5 +218,5 @@ $ py -3 script.py .\\NEW_FOLDER --subreddit r/gifs pics funny --sort top --NoDow
 - Added support for Two Factor Authorization
 - Bug fixes
 
-### [1.0.0](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/v1.0.0)
+### [release-1.0.0](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/release-1.0)
 - Initial release
