@@ -1,8 +1,16 @@
 import os
+import ssl
 import sys
 import time
 import urllib.request
 from pathlib import Path
+
+import requests
+
+from src.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError,
+                        FileNameTooLong, ImgurLoginError,
+                        NotADownloadableLinkError)
+from src.tools import GLOBAL, nameCorrector, printToFile
 
 try:
     from imgurpython import *
@@ -12,12 +20,6 @@ except ModuleNotFoundError:
     install("imgurpython")
     from imgurpython import *
 
-from src.tools import GLOBAL, nameCorrector, printToFile
-from src.errors import (FileAlreadyExistsError, FileNameTooLong,
-                        NotADownloadableLinkError,
-                        AlbumNotDownloadedCompletely, ImgurLoginError)
-import ssl.SSLError
-import requests.exceptions.SSLError
 
 print = printToFile
 

@@ -1,3 +1,6 @@
+class RedditLoginFailed(Exception):
+    pass
+
 class ImgurLoginError(Exception):
     pass
 
