@@ -30,3 +30,6 @@ class MultiredditNotFound(Exception):
 
 class InvalidSortingType(Exception):
     pass
+
+class FileNotFoundError(Exception):
+    pass

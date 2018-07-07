@@ -91,7 +91,7 @@ def parseArguments():
 
     parser.add_argument("--log",
                         help="Triggers log read mode and takes a log file",
-                        type=argparse.FileType('r'),
+                        # type=argparse.FileType('r'),
                         metavar="LOG FILE")
 
     parser.add_argument("--subreddit",
@@ -200,8 +200,11 @@ def postFromLog(fileName):
     """Analyze a log file and return a list of dictionaries containing
     submissions
     """
-
-    content = jsonFile(fileName).read()
+    try:
+        content = jsonFile(fileName,create=False).read()
+    except FileNotFoundError:
+        print("File not found")
+        quit()
 
     try:
         del content["HEADER"]

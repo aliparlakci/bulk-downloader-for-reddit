@@ -2,12 +2,16 @@ import io
 import json
 import sys
 import time
+
 try:
     from pip import main as pipmain
 except:
     from pip._internal import main as pipmain
+
 from os import makedirs, path, remove
 from pathlib import Path
+
+from src.errors import FileNotFoundError
 
 def install(package):
     pipmain(['install', package])
@@ -32,14 +36,17 @@ class jsonFile:
     
     FILEDIR = ""
 
-    def __init__(self,FILEDIR):
+    def __init__(self,FILEDIR,create=False):
         self.FILEDIR = FILEDIR
-        if not path.exists(self.FILEDIR):
+        if not path.exists(self.FILEDIR) and create:
             self.__writeToFile({},create=True)
 
     def read(self):
-        with open(self.FILEDIR, 'r') as f:
-            return json.load(f)
+        if Path.is_file(Path(self.FILEDIR)):
+            with open(self.FILEDIR, 'r') as f:
+                return json.load(f)
+        else:
+            raise FileNotFoundError
 
     def add(self,toBeAdded):
         """Takes a dictionary and merges it with json file.
