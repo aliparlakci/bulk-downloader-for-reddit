@@ -29,7 +29,7 @@ def beginPraw(config,user_agent = "newApp",TwoFA=False):
                            password = config['reddit_password'],
                            user_agent = user_agent,
                            username = config['reddit_username'])
-    if not TwoFA:
+    else:
         return praw.Reddit(client_id = config['reddit_client_id'],
                            client_secret = (config['reddit_client_secret']),
                            password = (
