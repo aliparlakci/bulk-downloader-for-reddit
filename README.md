@@ -205,6 +205,8 @@ py -3 script.py .\\NEW_FOLDER --subreddit gifs pics funny --sort top --NoDownloa
 ## Changelog
 ### [release-1.1.0-prerelease-2]()
 
+- Detecting argument conflicts improved
+
 ### [release-1.1.0-prerelease-1](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/release-1.1.0-prerelease-1)
   
 - Added link mode

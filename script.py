@@ -91,7 +91,7 @@ def parseArguments():
 
     parser.add_argument("--log",
                         help="Triggers log read mode and takes a log file",
-                    #    type=argparse.FileType('r'),
+                        type=argparse.FileType('r'),
                         metavar="LOG FILE")
 
     parser.add_argument("--subreddit",
@@ -224,6 +224,10 @@ def prepareAttributes():
 
     if GLOBAL.arguments.search is not None:
         ATTRIBUTES["search"] = GLOBAL.arguments.search
+        if GLOBAL.arguments.sort == "hot" or \
+           GLOBAL.arguments.sort == "controversial" or \
+           GLOBAL.arguments.sort == "rising":
+            GLOBAL.arguments.sort = "relevance"
 
     if GLOBAL.arguments.sort is not None:
         ATTRIBUTES["sort"] = GLOBAL.arguments.sort
