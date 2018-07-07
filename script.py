@@ -328,7 +328,6 @@ def download(submissions):
                 while int(time.time() - lastRequestTime) <= 2:
                     pass
                 credit = Imgur.get_credits()
-                lastRequestTime = time.time()
             except ImgurLoginError:
                 exception = "\nImgurLoginError"
                 print(exception)
