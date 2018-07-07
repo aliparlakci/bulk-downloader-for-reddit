@@ -325,7 +325,10 @@ def download(submissions):
         if submissions[i]['postType'] == 'imgur':
             print("IMGUR",end="")
             try:
+                while int(time.time() - lastRequestTime) <= 2:
+                    pass
                 credit = Imgur.get_credits()
+                lastRequestTime = time.time()
             except ImgurLoginError:
                 exception = "\nImgurLoginError"
                 print(exception)
@@ -349,9 +352,9 @@ def download(submissions):
 
             if not (credit['UserRemaining'] == 0 or \
                     credit['ClientRemaining'] == 0):
+
                 while int(time.time() - lastRequestTime) <= 2:
                     pass
-
                 lastRequestTime = time.time()
 
                 try:
