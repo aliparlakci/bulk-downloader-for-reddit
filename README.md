@@ -3,7 +3,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   
 **PLEASE** post any issue you had with the script to [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) tab. Since I don't have any testers or contributers I need your feedback.
 
-# Table of Contents
+## Table of Contents
 
 - [Requirements](#requirements)
 - [Configuring the APIs](#configuring-the-apis)
@@ -25,7 +25,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [release-1.1.0-prerelease-1](#release-110-prerelease-1)
   - [release-1.0.0](#release-100)
 
-# Requirements
+## Requirements
 - Python 3.x*
 
 You can install Python 3 here: [https://www.python.org/downloads/](https://www.python.org/downloads/)  
@@ -34,10 +34,10 @@ You have to check "**Add Python 3 to PATH**" option when installing in order it 
 
 *\*Although the latest version of python is suggested, you can use 3.6.5 since it runs perfectly on that version*
 
-# Configuring the APIs
+## Configuring the APIs
 Because this is not a commercial app, you need to create yourself a reddit and an imgur developer app in order APIs to work.
 
-## Creating an imgur app
+### Creating an imgur app
 * Go to https://api.imgur.com/oauth2/addclient
 * Enter a name into the **Application Name** field.
 * Pick **Anonymous usage without user authorization** as an **Authorization type**\*
@@ -49,21 +49,21 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   
 \*Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
 
-# Program Modes
+## Program Modes
 All the program modes are activated with command-line arguments as shown [here](#using-the-command-line-arguments)  
-## saved mode
+### saved mode
 In saved mode, the program gets posts from given user's saved posts.
-## submitted mode
+### submitted mode
 In submitted mode, the program gets posts from given user's submitted posts.
-## subreddit mode
+### subreddit mode
 In subreddit mode, the program gets posts from given subreddits* that is sorted by given type and limited by given number.  
   
 Multiple subreddits can be given
   
 *You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
-## multireddit mode
+### multireddit mode
 In multireddit mode, the program gets posts from given user's given multireddit that is sorted by given type and limited by given number.  
-## link mode
+### link mode
 In link mode, the program gets posts from given reddit link.  
   
 You may customize the behaviour with `--sort`, `--time`, `--limit`.
@@ -79,10 +79,10 @@ In log mode, the program takes a log file which created by itself, reads posts a
 
 Running log read mode for FAILED.json file once after the download is complete is **HIGHLY** recommended as unexpected problems may occur.
 
-# Running the script
+## Running the script
 **WARNING** *DO NOT* let more than *1* instance of script run as it interferes with IMGUR Request Rate.  
   
-## Using the command line arguments
+### Using the command line arguments
 If no arguments are passed program will prompt you for arguments below which means you may start up the script with double-clicking on it (at least on Windows for sure).
   
 Open up the [terminal](https://www.reddit.com/r/NSFW411/comments/8vtnl8/meta_i_made_reddit_downloader_that_can_download/e1rnbnl) and navigate to where script.py is. If you are unfamiliar with changing directories in terminal see Change Directories in [this article](https://lifehacker.com/5633909/who-needs-a-mouse-learn-to-use-the-command-line-for-almost-anything).
@@ -129,7 +129,7 @@ optional arguments:
                         downloading later
 ```  
 
-# Examples
+## Examples
 
 ### Don't include `py -3 script.py` part if you start the script by double-clicking
 
@@ -175,11 +175,11 @@ py -3 script.py .\\NEW_FOLDER --subreddit gifs pics funny --sort top --NoDownloa
 
 ---
 
-# FAQ
+## FAQ
 ### I can't startup the script no matter what.
 - Try `python3` or `python` or `py -3` as python have real issues about naming their program
 
-# Changelog
+## Changelog
 ### [release-1.1.0-prerelease-3](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/release-1.1.0-prerelease-3)
 
 - Give an error message if no posts found in given URL in link mode
