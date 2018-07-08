@@ -487,6 +487,10 @@ def main():
         print("Invalid reddit link")
         quit()
 
+    if POSTS is None:
+        print("I could not find any posts in that URL")
+        quit()
+
     if GLOBAL.arguments.NoDownload:
         quit()
 
