@@ -184,16 +184,10 @@ class Imgur:
         """Initialize imgur api"""
 
         config = GLOBAL.config
-        try:
-            return ImgurClient(
-                config['imgur_client_id'],
-                config['imgur_client_secret']
-            )
-        except ssl.SSLError:
-            raise ImgurLoginError
-        except requests.exceptions.SSLError:
-            raise ImgurLoginError
-
+        return ImgurClient(
+            config['imgur_client_id'],
+            config['imgur_client_secret']
+        )
     def getId(self,submissionURL):
         """Extract imgur post id
         and determine if its a single image or album
