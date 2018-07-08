@@ -148,19 +148,19 @@ optional arguments:
 ### Don't include `py -3 script.py` part if you start the script by double-clicking
 
 ```console
-py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "https://www.reddit.com/r/gifs/search?q=dogs&restrict_sr=on&type=link&sort=new&t=month"
+py -3 script.py .\\NEW_FOLDER --sort new --time all --limit 10 --link "https://www.reddit.com/r/gifs/search?q=dogs&restrict_sr=on&type=link&sort=new&t=month"
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "https://www.reddit.com/r/learnprogramming/comments/8wzc7y/"
+py -3 script.py .\\NEW_FOLDER --sort all --link "https://www.reddit.com/r/learnprogramming/comments/8wzc7y/"
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/top/"
+py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/new/"
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --search cats --limit 10 --link "www.reddit.com/hot/"
+py -3 script.py .\\NEW_FOLDER --search cats --sort new --time all --link "www.reddit.com/hot/"
 ```
   
 ```console
@@ -168,7 +168,7 @@ py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot --search cats
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --subreddit frontpage --sort top --search cats
+py -3 script.py .\\NEW_FOLDER --user [USER_NAME] --submitted --limit 10
 ```
 
 ```console
