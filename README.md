@@ -132,6 +132,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --link link, -l link  Get posts from link
+  --auth.               2FA key
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
   --log LOG FILE        Triggers log read mode and takes a log file

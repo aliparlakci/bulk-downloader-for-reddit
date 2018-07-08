@@ -73,7 +73,7 @@ class GetAuth:
 
 def beginPraw(config,user_agent = str(socket.gethostname())):
     """Start reddit instance"""
-
+    
     scopes = ['identity','history','read']
     port = "8080"
     arguments = {
