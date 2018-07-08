@@ -138,19 +138,11 @@ py -3 script.py .\\NEW_FOLDER --sort new --time all --limit 10 --link "https://w
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --sort all --link "https://www.reddit.com/r/learnprogramming/comments/8wzc7y/"
+py -3 script.py .\\NEW_FOLDER --link "https://www.reddit.com/r/learnprogramming/comments/7mjw12/"
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/new/"
-```
-
-```console
-py -3 script.py .\\NEW_FOLDER --search cats --sort new --time all --link "www.reddit.com/hot/"
-```
-  
-```console
-py -3 script.py .\\NEW_FOLDER --subreddit gifs --sort hot --search cats
+py -3 script.py .\\NEW_FOLDER --search cats --sort new --time all --subreddit gifs pics --NoDownload
 ```
 
 ```console
@@ -168,12 +160,6 @@ py -3 script.py .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
 ```console
 py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json
 ```
-
-```console
-py -3 script.py .\\NEW_FOLDER --subreddit gifs pics funny --sort top --NoDownload
-```
-
----
 
 ## FAQ
 ### I can't startup the script no matter what.
