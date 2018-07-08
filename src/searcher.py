@@ -123,7 +123,7 @@ def getPosts(args):
 
     print("\nGETTING POSTS\n.\n.\n.\n")
 
-    try:
+    if not "search" in args:
         if args["sort"] == "top" or args["sort"] == "controversial":
             keyword_params = {
                 "time_filter":args["time"],
@@ -134,11 +134,14 @@ def getPosts(args):
             keyword_params = {
                 "limit":args["limit"]
             }
-    except KeyError:
-        pass
+    else:
+        keyword_params = {
+                "time_filter":args["time"],
+                "limit":args["limit"]
+            }
 
     if "search" in args:
-        if args["sort"] in ["rising","controversial"]:
+        if args["sort"] in ["hot","rising","controversial"]:
             raise InvalidSortingType
 
         if "subreddit" in args:
