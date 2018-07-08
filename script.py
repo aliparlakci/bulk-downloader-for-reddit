@@ -59,7 +59,7 @@ def getConfig(configFileName):
         FILE.add(configDictionary)
         return FILE.read()
 
-def parseArguments():
+def parseArguments(arguments=[]):
     """Initialize argparse and add arguments"""
 
     parser = argparse.ArgumentParser(allow_abbrev=False,
@@ -143,7 +143,10 @@ def parseArguments():
                         action="store_true",
                         default=False)
 
-    return parser.parse_args()
+    if arguments == []:
+        return parser.parse_args()
+    else:
+        return parser.parse_args(arguments)
 
 def checkConflicts():
     """Check if command-line arguments are given correcly,
@@ -234,7 +237,7 @@ def prepareAttributes():
         if GLOBAL.arguments.submitted:
             ATTRIBUTES["sort"] = "new"
         else:
-        ATTRIBUTES["sort"] = "hot"
+            ATTRIBUTES["sort"] = "hot"
 
     if GLOBAL.arguments.time is not None:
         ATTRIBUTES["time"] = GLOBAL.arguments.time
@@ -435,8 +438,15 @@ def download(submissions):
         print(" Total of {} links downloaded!".format(downloadedCount))
 
 def main():
-    GLOBAL.arguments = parseArguments()
-    GLOBAL.directory = Path(GLOBAL.arguments.directory)
+    if sys.argv[-1].endswith(__file__):
+        GLOBAL.arguments = parseArguments(input("> ").split())
+    else:
+        GLOBAL.arguments = parseArguments()
+    if GLOBAL.arguments.directory is not None:
+        GLOBAL.directory = Path(GLOBAL.arguments.directory)
+    else:
+        print("Invalid directory")
+        quit()
     GLOBAL.config = getConfig(Path(PurePath(__file__).parent / 'config.json'))
 
     ####### UNCOMMENT TO DEBUG #######

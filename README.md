@@ -211,6 +211,7 @@ py -3 script.py .\\NEW_FOLDER --subreddit gifs pics funny --sort top --NoDownloa
 - Added search options for suitable modes
 - Detects argument conflicts more accurately
 - Added support for Two Factor Authorization
+- If no arguments passed when starting up the program, it prompts for arguments now
 - Bug fixes
 
 ### [release-1.0.0](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/release-1.0)
