@@ -20,7 +20,7 @@ from src.errors import *
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
-__version__ = "release-1.1.0-prerelease-2"
+__version__ = "release-1.1.0-prerelease-3"
 __maintainer__ = "Ali Parlakci"
 __email__ = "parlakciali@gmail.com"
 
