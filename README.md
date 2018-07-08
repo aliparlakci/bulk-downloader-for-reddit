@@ -146,6 +146,14 @@ optional arguments:
 ## Examples
 
 ```console
+py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "https://www.reddit.com/r/gifs/search?q=dogs&restrict_sr=on&type=link&sort=new&t=month"
+```
+
+```console
+py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "https://www.reddit.com/r/learnprogramming/comments/8wzc7y/"
+```
+
+```console
 py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "www.reddit.com/top/"
 ```
 
