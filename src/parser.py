@@ -100,9 +100,6 @@ def LinkParser(LINK):
             elif SplittedLink[index] == "saved":
                 RESULT["saved"] = True
 
-        elif not SplittedLink[index] in ["submitted","saved","posts"]:
-            RESULT["submitted"] = {}
-
         elif "?" in SplittedLink[index]:
             ParsedQuery = QueryParser(SplittedLink[index],index)
             if ParsedQuery["HEADER"] == "search":
@@ -117,6 +114,10 @@ def LinkParser(LINK):
             else:
                 del ParsedQuery["HEADER"]
                 RESULT["queries"] = ParsedQuery
+
+    if not ("saved" in RESULT or "submitted" in RESULT) and \
+       "user" in RESULT:
+        RESULT["submitted"] = {}
 
     return RESULT
 
