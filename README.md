@@ -120,7 +120,6 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --link link, -l link  Get posts from link
-  --auth.               2FA key
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
   --log LOG FILE        Triggers log read mode and takes a log file
@@ -145,6 +144,8 @@ optional arguments:
 
 
 ## Examples
+
+### Don't include `py -3 script.py` part if you start the script by double-clicking
 
 ```console
 py -3 script.py .\\NEW_FOLDER --sort all --limit 10 --link "https://www.reddit.com/r/gifs/search?q=dogs&restrict_sr=on&type=link&sort=new&t=month"
