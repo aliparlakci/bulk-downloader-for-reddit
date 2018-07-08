@@ -129,9 +129,9 @@ optional arguments:
                         downloading later
 ```  
 
-## Examples
+### Examples
 
-### Don't include `py -3 script.py` part if you start the script by double-clicking
+#### Don't include `py -3 script.py` part if you start the script by double-clicking
 
 ```console
 py -3 script.py .\\NEW_FOLDER --sort new --time all --limit 10 --link "https://www.reddit.com/r/gifs/search?q=dogs&restrict_sr=on&type=link&sort=new&t=month"
