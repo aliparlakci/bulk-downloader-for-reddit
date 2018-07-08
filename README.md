@@ -26,6 +26,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [release-1.1.0-prerelease-2](#release-110-prerelease-2)
   - [release-1.1.0-prerelease-1](#release-110-prerelease-1)
   - [release-1.0.0](#release-100)
+  
 ---
 
 ## Requirements
@@ -127,11 +128,11 @@ optional arguments:
                         Triggers subreddit mode and takes subreddit's name
                         without r/. use "frontpage" for frontpage
   --multireddit MULTIREDDIT
-                        Triggers multreddit mode and takes multreddit's name
+                        Triggers multireddit mode and takes multireddit's name
                         without m/
   --user redditor       reddit username if needed. use "me" for current user
   --search query        Searches for given query in given subreddits
-  --sort SORT TYPE      Either hot, top, new, controversial, risingor
+  --sort SORT TYPE      Either hot, top, new, controversial, rising or
                         relevance default: hot
   --limit Limit         default: unlimited
   --time TIME_LIMIT     Either hour, day, week, month, year or all. default:
