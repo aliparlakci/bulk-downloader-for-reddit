@@ -1,6 +1,5 @@
 import argparse
 import os
-import sys
 import random
 import socket
 import webbrowser
