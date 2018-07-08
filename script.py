@@ -6,11 +6,10 @@ saved posts from a reddit account. It is written in Python 3.
 """
 
 import argparse
-import ctypes
 import os
 import sys
 import time
-from pathlib import Path
+from pathlib import Path, PurePath
 
 from src.downloader import Direct, Gfycat, Imgur
 from src.parser import LinkDesigner
@@ -232,6 +231,9 @@ def prepareAttributes():
     if GLOBAL.arguments.sort is not None:
         ATTRIBUTES["sort"] = GLOBAL.arguments.sort
     else:
+        if GLOBAL.arguments.submitted:
+            ATTRIBUTES["sort"] = "new"
+        else:
         ATTRIBUTES["sort"] = "hot"
 
     if GLOBAL.arguments.time is not None:
@@ -240,18 +242,14 @@ def prepareAttributes():
         ATTRIBUTES["time"] = "all"
 
     if GLOBAL.arguments.link is not None:
-        del ATTRIBUTES["sort"]
-        del ATTRIBUTES["time"]
 
         try:
             ATTRIBUTES = LinkDesigner(GLOBAL.arguments.link)
         except InvalidRedditLink:
-            print("Invalid reddit link")
-            quit()
+            raise InvalidRedditLink
 
-        if "search" in ATTRIBUTES and GLOBAL.arguments.search is not None:
-            print("It is already a search link")
-            quit()
+        if GLOBAL.arguments.search is not None:
+            ATTRIBUTES["search"] = GLOBAL.arguments.search
 
         if GLOBAL.arguments.sort is not None:
             ATTRIBUTES["sort"] = GLOBAL.arguments.sort
@@ -271,8 +269,7 @@ def prepareAttributes():
         ATTRIBUTES["submitted"] = True
 
         if GLOBAL.arguments.sort == "rising":
-            print("Invalid sorting type")
-            quit()
+            raise InvalidSortingType
     
     ATTRIBUTES["limit"] = GLOBAL.arguments.limit
 
@@ -440,8 +437,7 @@ def download(submissions):
 def main():
     GLOBAL.arguments = parseArguments()
     GLOBAL.directory = Path(GLOBAL.arguments.directory)
-
-    GLOBAL.config = getConfig('config.json')
+    GLOBAL.config = getConfig(Path(PurePath(__file__).parent / 'config.json'))
 
     ####### UNCOMMENT TO DEBUG #######
     # debug({})
@@ -460,7 +456,7 @@ def main():
         quit()
 
     try:
-        POSTS = getPosts(mode)
+        POSTS = getPosts(prepareAttributes())
     except NoMatchingSubmissionFound:
         print("No matching submission was found")
         quit()
@@ -475,6 +471,9 @@ def main():
         quit()
     except InvalidSortingType:
         print("Invalid sorting type has given")
+        quit()
+    except InvalidRedditLink:
+        print("Invalid reddit link")
         quit()
 
     if GLOBAL.arguments.NoDownload:

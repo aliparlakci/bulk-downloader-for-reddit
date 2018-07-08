@@ -91,8 +91,6 @@ Running log read mode for FAILED.json file once after the download is complete i
 ---
 
 ## Running the script
-**IMPORTANT** You *MUST* be in the directory where script.py is located when running. Otherwise the program will not run correctly.  
-  
 **WARNING** *DO NOT* let more than *1* instance of script run as it interferes with IMGUR Request Rate.  
   
 ### Starting for the first time

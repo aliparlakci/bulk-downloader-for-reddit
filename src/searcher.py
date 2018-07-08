@@ -1,10 +1,7 @@
-import argparse
 import os
 import random
 import socket
 import webbrowser
-from pathlib import Path
-from time import localtime, strftime
 
 try:
     import praw
@@ -116,10 +113,7 @@ def getPosts(args):
     """
 
     config = GLOBAL.config
-    if GLOBAL.arguments.auth is not None:
-        reddit = beginPraw(config,GLOBAL.arguments.auth)
-    else:
-        reddit = beginPraw(config)
+    reddit = beginPraw(config)
 
     if args["sort"] == "best":
         raise NoPrawSupport
@@ -128,7 +122,7 @@ def getPosts(args):
         if args["user"] == "me":
             args["user"] = str(reddit.user.me())
 
-    print("\nSEARCHING STARTED\n")
+    print("\nGETTING POSTS\n.\n.\n.\n")
 
     try:
         if args["sort"] == "top" or args["sort"] == "controversial":
@@ -150,7 +144,7 @@ def getPosts(args):
 
         if "subreddit" in args:
             print (
-                "search for {search}search in\n" \
+                "search for \"{search}\" in\n" \
                 "subreddit: {subreddit}\nsort: {sort}\n" \
                 "time: {time}\nlimit: {limit}\n".format(
                     search=args["search"],
@@ -225,12 +219,13 @@ def getPosts(args):
 
     elif "multireddit" in args:
         print (
-            "multireddit: {user}, {subreddit}\nsort: {sort}\n" \
+            "user: {user}\n" \
+            "multireddit: {multireddit}\nsort: {sort}\n" \
             "time: {time}\nlimit: {limit}\n".format(
                 user=args["user"],
                 limit=args["limit"],
                 sort=args["sort"],
-                subreddit=args["subreddit"],
+                multireddit=args["multireddit"],
                 time=args["time"]
             ).upper()
         )
