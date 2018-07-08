@@ -15,7 +15,7 @@ except ModuleNotFoundError:
     install("praw")
     import praw
 
-from prawcore.exceptions import NotFound
+from prawcore.exceptions import NotFound, ResponseException
 
 from src.tools import GLOBAL, createLogFile, jsonFile, printToFile
 from src.errors import (NoMatchingSubmissionFound, NoPrawSupport,
@@ -46,15 +46,13 @@ class GetAuth:
         self.client.send('HTTP/1.1 200 OK\r\n\r\n{}'.format(message).encode('utf-8'))
         self.client.close()
 
-    def getRefreshToken(self):
-        scopes = ['history', 'identity', 'read']
+    def getRefreshToken(self,*scopes):
         state = str(random.randint(0, 65000))
         url = self.redditInstance.auth.url(scopes, state, 'permanent')
         webbrowser.open(url,new=2)
 
         self.client = self.recieve_connection()
         data = self.client.recv(1024).decode('utf-8')
-        print(data)
         param_tokens = data.split(' ', 2)[1].split('?', 1)[1].split('&')
         params = {
             key: value for (key, value) in [token.split('=') \
@@ -71,13 +69,16 @@ class GetAuth:
         refresh_token = self.redditInstance.auth.authorize(params['code'])
         self.send_message(
             "<script>" \
-            "alert(\"You can go back to terminal window now.\");" \
+            "windows.close();"
+            # "alert(\"You can go back to terminal window now.\");" \
             "</script>"
         )
         return (self.redditInstance,refresh_token)
 
 def beginPraw(config,user_agent = str(socket.gethostname())):
     """Start reddit instance"""
+
+    scopes = ['identity','history','read']
     port = "8080"
     arguments = {
         "client_id":GLOBAL.reddit_client_id,
@@ -88,11 +89,21 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
     if "reddit_refresh_token" in GLOBAL.config:
         arguments["refresh_token"] = GLOBAL.config["reddit_refresh_token"]
         reddit = praw.Reddit(**arguments)
-        reddit.auth.scopes()
+        try:
+            reddit.auth.scopes()
+        except ResponseException:
+            arguments["redirect_uri"] = "http://localhost:8080"
+            reddit = praw.Reddit(**arguments)
+            authorizedInstance = GetAuth(reddit,port=port).getRefreshToken(*scopes)
+            reddit = authorizedInstance[0]
+            refresh_token = authorizedInstance[1]
+            jsonFile("config.json").add({
+                "reddit_refresh_token":refresh_token
+            })
     else:
         arguments["redirect_uri"] = "http://localhost:8080"
         reddit = praw.Reddit(**arguments)
-        authorizedInstance = GetAuth(reddit,port=port).getRefreshToken()
+        authorizedInstance = GetAuth(reddit,port=port).getRefreshToken(*scopes)
         reddit = authorizedInstance[0]
         refresh_token = authorizedInstance[1]
         jsonFile("config.json").add({
