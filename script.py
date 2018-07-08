@@ -76,10 +76,6 @@ def parseArguments():
                         help="Get posts from link",
                         metavar="link")
 
-    parser.add_argument("--auth",
-                        help="2FA key.",
-                        metavar="auth")
-
     parser.add_argument("--saved",
                         action="store_true",
                         help="Triggers saved mode")

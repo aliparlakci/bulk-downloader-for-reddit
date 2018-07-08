@@ -118,8 +118,8 @@ Run the script.py file from terminal with command-line arguments. Here is the he
 
 ```console
 $ py -3 script.py --help
-usage: script.py [-h] [--link link] [--auth auth] [--saved] [--submitted]
-                 [--log LOG FILE] [--subreddit SUBREDDIT [SUBREDDIT ...]]
+usage: script.py [-h] [--link link] [--saved] [--submitted] [--log LOG FILE]
+                 [--subreddit SUBREDDIT [SUBREDDIT ...]]
                  [--multireddit MULTIREDDIT] [--user redditor]
                  [--search query] [--sort SORT TYPE] [--limit Limit]
                  [--time TIME_LIMIT] [--NoDownload]
@@ -134,7 +134,6 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --link link, -l link  Get posts from link
-  --auth auth           2FA key.
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
   --log LOG FILE        Triggers log read mode and takes a log file
