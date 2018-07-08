@@ -21,7 +21,7 @@ from src.errors import (NoMatchingSubmissionFound, NoPrawSupport,
 print = printToFile
 
 class GetAuth:
-    def __init__(self,redditInstance,port=8080):
+    def __init__(self,redditInstance,port):
         self.redditInstance = redditInstance
         self.PORT = int(port)
 
@@ -77,7 +77,7 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
     """Start reddit instance"""
     
     scopes = ['identity','history','read']
-    port = "8080"
+    port = "1337"
     arguments = {
         "client_id":GLOBAL.reddit_client_id,
         "client_secret":GLOBAL.reddit_client_secret,
@@ -90,18 +90,18 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
         try:
             reddit.auth.scopes()
         except ResponseException:
-            arguments["redirect_uri"] = "http://localhost:8080"
+            arguments["redirect_uri"] = "http://localhost:" + str(port)
             reddit = praw.Reddit(**arguments)
-            authorizedInstance = GetAuth(reddit,port=port).getRefreshToken(*scopes)
+            authorizedInstance = GetAuth(reddit,port).getRefreshToken(*scopes)
             reddit = authorizedInstance[0]
             refresh_token = authorizedInstance[1]
             jsonFile("config.json").add({
                 "reddit_refresh_token":refresh_token
             })
     else:
-        arguments["redirect_uri"] = "http://localhost:8080"
+        arguments["redirect_uri"] = "http://localhost:" + str(port)
         reddit = praw.Reddit(**arguments)
-        authorizedInstance = GetAuth(reddit,port=port).getRefreshToken(*scopes)
+        authorizedInstance = GetAuth(reddit,port).getRefreshToken(*scopes)
         reddit = authorizedInstance[0]
         refresh_token = authorizedInstance[1]
         jsonFile("config.json").add({
