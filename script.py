@@ -246,6 +246,8 @@ def prepareAttributes():
 
     if GLOBAL.arguments.link is not None:
 
+        GLOBAL.arguments.link = GLOBAL.arguments.link.strip("\"")
+
         try:
             ATTRIBUTES = LinkDesigner(GLOBAL.arguments.link)
         except InvalidRedditLink:
@@ -453,7 +455,6 @@ def main():
     ####### UNCOMMENT TO DEBUG #######
     # debug({})
     ##################################
-
 
     checkConflicts()
 
