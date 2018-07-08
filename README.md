@@ -11,7 +11,6 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 
 - [Requirements](#requirements)
 - [Configuring the APIs](#configuring-the-apis)
-  - [Creating a reddit app](#creating-a-reddit-app)
   - [Creating an imgur app](#creating-an-imgur-app)
 - [Program Modes](#program-modes)
   - [saved mode](#saved-mode)
@@ -44,25 +43,18 @@ You have to check "**Add Python 3 to PATH**" option when installing in order it 
 ## Configuring the APIs
 Because this is not a commercial app, you need to create yourself a reddit and an imgur developer app in order APIs to work.
 
-### Creating a reddit app
-* Go to https://www.reddit.com/prefs/apps/
-* Under **developer apps**, click on **create another app**
-* Enter a name into the **name** field.
-* Select **script**
-* In **redirect uri** field, enter your reddit profile URL.
-* Click **create app** button  
-  
-Your **reddit_client_id** is on the right of the app's icon. And your **reddit_client_secret** is under that.
-
 ### Creating an imgur app
 * Go to https://api.imgur.com/oauth2/addclient
 * Enter a name into the **Application Name** field.
-* Pick **Anonymous usage without user authorization** as an **Authorization type**
+* Pick **Anonymous usage without user authorization** as an **Authorization type**\*
 * Enter your email into the Email field.
 * Correct CHAPTCHA
 * Click **submit** button  
   
 It should redirect to a page which shows your **imgur_client_id** and **imgur_client_secret**
+
+  
+\*Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
 
 ---
 
