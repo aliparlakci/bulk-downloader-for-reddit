@@ -301,7 +301,6 @@ def download(submissions):
     to download each one, catch errors, update the log files
     """
 
-    directory = GLOBAL.directory
     subsLenght = len(submissions)
     lastRequestTime = 0
     downloadedCount = subsLenght
@@ -326,8 +325,11 @@ def download(submissions):
             downloadedCount -= 1
             continue
 
+        directory = GLOBAL.directory / submissions[i]['postSubreddit']
+
         if submissions[i]['postType'] == 'imgur':
             print("IMGUR",end="")
+            
             while int(time.time() - lastRequestTime) <= 2:
                 pass
             credit = Imgur.get_credits()
@@ -349,13 +351,14 @@ def download(submissions):
             if not (credit['UserRemaining'] == 0 or \
                     credit['ClientRemaining'] == 0):
 
+                """This block of code is needed
+                """
                 while int(time.time() - lastRequestTime) <= 2:
                     pass
                 lastRequestTime = time.time()
 
                 try:
-                    Imgur(GLOBAL.directory / submissions[i]['postSubreddit'],
-                          submissions[i])
+                    Imgur(directory,submissions[i])
 
                 except FileAlreadyExistsError:
                     print("It already exists")
@@ -390,8 +393,7 @@ def download(submissions):
         elif submissions[i]['postType'] == 'gfycat':
             print("GFYCAT")
             try:
-                Gfycat(GLOBAL.directory / submissions[i]['postSubreddit'],
-                          submissions[i])
+                Gfycat(directory,submissions[i])
 
             except FileAlreadyExistsError:
                 print("It already exists")
@@ -411,8 +413,7 @@ def download(submissions):
         elif submissions[i]['postType'] == 'direct':
             print("DIRECT")
             try:
-                Direct(GLOBAL.directory / submissions[i]['postSubreddit'],
-                          submissions[i])
+                Direct(directory,submissions[i])
 
             except FileAlreadyExistsError:
                 print("It already exists")
