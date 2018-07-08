@@ -100,6 +100,9 @@ def LinkParser(LINK):
             elif SplittedLink[index] == "saved":
                 RESULT["saved"] = True
 
+        elif not SplittedLink[index] in ["submitted","saved","posts"]:
+            RESULT["submitted"] = {}
+
         elif "?" in SplittedLink[index]:
             ParsedQuery = QueryParser(SplittedLink[index],index)
             if ParsedQuery["HEADER"] == "search":
@@ -184,14 +187,7 @@ def LinkDesigner(LINK):
                     MODE["sort"] = "new"
         else:
             MODE["time"] = "day"
-    
-    if "sort" in attributes:
-        MODE["sort"] = attributes["sort"]
-    elif "sort" in MODE:
-        pass
-    else:
-        MODE["sort"] = "hot"
-                
+               
     if "subreddit" in attributes and not "search" in attributes:
         MODE["subreddit"] = attributes["subreddit"]
 
@@ -205,7 +201,7 @@ def LinkDesigner(LINK):
             elif "sort" in MODE:
                 pass
             else:
-                MODE["sort"] = "hot"
+                MODE["sort"] = "new"
 
             if "t" in attributes["submitted"]:
                 MODE["time"] = attributes["submitted"]["t"]
@@ -218,6 +214,13 @@ def LinkDesigner(LINK):
         elif "multireddit" in attributes:
             MODE["multireddit"] = attributes["multireddit"]
 
+    if "sort" in attributes:
+        MODE["sort"] = attributes["sort"]
+    elif "sort" in MODE:
+        pass
+    else:
+        MODE["sort"] = "hot"
+ 
     return MODE
 
 if __name__ == "__main__":
