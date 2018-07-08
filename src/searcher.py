@@ -45,6 +45,7 @@ class GetAuth:
     def getRefreshToken(self,*scopes):
         state = str(random.randint(0, 65000))
         url = self.redditInstance.auth.url(scopes, state, 'permanent')
+        print("Go to this URL and login to reddit:\n\n",url)
         webbrowser.open(url,new=2)
 
         self.client = self.recieve_connection()
@@ -55,11 +56,13 @@ class GetAuth:
             for token in param_tokens]
         }
         if state != params['state']:
-            send_message(client, 'State mismatch. Expected: {} Received: {}'
-                        .format(state, params['state']))
+            self.send_message(
+                client, 'State mismatch. Expected: {} Received: {}'
+                .format(state, params['state'])
+            )
             raise RedditLoginFailed
         elif 'error' in params:
-            send_message(client, params['error'])
+            self.send_message(client, params['error'])
             raise RedditLoginFailed
         
         refresh_token = self.redditInstance.auth.authorize(params['code'])
