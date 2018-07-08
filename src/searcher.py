@@ -65,8 +65,7 @@ class GetAuth:
         refresh_token = self.redditInstance.auth.authorize(params['code'])
         self.send_message(
             "<script>" \
-            "windows.close();"
-            # "alert(\"You can go back to terminal window now.\");" \
+            "alert(\"You can go back to terminal window now.\");" \
             "</script>"
         )
         return (self.redditInstance,refresh_token)
