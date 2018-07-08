@@ -115,7 +115,9 @@ def LinkParser(LINK):
                 del ParsedQuery["HEADER"]
                 RESULT["queries"] = ParsedQuery
 
-    if not ("saved" in RESULT or "submitted" in RESULT) and \
+    if not ("saved" in RESULT or \
+            "submitted" in RESULT or \
+            "multireddit" in RESULT) and \
        "user" in RESULT:
         RESULT["submitted"] = {}
 
