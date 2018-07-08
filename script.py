@@ -96,8 +96,8 @@ def parseArguments(arguments=[]):
                         type=str)
     
     parser.add_argument("--multireddit",
-                        help="Triggers multreddit mode and takes "\
-                             "multreddit's name without m/",
+                        help="Triggers multireddit mode and takes "\
+                             "multireddit's name without m/",
                         metavar="MULTIREDDIT",
                         type=str)
 
@@ -115,7 +115,7 @@ def parseArguments(arguments=[]):
                         type=str)
 
     parser.add_argument("--sort",
-                        help="Either hot, top, new, controversial, rising" \
+                        help="Either hot, top, new, controversial, rising " \
                              "or relevance default: hot",
                         choices=[
                             "hot","top","new","controversial","rising",
