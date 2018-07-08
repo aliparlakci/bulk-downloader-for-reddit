@@ -3,8 +3,6 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   
 **PLEASE** post any issue you had with the script to [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) tab. Since I don't have any testers or contributers I need your feedback.
 
----
-
 # Table of Contents
 
 - [Requirements](#requirements)
@@ -26,8 +24,6 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [release-1.1.0-prerelease-2](#release-110-prerelease-2)
   - [release-1.1.0-prerelease-1](#release-110-prerelease-1)
   - [release-1.0.0](#release-100)
-  
----
 
 # Requirements
 - Python 3.x*
@@ -37,8 +33,6 @@ You can install Python 3 here: [https://www.python.org/downloads/](https://www.p
 You have to check "**Add Python 3 to PATH**" option when installing in order it to run correctly.
 
 *\*Although the latest version of python is suggested, you can use 3.6.5 since it runs perfectly on that version*
-
----
 
 # Configuring the APIs
 Because this is not a commercial app, you need to create yourself a reddit and an imgur developer app in order APIs to work.
@@ -52,11 +46,8 @@ Because this is not a commercial app, you need to create yourself a reddit and a
 * Click **submit** button  
   
 It should redirect to a page which shows your **imgur_client_id** and **imgur_client_secret**
-
   
 \*Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
-
----
 
 # Program Modes
 All the program modes are activated with command-line arguments as shown [here](#using-the-command-line-arguments)  
@@ -87,8 +78,6 @@ Two log files are created each time *script.py* runs.
 In log mode, the program takes a log file which created by itself, reads posts and tries downloading them again.
 
 Running log read mode for FAILED.json file once after the download is complete is **HIGHLY** recommended as unexpected problems may occur.
-
----
 
 # Running the script
 **WARNING** *DO NOT* let more than *1* instance of script run as it interferes with IMGUR Request Rate.  
@@ -139,9 +128,6 @@ optional arguments:
   --NoDownload          Just gets the posts and store them in a file for
                         downloading later
 ```  
-  
----
-
 
 # Examples
 
@@ -192,8 +178,6 @@ py -3 script.py .\\NEW_FOLDER --subreddit gifs pics funny --sort top --NoDownloa
 # FAQ
 ### I can't startup the script no matter what.
 - Try `python3` or `python` or `py -3` as python have real issues about naming their program
-
----
 
 # Changelog
 ### [release-1.1.0-prerelease-3](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/release-1.1.0-prerelease-3)
