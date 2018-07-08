@@ -120,6 +120,11 @@ def getPosts(args):
     if args["sort"] == "best":
         raise NoPrawSupport
 
+    if "subreddit" in args:
+        if "search" in args:
+            if args["subreddit"] == "frontpage":
+                args["subreddit"] = "all"
+
     if "user" in args:
         if args["user"] == "me":
             args["user"] = str(reddit.user.me())
