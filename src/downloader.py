@@ -1,9 +1,11 @@
 import os
+import ssl
 import sys
 import time
 import urllib.request
 from pathlib import Path
 
+import requests
 
 from src.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError,
                         FileNameTooLong, ImgurLoginError,

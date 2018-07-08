@@ -1,6 +1,9 @@
 import argparse
 import os
 import sys
+import random
+import socket
+import webbrowser
 from pathlib import Path
 from time import localtime, strftime
 
@@ -12,33 +15,101 @@ except ModuleNotFoundError:
     install("praw")
     import praw
 
-from prawcore.exceptions import NotFound
+from prawcore.exceptions import NotFound, ResponseException
 
 from src.tools import GLOBAL, createLogFile, jsonFile, printToFile
 from src.errors import (NoMatchingSubmissionFound, NoPrawSupport,
                         NoRedditSupoort, MultiredditNotFound,
-                        InvalidSortingType)
+                        InvalidSortingType, RedditLoginFailed)
 
 print = printToFile
 
-def beginPraw(config,user_agent = "newApp",TwoFA=False):
+class GetAuth:
+    def __init__(self,redditInstance,port=8080):
+        self.redditInstance = redditInstance
+        self.PORT = int(port)
+
+    def recieve_connection(self):
+        """Wait for and then return a connected socket..
+        Opens a TCP connection on port 8080, and waits for a single client.
+        """
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server.bind(('localhost', self.PORT))
+        server.listen(1)
+        client = server.accept()[0]
+        server.close()
+        return client
+
+    def send_message(self, message):
+        """Send message to client and close the connection."""
+        self.client.send('HTTP/1.1 200 OK\r\n\r\n{}'.format(message).encode('utf-8'))
+        self.client.close()
+
+    def getRefreshToken(self,*scopes):
+        state = str(random.randint(0, 65000))
+        url = self.redditInstance.auth.url(scopes, state, 'permanent')
+        webbrowser.open(url,new=2)
+
+        self.client = self.recieve_connection()
+        data = self.client.recv(1024).decode('utf-8')
+        param_tokens = data.split(' ', 2)[1].split('?', 1)[1].split('&')
+        params = {
+            key: value for (key, value) in [token.split('=') \
+            for token in param_tokens]
+        }
+        if state != params['state']:
+            send_message(client, 'State mismatch. Expected: {} Received: {}'
+                        .format(state, params['state']))
+            raise RedditLoginFailed
+        elif 'error' in params:
+            send_message(client, params['error'])
+            raise RedditLoginFailed
+        
+        refresh_token = self.redditInstance.auth.authorize(params['code'])
+        self.send_message(
+            "<script>" \
+            "windows.close();"
+            # "alert(\"You can go back to terminal window now.\");" \
+            "</script>"
+        )
+        return (self.redditInstance,refresh_token)
+
+def beginPraw(config,user_agent = str(socket.gethostname())):
     """Start reddit instance"""
-    if not TwoFA:
-        return praw.Reddit(client_id = config['reddit_client_id'],
-                           client_secret = (config['reddit_client_secret']),
-                           password = config['reddit_password'],
-                           user_agent = user_agent,
-                           username = config['reddit_username'])
-    if not TwoFA:
-        return praw.Reddit(client_id = config['reddit_client_id'],
-                           client_secret = (config['reddit_client_secret']),
-                           password = (
-                               config['reddit_password']
-                               + ":"
-                               + TwoFA
-                           ),
-                           user_agent = user_agent,
-                           username = config['reddit_username'])
+
+    scopes = ['identity','history','read']
+    port = "8080"
+    arguments = {
+        "client_id":GLOBAL.reddit_client_id,
+        "client_secret":GLOBAL.reddit_client_secret,
+        "user_agent":user_agent
+    }
+
+    if "reddit_refresh_token" in GLOBAL.config:
+        arguments["refresh_token"] = GLOBAL.config["reddit_refresh_token"]
+        reddit = praw.Reddit(**arguments)
+        try:
+            reddit.auth.scopes()
+        except ResponseException:
+            arguments["redirect_uri"] = "http://localhost:8080"
+            reddit = praw.Reddit(**arguments)
+            authorizedInstance = GetAuth(reddit,port=port).getRefreshToken(*scopes)
+            reddit = authorizedInstance[0]
+            refresh_token = authorizedInstance[1]
+            jsonFile("config.json").add({
+                "reddit_refresh_token":refresh_token
+            })
+    else:
+        arguments["redirect_uri"] = "http://localhost:8080"
+        reddit = praw.Reddit(**arguments)
+        authorizedInstance = GetAuth(reddit,port=port).getRefreshToken(*scopes)
+        reddit = authorizedInstance[0]
+        refresh_token = authorizedInstance[1]
+        jsonFile("config.json").add({
+            "reddit_refresh_token":refresh_token
+        })
+    return reddit
 
 def getPosts(args):
     """Call PRAW regarding to arguments and pass it to redditSearcher.
@@ -114,7 +185,7 @@ def getPosts(args):
     if "saved" in args:
         print(
             "saved posts\nuser:{username}\nlimit={limit}\n".format(
-                username=config['reddit_username'],
+                username=reddit.user.me(),
                 limit=args["limit"]
             ).upper()
         )
@@ -176,6 +247,8 @@ def getPosts(args):
             raise MultiredditNotFound
 
     elif "submitted" in args:
+        # TODO
+        # USE REDDIT.USER.ME() INSTEAD WHEN "ME" PASSED AS A --USER
         print (
             "submitted posts of {user}\nsort: {sort}\n" \
             "time: {time}\nlimit: {limit}\n".format(

@@ -34,16 +34,15 @@ def debug(*post):
 def getConfig(configFileName):
     """Read credentials from config.json file"""
 
-    keys = ['reddit_username',
-            'reddit_password',
-            'reddit_client_id',
-            'reddit_client_secret',
-            'imgur_client_id',
+    keys = ['imgur_client_id',
             'imgur_client_secret']
 
     if os.path.exists(configFileName):
         FILE = jsonFile(configFileName)
         content = FILE.read()
+        if "reddit_refresh_token" in content:
+            if content["reddit_refresh_token"] == "":
+                FILE.delete("reddit_refresh_token")
         for key in keys:
             try:
                 if content[key] == "":
@@ -202,9 +201,9 @@ def postFromLog(fileName):
     """Analyze a log file and return a list of dictionaries containing
     submissions
     """
-    try:
-        content = jsonFile(fileName,create=False).read()
-    except FileNotFoundError:
+    if Path.is_file(Path(fileName)):
+        content = jsonFile(fileName).read()
+    else:
         print("File not found")
         quit()
 
