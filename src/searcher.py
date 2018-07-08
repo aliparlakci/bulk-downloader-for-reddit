@@ -54,6 +54,10 @@ def getPosts(args):
     if args["sort"] == "best":
         raise NoPrawSupport
 
+    if "user" in args:
+        if args["user"] == "me":
+            args["user"] = str(reddit.user.me())
+
     print("\nSEARCHING STARTED\n")
 
     try:

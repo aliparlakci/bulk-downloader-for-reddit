@@ -128,9 +128,9 @@ Run the script.py file from terminal with command-line arguments. Here is the he
 $ py -3 script.py --help
 usage: script.py [-h] [--link link] [--auth auth] [--saved] [--submitted]
                  [--log LOG FILE] [--subreddit SUBREDDIT [SUBREDDIT ...]]
-                 [--multireddit MULTIREDDIT] [--user USER] [--search SEARCH]
-                 [--sort SORT TYPE] [--limit Limit] [--time TIME_LIMIT]
-                 [--NoDownload]
+                 [--multireddit MULTIREDDIT] [--user redditor]
+                 [--search query] [--sort SORT TYPE] [--limit Limit]
+                 [--time TIME_LIMIT] [--NoDownload]
                  DIRECTORY
 
 This program downloads media from reddit posts
@@ -142,7 +142,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --link link, -l link  Get posts from link
-  --auth.               2FA key
+  --auth auth           2FA key.
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
   --log LOG FILE        Triggers log read mode and takes a log file
@@ -151,9 +151,9 @@ optional arguments:
                         without r/. use "frontpage" for frontpage
   --multireddit MULTIREDDIT
                         Triggers multreddit mode and takes multreddit's name
-                        without r/. use "me" for frontpage
-  --user USER           reddit username if needed
-  --search SEARCH       Searches for given query in given subreddits
+                        without m/
+  --user redditor       reddit username if needed. use "me" for current user
+  --search query        Searches for given query in given subreddits
   --sort SORT TYPE      Either hot, top, new, controversial, risingor
                         relevance default: hot
   --limit Limit         default: unlimited
@@ -206,7 +206,10 @@ py -3 script.py .\\NEW_FOLDER --subreddit gifs pics funny --sort top --NoDownloa
 ### [release-1.1.0-prerelease-2]()
 
 - Detecting argument conflicts improved
+- "me" can now be used to resemble current user logged in
+- Fixed bug that causes search links not to work
 - Fixed log file mode bug
+- Bug fixes
 
 ### [release-1.1.0-prerelease-1](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/tag/release-1.1.0-prerelease-1)
   

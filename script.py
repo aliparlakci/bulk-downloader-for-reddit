@@ -21,7 +21,7 @@ from src.errors import *
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
-__version__ = "1.1.0-alpha.1"
+__version__ = "release-1.1.0-prerelease-2"
 __maintainer__ = "Ali Parlakci"
 __email__ = "parlakciali@gmail.com"
 
@@ -103,19 +103,21 @@ def parseArguments():
     
     parser.add_argument("--multireddit",
                         help="Triggers multreddit mode and takes "\
-                             "multreddit's name without r/." \
-                             " use \"me\" for frontpage",
+                             "multreddit's name without m/",
                         metavar="MULTIREDDIT",
                         type=str)
 
     parser.add_argument("--user",
-                        help="reddit username if needed",
+                        help="reddit username if needed. use \"me\" for " \
+                             "current user",
                         required="--multireddit" in sys.argv or \
                                  "--submitted" in sys.argv,
+                        metavar="redditor",
                         type=str)
 
     parser.add_argument("--search",
                         help="Searches for given query in given subreddits",
+                        metavar="query",
                         type=str)
 
     parser.add_argument("--sort",
@@ -252,7 +254,7 @@ def prepareAttributes():
             print("Invalid reddit link")
             quit()
 
-        if "search" in ATTRIBUTES:
+        if "search" in ATTRIBUTES and GLOBAL.arguments.search is not None:
             print("It is already a search link")
             quit()
 
@@ -331,16 +333,9 @@ def download(submissions):
 
         if submissions[i]['postType'] == 'imgur':
             print("IMGUR",end="")
-            try:
-                while int(time.time() - lastRequestTime) <= 2:
-                    pass
-                credit = Imgur.get_credits()
-            except ImgurLoginError:
-                exception = "\nImgurLoginError"
-                print(exception)
-                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                downloadedCount -= 1
-                continue
+            while int(time.time() - lastRequestTime) <= 2:
+                pass
+            credit = Imgur.get_credits()
 
             IMGUR_RESET_TIME = credit['UserReset']-time.time()
             USER_RESET = ("after " \
@@ -448,14 +443,15 @@ def download(submissions):
         print(" Total of {} links downloaded!".format(downloadedCount))
 
 def main():
+    GLOBAL.arguments = parseArguments()
+    GLOBAL.directory = Path(GLOBAL.arguments.directory)
+
     GLOBAL.config = getConfig('config.json')
 
     ####### UNCOMMENT TO DEBUG #######
     # debug({})
     ##################################
 
-    GLOBAL.arguments = parseArguments()
-    GLOBAL.directory = Path(GLOBAL.arguments.directory)
 
     checkConflicts()
 
