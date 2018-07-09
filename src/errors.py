@@ -31,6 +31,9 @@ class NoRedditSupoort(Exception):
 class MultiredditNotFound(Exception):
     pass
 
+class InsufficientPermission(Exception):
+    pass
+
 class InvalidSortingType(Exception):
     pass
 

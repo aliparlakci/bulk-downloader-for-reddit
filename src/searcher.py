@@ -11,12 +11,13 @@ except ModuleNotFoundError:
     install("praw")
     import praw
 
-from prawcore.exceptions import NotFound, ResponseException
+from prawcore.exceptions import NotFound, ResponseException, Forbidden
 
 from src.tools import GLOBAL, createLogFile, jsonFile, printToFile
 from src.errors import (NoMatchingSubmissionFound, NoPrawSupport,
                         NoRedditSupoort, MultiredditNotFound,
-                        InvalidSortingType, RedditLoginFailed)
+                        InvalidSortingType, RedditLoginFailed,
+                        InsufficientPermission)
 
 print = printToFile
 
@@ -267,6 +268,22 @@ def getPosts(args):
                 reddit.redditor(args["user"]).submissions,args["sort"]
             ) (**keyword_params)
         )
+
+    elif "upvoted" in args:
+        # TODO
+        # USE REDDIT.USER.ME() INSTEAD WHEN "ME" PASSED AS A --USER
+        print (
+            "upvoted posts of {user}\nlimit: {limit}\n".format(
+                user=args["user"],
+                limit=args["limit"]
+            ).upper()
+        )
+        try:
+            return redditSearcher(
+                reddit.redditor(args["user"]).upvoted(limit=args["limit"])
+            )
+        except Forbidden:
+            raise InsufficientPermission
 
     elif "post" in args:
         print("post: {post}\n".format(post=args["post"]).upper())

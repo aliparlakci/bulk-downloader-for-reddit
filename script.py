@@ -83,6 +83,10 @@ def parseArguments(arguments=[]):
                         action="store_true",
                         help="Gets posts of --user")
 
+    parser.add_argument("--upvoted",
+                        action="store_true",
+                        help="Gets upvoted posts of --user")
+
     parser.add_argument("--log",
                         help="Triggers log read mode and takes a log file",
                         # type=argparse.FileType('r'),
@@ -183,16 +187,34 @@ def checkConflicts():
     else:
         link = 1
 
-    if not saved+subreddit+log+link+submitted == 1:
+    if GLOBAL.arguments.user is None:
+        user = 0
+    else:
+        user = 1
+
+    if GLOBAL.arguments.upvoted is None:
+        upvoted = 0
+    else:
+        upvoted = 1
+
+    if not saved+subreddit+log+link+submitted+upvoted == 1:
         print("Program mode is invalid")
         quit()
     
-    if saved+subreddit == 2:
+    if search+subreddit == 2:
         print("You cannot search in your saved posts")
         quit()
 
-    if saved+submitted == 2:
+    if search+submitted == 2:
         print("You cannot search in submitted posts")
+        quit()
+
+    if search+upvoted == 2:
+        print("You cannot search in upvoted posts")
+        quit()
+
+    if upvoted+subreddit == 1 and user == 0:
+        print("No redditor name given")
         quit()
 
 def postFromLog(fileName):
@@ -269,6 +291,9 @@ def prepareAttributes():
 
     elif GLOBAL.arguments.saved is True:
         ATTRIBUTES["saved"] = True
+
+    elif GLOBAL.arguments.upvoted is True:
+        ATTRIBUTES["upvoted"] = True
 
     elif GLOBAL.arguments.submitted is not None:
         ATTRIBUTES["submitted"] = True
@@ -469,6 +494,9 @@ def main():
 
     try:
         POSTS = getPosts(prepareAttributes())
+    except InsufficientPermission:
+        print("You do not have permission to do that")
+        quit()
     except NoMatchingSubmissionFound:
         print("No matching submission was found")
         quit()

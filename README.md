@@ -11,6 +11,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - [Program Modes](#program-modes)
   - [saved mode](#saved-mode)
   - [submitted mode](#submitted-mode)
+  - [upvoted mode](#upvoted-mode)
   - [subreddit mode](#subreddit-mode)
   - [multireddit mode](#multireddit-mode)
   - [link mode](#link-mode)
@@ -55,6 +56,8 @@ All the program modes are activated with command-line arguments as shown [here](
 In saved mode, the program gets posts from given user's saved posts.
 ### submitted mode
 In submitted mode, the program gets posts from given user's submitted posts.
+### upvoted mode
+In submitted mode, the program gets posts from given user's upvoted posts.
 ### subreddit mode
 In subreddit mode, the program gets posts from given subreddits* that is sorted by given type and limited by given number.  
   
@@ -93,8 +96,8 @@ Run the script.py file from terminal with command-line arguments. Here is the he
 
 ```console
 $ py -3 script.py --help
-usage: script.py [-h] [--link link] [--saved] [--submitted] [--log LOG FILE]
-                 [--subreddit SUBREDDIT [SUBREDDIT ...]]
+usage: script.py [-h] [--link link] [--saved] [--submitted] [--upvoted]
+                 [--log LOG FILE] [--subreddit SUBREDDIT [SUBREDDIT ...]]
                  [--multireddit MULTIREDDIT] [--user redditor]
                  [--search query] [--sort SORT TYPE] [--limit Limit]
                  [--time TIME_LIMIT] [--NoDownload]
@@ -111,6 +114,7 @@ optional arguments:
   --link link, -l link  Get posts from link
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
+  --upvoted             Gets upvoted posts of --user
   --log LOG FILE        Triggers log read mode and takes a log file
   --subreddit SUBREDDIT [SUBREDDIT ...]
                         Triggers subreddit mode and takes subreddit's name
