@@ -21,8 +21,8 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - [FAQ](#faq)
 - [Changelog](#changelog)
   - [release-1.1.0-prerelease-3](#release-110-prerelease-3)
-  - [release-1.1.0-prerelease-2 (deprecated)](#release-110-prerelease-2)
-  - [release-1.1.0-prerelease-1 (deprecated)](#release-110-prerelease-1)
+  - [release-1.1.0-prerelease-2 (deprecated)](#release-110-prerelease-2-deprecated)
+  - [release-1.1.0-prerelease-1 (deprecated)](#release-110-prerelease-1-deprecated)
   - [release-1.0.0](#release-100)
 
 ## Requirements
