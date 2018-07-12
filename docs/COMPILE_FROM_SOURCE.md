@@ -28,4 +28,4 @@ Enter these lines to terminal windows until it prints out the version you have d
 - `py -3.6 --version`
 - `py -3.7 --version`
   
-As you find it, use it at [using command-line arguments](COMMAND_LINE_ARGUMENTS.md)
+Once you find it, use it at [Using command-line arguments](COMMAND_LINE_ARGUMENTS.md)
