@@ -3,7 +3,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   
 **PLEASE** post any issue you have with the script to [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) tab. Since I don't have any testers or contributers I need your feedback.
 
-## What can it do?
+## What it can do
 - Can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
 - Sorts posts by hot, top, new and so on
 - Downloads imgur albums, gfycat links, [self posts](#i-can-t-open-the-self-post-files-) and any link to a direct image
@@ -16,7 +16,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 
 ## [Download the latest release](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
 
-## Running the script
+## How it works
   
 For **Windows** users, there is an executable file to run easily without installing a third party program. But if you are a paranoid like me, you can **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
   
