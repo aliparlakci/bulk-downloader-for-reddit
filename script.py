@@ -329,7 +329,7 @@ class PromptUser:
         sites = ["imgur","gfycat","direct","self"]
                 
         excludeInput = input("exclude: ").lower()
-        if not excludeInput in sites and excludeInput != "":
+        if excludeInput in sites and excludeInput != "":
             GLOBAL.arguments.exclude = [excludeInput]
 
         while not excludeInput == "":
@@ -476,7 +476,7 @@ def download(submissions):
     downloadedCount = subsLenght
     duplicates = 0
     BACKUP = {}
-
+    ToBeDownloaded = GLOBAL.arguments.exclude
     FAILED_FILE = createLogFile("FAILED")
 
     for i in range(subsLenght):
@@ -498,7 +498,7 @@ def download(submissions):
 
         directory = GLOBAL.directory / submissions[i]['postSubreddit']
 
-        if submissions[i]['postType'] == 'imgur':
+        if submissions[i]['postType'] == 'imgur' and not 'imgur' in ToBeDownloaded:
             print("IMGUR",end="")
             
             while int(time.time() - lastRequestTime) <= 2:
@@ -561,7 +561,7 @@ def download(submissions):
                 )
                 downloadedCount -= 1
 
-        elif submissions[i]['postType'] == 'gfycat':
+        elif submissions[i]['postType'] == 'gfycat' and not 'gfycat' in ToBeDownloaded:
             print("GFYCAT")
             try:
                 Gfycat(directory,submissions[i])
@@ -581,7 +581,7 @@ def download(submissions):
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
 
-        elif submissions[i]['postType'] == 'direct':
+        elif submissions[i]['postType'] == 'direct' and not 'direct' in ToBeDownloaded:
             print("DIRECT")
             try:
                 Direct(directory,submissions[i])
@@ -596,7 +596,7 @@ def download(submissions):
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
         
-        elif submissions[i]['postType'] == 'self':
+        elif submissions[i]['postType'] == 'self' and not 'self' in ToBeDownloaded:
             print("SELF")
             try:
                 Self(directory,submissions[i])
