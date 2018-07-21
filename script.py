@@ -324,21 +324,31 @@ class PromptUser:
                 if Path(GLOBAL.arguments.log ).is_file():
                     break 
 
-        # TODO
-        # GET EXCLUDED LINKS
-        #
-        # subredditInput = input("subreddit: ")
-        # GLOBAL.arguments.subreddit = subredditInput
+        GLOBAL.arguments.exclude = []
 
-        # while not subredditInput == "":
-        #     subredditInput = input("subreddit: ")
-        #     GLOBAL.arguments.subreddit += "+" + subredditInput
+        sites = ["imgur","gfycat","direct","self"]
+                
+        excludeInput = input("exclude: ").lower()
+        if not excludeInput in sites and excludeInput != "":
+            GLOBAL.arguments.exclude = [excludeInput]
 
-        # if " " in GLOBAL.arguments.subreddit:
-        #     GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
+        while not excludeInput == "":
+            while True:
+                excludeInput = input("exclude: ").lower()
+                if not excludeInput in sites or excludeInput in GLOBAL.arguments.exclude:
+                    break
+                elif excludeInput == "":
+                    break
+                else:
+                    GLOBAL.arguments.exclude.append(excludeInput)
 
-        # # DELETE THE PLUS (+) AT THE END
-        # GLOBAL.arguments.subreddit = GLOBAL.arguments.subreddit[:-1]
+        for i in range(len(GLOBAL.arguments.exclude)):
+            if " " in GLOBAL.arguments.exclude[i]:
+                inputWithWhitespace = GLOBAL.arguments.exclude[i]
+                del GLOBAL.arguments.exclude[i]
+                for siteInput in inputWithWhitespace.split():
+                    if siteInput in sites and siteInput not in GLOBAL.arguments.exclude:
+                        GLOBAL.arguments.exclude.append(siteInput)
 
         while True:
             try:
