@@ -143,6 +143,12 @@ def parseArguments(arguments=[]):
                              " for downloading later",
                         action="store_true",
                         default=False)
+    
+    parser.add_argument("--exclude",
+                        nargs="+",
+                        help="Do not download specified links",
+                        choices=["imgur","gfycat","direct","self"],
+                        type=str)
 
     if arguments == []:
         return parser.parse_args()
@@ -317,6 +323,22 @@ class PromptUser:
                 GLOBAL.arguments.log = input("\nlog file directory:")
                 if Path(GLOBAL.arguments.log ).is_file():
                     break 
+
+        # TODO
+        # GET EXCLUDED LINKS
+        #
+        # subredditInput = input("subreddit: ")
+        # GLOBAL.arguments.subreddit = subredditInput
+
+        # while not subredditInput == "":
+        #     subredditInput = input("subreddit: ")
+        #     GLOBAL.arguments.subreddit += "+" + subredditInput
+
+        # if " " in GLOBAL.arguments.subreddit:
+        #     GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
+
+        # # DELETE THE PLUS (+) AT THE END
+        # GLOBAL.arguments.subreddit = GLOBAL.arguments.subreddit[:-1]
 
         while True:
             try:
