@@ -472,20 +472,80 @@ def postExists(POST):
     else:
         return False
 
+def downloadPost(SUBMISSION,EXCLUDE):
+    directory = GLOBAL.directory / SUBMISSION['postSubreddit']
+
+    global lastRequestTime
+
+    if SUBMISSION['postType'] == 'imgur' and not 'imgur' in EXCLUDE:
+        print("IMGUR",end="")
+        
+        while int(time.time() - lastRequestTime) <= 2:
+            pass
+        credit = Imgur.get_credits()
+
+        IMGUR_RESET_TIME = credit['UserReset']-time.time()
+        USER_RESET = ("after " \
+                        + str(int(IMGUR_RESET_TIME/60)) \
+                        + " Minutes " \
+                        + str(int(IMGUR_RESET_TIME%60)) \
+                        + " Seconds") 
+        print(
+            " => Client: {} - User: {} - Reset {}".format(
+                credit['ClientRemaining'],
+                credit['UserRemaining'],
+                USER_RESET
+            )
+        )
+
+        if not (credit['UserRemaining'] == 0 or \
+                credit['ClientRemaining'] == 0):
+
+            """This block of code is needed
+            """
+            while int(time.time() - lastRequestTime) <= 2:
+                pass
+            lastRequestTime = time.time()
+            Imgur(directory,SUBMISSION)
+
+        else:
+            if credit['UserRemaining'] == 0:
+                KEYWORD = "user"
+            elif credit['ClientRemaining'] == 0:
+                KEYWORD = "client"
+
+            raise ImgurLimitError('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
+
+    elif SUBMISSION['postType'] == 'gfycat' and not 'gfycat' in EXCLUDE:
+        print("GFYCAT")
+        Gfycat(directory,SUBMISSION)
+
+    elif SUBMISSION['postType'] == 'direct' and not 'direct' in EXCLUDE:
+        print("DIRECT")
+        Direct(directory,SUBMISSION)
+    
+    elif SUBMISSION['postType'] == 'self' and not 'self' in EXCLUDE:
+        print("SELF")
+        Self(directory,SUBMISSION)
+
+    else:
+        raise NoSuitablePost
+
 def download(submissions):
     """Analyze list of submissions and call the right function
     to download each one, catch errors, update the log files
     """
 
     subsLenght = len(submissions)
+    global lastRequestTime
     lastRequestTime = 0
     downloadedCount = subsLenght
     duplicates = 0
-    BACKUP = {}
+
     if GLOBAL.arguments.exclude is not None:
-        ToBeDownloaded = GLOBAL.arguments.exclude
+        DoNotDownload = GLOBAL.arguments.exclude
     else:
-        ToBeDownloaded = []
+        DoNotDownload = []
 
     FAILED_FILE = createLogFile("FAILED")
 
@@ -499,131 +559,45 @@ def download(submissions):
         )
 
         if postExists(submissions[i]):
-            result = False
             print(submissions[i]['postType'].upper())
             print("It already exists")
             duplicates += 1
             downloadedCount -= 1
             continue
 
-        directory = GLOBAL.directory / submissions[i]['postSubreddit']
-
-        if submissions[i]['postType'] == 'imgur' and not 'imgur' in ToBeDownloaded:
-            print("IMGUR",end="")
-            
-            while int(time.time() - lastRequestTime) <= 2:
-                pass
-            credit = Imgur.get_credits()
-
-            IMGUR_RESET_TIME = credit['UserReset']-time.time()
-            USER_RESET = ("after " \
-                          + str(int(IMGUR_RESET_TIME/60)) \
-                          + " Minutes " \
-                          + str(int(IMGUR_RESET_TIME%60)) \
-                          + " Seconds") 
-            print(
-                " => Client: {} - User: {} - Reset {}".format(
-                    credit['ClientRemaining'],
-                    credit['UserRemaining'],
-                    USER_RESET
-                )
-            )
-
-            if not (credit['UserRemaining'] == 0 or \
-                    credit['ClientRemaining'] == 0):
-
-                """This block of code is needed
-                """
-                while int(time.time() - lastRequestTime) <= 2:
-                    pass
-                lastRequestTime = time.time()
-
-                try:
-                    Imgur(directory,submissions[i])
-
-                except FileAlreadyExistsError:
-                    print("It already exists")
-                    duplicates += 1
-                    downloadedCount -= 1
-
-                except ImgurLoginError:
-                    print(
-                        "Imgur login failed. Quitting the program "\
-                        "as unexpected errors might occur."
-                    )
-                    sys.exit()
-
-                except Exception as exception:
-                    print(exception)
-                    FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                    downloadedCount -= 1
-
-            else:
-                if credit['UserRemaining'] == 0:
-                    KEYWORD = "user"
-                elif credit['ClientRemaining'] == 0:
-                    KEYWORD = "client"
-
-                print('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
-                FAILED_FILE.add(
-                    {int(i+1):['{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()),
-                               submissions[i]]}
-                )
-                downloadedCount -= 1
-
-        elif submissions[i]['postType'] == 'gfycat' and not 'gfycat' in ToBeDownloaded:
-            print("GFYCAT")
-            try:
-                Gfycat(directory,submissions[i])
-
-            except FileAlreadyExistsError:
-                print("It already exists")
-                duplicates += 1
-                downloadedCount -= 1
-                
-            except NotADownloadableLinkError as exception:
-                print(exception)
-                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                downloadedCount -= 1
-
-            except Exception as exception:
-                print(exception)
-                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                downloadedCount -= 1
-
-        elif submissions[i]['postType'] == 'direct' and not 'direct' in ToBeDownloaded:
-            print("DIRECT")
-            try:
-                Direct(directory,submissions[i])
-
-            except FileAlreadyExistsError:
-                print("It already exists")
-                downloadedCount -= 1
-                duplicates += 1
-
-            except Exception as exception:
-                print(exception)
-                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                downloadedCount -= 1
+        try:
+            downloadPost(submissions[i],DoNotDownload)
         
-        elif submissions[i]['postType'] == 'self' and not 'self' in ToBeDownloaded:
-            print("SELF")
-            try:
-                Self(directory,submissions[i])
+        except FileAlreadyExistsError:
+            print("It already exists")
+            duplicates += 1
+            downloadedCount -= 1
 
-            except FileAlreadyExistsError:
-                print("It already exists")
-                downloadedCount -= 1
-                duplicates += 1
+        except ImgurLoginError:
+            print(
+                "Imgur login failed. \nQuitting the program "\
+                "as unexpected errors might occur."
+            )
+            sys.exit()
 
-            except Exception as exception:
-                print(exception)
-                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-                downloadedCount -= 1
+        except ImgurLimitError as exception:
+            FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+            downloadedCount -= 1
 
-        else:
+        except NotADownloadableLinkError as exception:
+            print(exception)
+            FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+            downloadedCount -= 1
+
+        except NoSuitablePost:
             print("No match found, skipping...")
             downloadedCount -= 1
+        
+        except Exception as exception:
+            raise exception
+            # print(exception)
+            # FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+            # downloadedCount -= 1
 
     if duplicates:
         print("\n There was {} duplicates".format(duplicates))
@@ -705,10 +679,12 @@ if __name__ == "__main__":
         print = printToFile
         GLOBAL.RUN_TIME = time.time()
         main()
+
     except KeyboardInterrupt:
         if GLOBAL.directory is None:
             GLOBAL.directory = Path(".\\")
         print("\nQUITTING...")
+        
     except Exception as exception:
         if GLOBAL.directory is None:
             GLOBAL.directory = Path(".\\")
