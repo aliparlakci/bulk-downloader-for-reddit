@@ -6,6 +6,7 @@ saved posts from a reddit account. It is written in Python 3.
 """
 
 import argparse
+import asyncio
 import logging
 import os
 import sys
@@ -477,59 +478,60 @@ def downloadPost(SUBMISSION,EXCLUDE):
 
     global lastRequestTime
 
-    if SUBMISSION['postType'] == 'imgur' and not 'imgur' in EXCLUDE:
-        print("IMGUR",end="")
-        
-        while int(time.time() - lastRequestTime) <= 2:
-            pass
-        credit = Imgur.get_credits()
+    downloaders = {"imgur":Imgur,"gfycat":Gfycat,"direct":Direct,"self":Self}
 
-        IMGUR_RESET_TIME = credit['UserReset']-time.time()
-        USER_RESET = ("after " \
-                        + str(int(IMGUR_RESET_TIME/60)) \
-                        + " Minutes " \
-                        + str(int(IMGUR_RESET_TIME%60)) \
-                        + " Seconds") 
-        print(
-            " => Client: {} - User: {} - Reset {}".format(
-                credit['ClientRemaining'],
-                credit['UserRemaining'],
-                USER_RESET
-            )
-        )
+    if SUBMISSION['postType'] in downloaders and \
+       not SUBMISSION['postType'] in EXCLUDE:
 
-        if not (credit['UserRemaining'] == 0 or \
-                credit['ClientRemaining'] == 0):
+        print(SUBMISSION['postType'].upper())
 
-            """This block of code is needed
-            """
-            while int(time.time() - lastRequestTime) <= 2:
+        if SUBMISSION['postType'] == "imgur":
+            
+            if int(time.time() - lastRequestTime) <= 2:
                 pass
-            lastRequestTime = time.time()
-            Imgur(directory,SUBMISSION)
+                # await asyncio.sleep(time.time() - lastRequestTime)
 
-        else:
-            if credit['UserRemaining'] == 0:
-                KEYWORD = "user"
-            elif credit['ClientRemaining'] == 0:
-                KEYWORD = "client"
+            credit = Imgur.get_credits()
 
-            raise ImgurLimitError('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
+            IMGUR_RESET_TIME = credit['UserReset']-time.time()
+            USER_RESET = ("after " \
+                            + str(int(IMGUR_RESET_TIME/60)) \
+                            + " Minutes " \
+                            + str(int(IMGUR_RESET_TIME%60)) \
+                            + " Seconds") 
 
-    elif SUBMISSION['postType'] == 'gfycat' and not 'gfycat' in EXCLUDE:
-        print("GFYCAT")
-        Gfycat(directory,SUBMISSION)
+            print(
+                "Client: {} - User: {} - Reset {}".format(
+                    credit['ClientRemaining'],
+                    credit['UserRemaining'],
+                    USER_RESET
+                )
+            )
 
-    elif SUBMISSION['postType'] == 'direct' and not 'direct' in EXCLUDE:
-        print("DIRECT")
-        Direct(directory,SUBMISSION)
-    
-    elif SUBMISSION['postType'] == 'self' and not 'self' in EXCLUDE:
-        print("SELF")
-        Self(directory,SUBMISSION)
+            if not (credit['UserRemaining'] == 0 or \
+                    credit['ClientRemaining'] == 0):
+
+                """This block of code is needed
+                """
+                if int(time.time() - lastRequestTime) <= 2:
+                    pass
+                    # await asyncio.sleep(time.time() - lastRequestTime)
+                lastRequestTime = time.time()
+
+            else:
+                if credit['UserRemaining'] == 0:
+                    KEYWORD = "user"
+                elif credit['ClientRemaining'] == 0:
+                    KEYWORD = "client"
+
+                raise ImgurLimitError('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
+
+        downloaders[SUBMISSION['postType']] (directory,SUBMISSION)
 
     else:
         raise NoSuitablePost
+
+    return None
 
 def download(submissions):
     """Analyze list of submissions and call the right function
@@ -607,6 +609,8 @@ def download(submissions):
 
     else:
         print(" Total of {} links downloaded!".format(downloadedCount))
+
+    return None
 
 def main():
     GLOBAL.arguments = parseArguments()
@@ -686,10 +690,11 @@ if __name__ == "__main__":
         print("\nQUITTING...")
         
     except Exception as exception:
+        raise exception
         if GLOBAL.directory is None:
             GLOBAL.directory = Path(".\\")
         logging.error(sys.exc_info()[0].__name__,
                       exc_info=full_exc_info(sys.exc_info()))
         print(log_stream.getvalue())
 
-    input("Press enter to quit\n")
+    input("\nPress enter to quit\n")
