@@ -6,7 +6,6 @@ saved posts from a reddit account. It is written in Python 3.
 """
 
 import argparse
-import asyncio
 import logging
 import os
 import sys
@@ -489,7 +488,6 @@ def downloadPost(SUBMISSION,EXCLUDE):
             
             if int(time.time() - lastRequestTime) <= 2:
                 pass
-                # await asyncio.sleep(time.time() - lastRequestTime)
 
             credit = Imgur.get_credits()
 
@@ -515,7 +513,7 @@ def downloadPost(SUBMISSION,EXCLUDE):
                 """
                 if int(time.time() - lastRequestTime) <= 2:
                     pass
-                    # await asyncio.sleep(time.time() - lastRequestTime)
+
                 lastRequestTime = time.time()
 
             else:
@@ -596,10 +594,10 @@ def download(submissions):
             downloadedCount -= 1
         
         except Exception as exception:
-            raise exception
-            # print(exception)
-            # FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-            # downloadedCount -= 1
+            # raise exception
+            print(exception)
+            FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+            downloadedCount -= 1
 
     if duplicates:
         print("\n There was {} duplicates".format(duplicates))
@@ -690,7 +688,6 @@ if __name__ == "__main__":
         print("\nQUITTING...")
         
     except Exception as exception:
-        raise exception
         if GLOBAL.directory is None:
             GLOBAL.directory = Path(".\\")
         logging.error(sys.exc_info()[0].__name__,
