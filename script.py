@@ -13,7 +13,7 @@ import time
 from io import StringIO
 from pathlib import Path, PurePath
 
-from src.downloader import Direct, Gfycat, Imgur, Self
+from src.downloader import Direct, Gfycat, Imgur, Self, Erome
 from src.errors import *
 from src.parser import LinkDesigner
 from src.searcher import getPosts
@@ -329,15 +329,15 @@ class PromptUser:
 
         GLOBAL.arguments.exclude = []
 
-        sites = ["imgur","gfycat","direct","self"]
+        sites = ["imgur","gfycat","erome","direct","self"]
                 
-        excludeInput = input("exclude: ").lower()
+        excludeInput = input("exclude (leave blank for none): ").lower()
         if excludeInput in sites and excludeInput != "":
             GLOBAL.arguments.exclude = [excludeInput]
 
         while not excludeInput == "":
             while True:
-                excludeInput = input("exclude: ").lower()
+                excludeInput = input("exclude (leave blank for none): ").lower()
                 if not excludeInput in sites or excludeInput in GLOBAL.arguments.exclude:
                     break
                 elif excludeInput == "":
@@ -477,7 +477,9 @@ def downloadPost(SUBMISSION,EXCLUDE):
 
     global lastRequestTime
 
-    downloaders = {"imgur":Imgur,"gfycat":Gfycat,"direct":Direct,"self":Self}
+    downloaders = {
+        "imgur":Imgur,"gfycat":Gfycat,"erome":Erome,"direct":Direct,"self":Self
+    }
 
     if SUBMISSION['postType'] in downloaders and \
        not SUBMISSION['postType'] in EXCLUDE:
@@ -607,8 +609,6 @@ def download(submissions):
 
     else:
         print(" Total of {} links downloaded!".format(downloadedCount))
-
-    return None
 
 def main():
     GLOBAL.arguments = parseArguments()
