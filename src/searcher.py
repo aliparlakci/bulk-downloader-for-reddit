@@ -405,7 +405,7 @@ def checkIfMatching(submission):
 
     elif 'erome' in submission.domain:
         details['postType'] = 'erome'
-        imgurCount += 1
+        eromeCount += 1
         return details
 
     elif isDirectLink(submission.url) is not False:

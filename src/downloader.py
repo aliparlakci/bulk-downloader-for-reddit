@@ -104,8 +104,8 @@ class Erome:
             try:
                 getFile(fileDir,tempDir,imageURL)
             except FileNameTooLong:
-                fileDir = directory / post['postId'] + extension
-                tempDir = directory / post['postId'] + '.tmp'
+                fileDir = directory / (post['postId'] + extension)
+                tempDir = directory / (post['postId'] + '.tmp')
                 getFile(fileDir,tempDir,imageURL)
 
         else:
@@ -151,7 +151,7 @@ class Erome:
 
             if duplicates == imagesLenght:
                 raise FileAlreadyExistsError
-            elif howManyDownloaded < imagesLenght:
+            elif howManyDownloaded + duplicates < imagesLenght:
                 raise AlbumNotDownloadedCompletely(
                     "Album Not Downloaded Completely"
                 )
@@ -300,7 +300,7 @@ class Imgur:
 
             if duplicates == imagesLenght:
                 raise FileAlreadyExistsError
-            elif howManyDownloaded < imagesLenght:
+            elif howManyDownloaded + duplicates < imagesLenght:
                 raise AlbumNotDownloadedCompletely(
                     "Album Not Downloaded Completely"
                 )
