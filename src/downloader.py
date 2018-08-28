@@ -1,15 +1,15 @@
 import io
+import json
 import os
 import sys
-import json
 import urllib.request
-from bs4 import BeautifulSoup
 from html.parser import HTMLParser
+from multiprocessing import Queue
 from pathlib import Path
 from urllib.error import HTTPError
 
 import imgurpython
-from multiprocessing import Queue
+from bs4 import BeautifulSoup
 
 from src.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError,
                         FileNameTooLong, ImgurLoginError,
