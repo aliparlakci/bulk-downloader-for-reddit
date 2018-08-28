@@ -1,7 +1,9 @@
 import io
 import os
 import sys
+import json
 import urllib.request
+from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.error import HTTPError
@@ -442,24 +444,16 @@ class Gfycat:
 
         url = "https://gfycat.com/" + url.split('/')[-1]
 
-        pageSource = (urllib.request.urlopen(url).read().decode().split('\n'))
+        pageSource = (urllib.request.urlopen(url).read().decode())
 
-        theLine = pageSource[lineNumber]
-        lenght = len(query)
-        link = []
+        soup = BeautifulSoup(pageSource, "html.parser")
+        attributes = {"data-react-helmet":"true","type":"application/ld+json"}
+        content = soup.find("script",attrs=attributes)
 
-        for i in range(len(theLine)):
-            if theLine[i:i+lenght] == query:
-                cursor = (i+lenght)+1
-                while not theLine[cursor] == '"':
-                    link.append(theLine[cursor])
-                    cursor += 1
-                break
-
-        if "".join(link) == "":
+        if content is None:
             raise NotADownloadableLinkError("Could not read the page source")
 
-        return "".join(link)
+        return json.loads(content.text)["video"]["contentUrl"]
 
 class Direct:
     def __init__(self,directory,POST):
