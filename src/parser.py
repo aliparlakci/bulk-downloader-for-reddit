@@ -92,7 +92,7 @@ def LinkParser(LINK):
             if index == 0:
                 RESULT["subreddit"] = "frontpage"
         
-        elif SplittedLink[index] in ["submitted","saved","posts","upvoted"]:
+        elif SplittedLink[index] in ["submitted","saved","posts","upvoted","downvoted"]:
             if SplittedLink[index] == "submitted" or \
                SplittedLink[index] == "posts":
                 RESULT["submitted"] = {}
@@ -102,6 +102,9 @@ def LinkParser(LINK):
             
             elif SplittedLink[index] == "upvoted":
                 RESULT["upvoted"] = True
+
+            elif SplittedLink[index] == "downvoted":
+                RESULT["downvoted"] = True
 
         elif "?" in SplittedLink[index]:
             ParsedQuery = QueryParser(SplittedLink[index],index)
@@ -119,6 +122,7 @@ def LinkParser(LINK):
                 RESULT["queries"] = ParsedQuery
 
     if not ("upvoted" in RESULT or \
+            "downvoted" in RESULT or \
             "saved" in RESULT or \
             "submitted" in RESULT or \
             "multireddit" in RESULT) and \
@@ -221,6 +225,9 @@ def LinkDesigner(LINK):
 
         elif "upvoted" in attributes:
             MODE["upvoted"] = True
+
+        elif "downvoted" in attributes:
+            MODE["downvoted"] = True
         
         elif "multireddit" in attributes:
             MODE["multireddit"] = attributes["multireddit"]
