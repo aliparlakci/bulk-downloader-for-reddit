@@ -5,8 +5,8 @@ See **[compiling from source](INTERPRET_FROM_SOURCE.md)** page first unless you 
 ***Use*** `.\bulk-downloader-for-reddit.exe` ***or*** `./bulk-downloader-for-reddit` ***if you are using the executable***.
 ```console
 $ python script.py --help
-usage: script.py [-h] [--directory DIRECTORY] [--NoDownload] [--verbose]
-                 [--quit] [--link link] [--saved] [--submitted] [--upvoted]
+usage: script.py [-h] [--directory DIRECTORY] [--NoDownload] [--verbose] [--quit]
+                 [--link link] [--saved] [--submitted] [--upvoted] [--downvoted]
                  [--log LOG FILE] [--subreddit SUBREDDIT [SUBREDDIT ...]]
                  [--multireddit MULTIREDDIT] [--user redditor]
                  [--search query] [--sort SORT TYPE] [--limit Limit]
@@ -27,6 +27,7 @@ optional arguments:
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
   --upvoted             Gets upvoted posts of --user
+  --downvoted           Gets downvoted posts of --user
   --log LOG FILE        Takes a log file which created by itself (json files),
                         reads posts and tries downloading them again.
   --subreddit SUBREDDIT [SUBREDDIT ...]

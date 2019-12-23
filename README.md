@@ -6,7 +6,7 @@ Downloads media from reddit posts. Made by [u/aliparlakci](https://reddit.com/u/
 
 ## What it can do
 
-- Can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
+- Can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted, downvoted and saved posts; search results or just plain reddit links
 - Sorts posts by hot, top, new and so on
 - Downloads **REDDIT** images and videos, **IMGUR** images and albums, **GFYCAT** links, **EROME** images and albums, **SELF POSTS** and any link to a **DIRECT IMAGE**
 - Skips the existing ones
@@ -67,7 +67,8 @@ select program mode:
     [3] multireddit
     [4] submitted
     [5] upvoted
-    [6] saved
+    [6] downvoted
+    [7] saved
     [7] log
     [0] exit
 
