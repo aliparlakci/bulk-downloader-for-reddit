@@ -280,6 +280,20 @@ def getPosts(args):
         except Forbidden:
             raise InsufficientPermission("You do not have permission to do that")
 
+    elif "downvoted" in args:
+        print (
+            "downvoted posts of {user}\nlimit: {limit}\n".format(
+                user=args["user"],
+                limit=args["limit"]
+            ).upper(),noPrint=True
+        )
+        try:
+            return redditSearcher(
+                reddit.redditor(args["user"]).downvoted(limit=args["limit"])
+            )
+        except Forbidden:
+            raise InsufficientPermission("You do not have permission to do that")
+
     elif "post" in args:
         print("post: {post}\n".format(post=args["post"]).upper(),noPrint=True)
         return redditSearcher(
