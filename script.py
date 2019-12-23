@@ -213,11 +213,18 @@ def checkConflicts():
     if search+values["upvoted"] == 2:
         raise SearchModeError("You cannot search in upvoted posts")
 
+    if search+values["downvoted"] == 2:
+        raise SearchModeError("You cannot search in downvoted posts")
+
     if search+values["log"] == 2:
         raise SearchModeError("You cannot search in log files")
 
     if values["upvoted"]+values["submitted"] == 1 and user == 0:
         raise RedditorNameError("No redditor name given")
+
+    if values["downvoted"]+values["submitted"] == 1 and user == 0:
+        raise RedditorNameError("No redditor name given")
+
 
 class PromptUser:
     @staticmethod
