@@ -29,7 +29,7 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
             """
             server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            server.bind(('localhost', self.PORT))
+            server.bind(('0.0.0.0', self.PORT))
             server.listen(1)
             client = server.accept()[0]
             server.close()
