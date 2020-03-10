@@ -6,4 +6,4 @@ src/__pycache__/
 config.json
 env/
 .DS_Store
-download/
+downloads/
