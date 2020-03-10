@@ -1,0 +1,12 @@
+version: "3"
+services:
+  reddit_dl:
+    image: reddit_dl
+    build: .
+    ports:
+      - "8080:8080"
+      - "1337:1337"
+    volumes:
+      - "./:/root/Bulk Downloader for Reddit"
+    container_name: reddit_dl_container
+    network_mode: bridge
