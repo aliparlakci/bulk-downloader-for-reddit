@@ -19,27 +19,35 @@ Downloads media from reddit posts. Made by [u/aliparlakci](https://reddit.com/u/
 
 You can use it either as a `bulk-downloader-for-reddit.exe` executable file for Windows, as a Linux binary or as a *[Python script](#python-script)*. There is no MacOS executable, MacOS users must use the Python script option. 
 
-### Executables
+### Prerequisites
 
-For Windows and Linux, [download the latest executables, here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest).
-
-### Python script
-
-* Download this repository ([latest zip](https://github.com/aliparlakci/bulk-downloader-for-reddit/archive/master.zip) or `git clone git@github.com:aliparlakci/bulk-downloader-for-reddit.git`).
-* Enter its folder.
-* Run `python ./script.py` from the command-line (Windows, MacOSX or Linux command line; it may work with Anaconda prompt) See [here](docs/INTERPRET_FROM_SOURCE.md#finding-the-correct-keyword-for-python) if you have any trouble with this step.
-
-It uses Python 3.6 and above. It won't work with Python 3.5 or any Python 2.x. If you have a trouble setting it up, see [here](docs/INTERPRET_FROM_SOURCE.md).
-
-
-### Setting up the script
-
-You need to create an imgur developer app in order API to work. Go to https://api.imgur.com/oauth2/addclient and fill the form (It does not really matter how you fill it).
+You need to create an imgur developer app for the API to work. Go to https://api.imgur.com/oauth2/addclient and fill out the form (It does not really matter how you fill it).
 
 It should redirect you to a page where it shows your **imgur_client_id** and **imgur_client_secret**.
 
 When you run it for the first time, it will automatically create `config.json` file containing `imgur_client_id`, `imgur_client_secret`, `reddit_username` and `reddit_refresh_token`.
 
+### Executables
+
+For Windows and Linux, [download the latest executables, here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest).
+
+### Python script
+It is recommended that you use a virtual environment for your python interpreter:
+* Clone this repository and `cd`into it
+* create the env: `python -m venv env/`
+* activate env: `source env/bin/activate`
+* now run `pip install -r requirements.txt`
+* Run `python ./script.py` from the command-line (Windows, MacOSX or Linux command line; it may work with Anaconda prompt) See [here](docs/INTERPRET_FROM_SOURCE.md#finding-the-correct-keyword-for-python) if you have any trouble with this step.
+
+It uses Python 3.6 and above. It won't work with Python 3.5 or any Python 2.x. If you have a trouble setting it up, see [here](docs/INTERPRET_FROM_SOURCE.md).
+
+### Docker
+There is also a complete ready to go Docker integration. It's easy to use, even you don't know anything about Docker. All you need is to install Docker and `docker-compose`.
+Then run the following command from the repository root:
+```bash
+docker-compose run --service-ports reddit_dl
+```
+And you'll find youself right in the app. The files will be downloaded to `downloads/`. Since it is docker, you may want to change the ownership of the files once you're done (belongs to root by default).
 
 ## Running
 
