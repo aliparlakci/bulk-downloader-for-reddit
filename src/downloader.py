@@ -457,7 +457,7 @@ class Gfycat:
         if content is None:
             raise NotADownloadableLinkError("Could not read the page source")
 
-        return json.loads(content.text)["video"]["contentUrl"]
+        return json.loads(content.contents[0])["video"]["contentUrl"]
 
 class Direct:
     def __init__(self,directory,POST):
