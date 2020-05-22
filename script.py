@@ -456,7 +456,7 @@ def isPostExists(POST):
     """Figure out a file's name and checks if the file already exists"""
 
     title = nameCorrector(POST['postTitle'])
-    PATH = GLOBAL.directory / POST["postSubreddit"]
+    PATH = GLOBAL.directory / POST["postSubmitter"]
 
     possibleExtensions = [".jpg",".png",".mp4",".gif",".webm",".md"]
 
@@ -482,7 +482,7 @@ def isPostExists(POST):
         if OLD_FILE_PATH.exists() or \
            FILE_PATH.exists() or \
            SHORT_FILE_PATH.exists():
-           
+            os.utime(FILE_PATH, (POST['postCreatedAt'], POST['postCreatedAt']))
             return True
 
     else:
@@ -491,7 +491,7 @@ def isPostExists(POST):
 def downloadPost(SUBMISSION):
 
     """Download directory is declared here for each file"""
-    directory = GLOBAL.directory / SUBMISSION['postSubreddit']
+    directory = GLOBAL.directory / SUBMISSION['postSubmitter']
 
     global lastRequestTime
 

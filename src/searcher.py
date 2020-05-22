@@ -323,6 +323,7 @@ def redditSearcher(posts,SINGLE_POST=False):
                        'postSubmitter':str(submission.author),
                        'postType':None,
                        'postURL':submission.url,
+                       'postCreatedAt': submission.created,
                        'postSubreddit':submission.subreddit.display_name}
         except AttributeError:
             pass
@@ -357,6 +358,7 @@ def redditSearcher(posts,SINGLE_POST=False):
                             'postSubmitter':str(submission.author),
                             'postType':None,
                             'postURL':submission.url,
+                            'postCreatedAt': submission.created,
                             'postSubreddit':submission.subreddit.display_name}
                 except AttributeError:
                     continue
@@ -405,6 +407,7 @@ def checkIfMatching(submission):
                    'postSubmitter':str(submission.author),
                    'postType':None,
                    'postURL':submission.url,
+                   'postCreatedAt': submission.created,
                    'postSubreddit':submission.subreddit.display_name}
     except AttributeError:
         return None
