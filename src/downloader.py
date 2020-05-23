@@ -457,7 +457,66 @@ class Gfycat:
         if content is None:
             raise NotADownloadableLinkError("Could not read the page source")
 
-        return json.loads(content.text)["video"]["contentUrl"]
+        return json.loads(content.contents[0])["video"]["contentUrl"]
+
+class redgifs:
+    def __init__(self,directory,POST):
+        try:
+            POST['mediaURL'] = self.getLink(POST['postURL'])
+        except IndexError:
+            raise NotADownloadableLinkError("Could not read the page source")
+        except Exception as exception:
+            #debug
+            raise exception
+            raise NotADownloadableLinkError("Could not read the page source")
+
+        POST['postExt'] = getExtension(POST['mediaURL'])
+        
+        if not os.path.exists(directory): os.makedirs(directory)
+        title = nameCorrector(POST['postTitle'])
+
+        """Filenames are declared here"""
+
+        print(POST["postSubmitter"]+"_"+title+"_"+POST['postId']+POST['postExt'])
+
+        fileDir = directory / (
+            POST["postSubmitter"]+"_"+title+"_"+POST['postId']+POST['postExt']
+        )
+        tempDir = directory / (
+            POST["postSubmitter"]+"_"+title+"_"+POST['postId']+".tmp"
+        )
+        
+        try:
+            getFile(fileDir,tempDir,POST['mediaURL'])
+        except FileNameTooLong:
+            fileDir = directory / (POST['postId']+POST['postExt'])
+            tempDir = directory / (POST['postId']+".tmp")
+
+            getFile(fileDir,tempDir,POST['mediaURL'])
+      
+    def getLink(self, url, query='<source id="mp4Source" src=', lineNumber=105):
+        """Extract direct link to the video from page's source
+        and return it
+        """
+
+        if '.webm' in url or '.mp4' in url or '.gif' in url:
+            return url
+
+        if url[-1:] == '/':
+            url = url[:-1]
+
+        url = "https://redgifs.com/watch/" + url.split('/')[-1]
+
+        pageSource = (urllib.request.urlopen(url).read().decode())
+
+        soup = BeautifulSoup(pageSource, "html.parser")
+        attributes = {"data-react-helmet":"true","type":"application/ld+json"}
+        content = soup.find("script",attrs=attributes)
+
+        if content is None:
+            raise NotADownloadableLinkError("Could not read the page source")
+
+        return json.loads(content.contents[0])["video"]["contentUrl"]
 
 class Direct:
     def __init__(self,directory,POST):
