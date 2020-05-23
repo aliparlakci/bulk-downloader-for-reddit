@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-This program downloads imgur, gfycat and direct image and video links of 
+This program downloads imgur, gfycat, redgifs, and direct image and video links of 
 saved posts from a reddit account. It is written in Python 3.
 """
 
@@ -14,7 +14,7 @@ import webbrowser
 from io import StringIO
 from pathlib import Path, PurePath
 
-from src.downloader import Direct, Erome, Gfycat, Imgur, Self
+from src.downloader import Direct, Erome, Gfycat, redgifs, Imgur, Self
 from src.errors import *
 from src.parser import LinkDesigner
 from src.searcher import getPosts
@@ -496,7 +496,7 @@ def downloadPost(SUBMISSION):
     global lastRequestTime
 
     downloaders = {
-        "imgur":Imgur,"gfycat":Gfycat,"erome":Erome,"direct":Direct,"self":Self
+        "imgur":Imgur,"gfycat":Gfycat,"redgifs":redgifs,"erome":Erome,"direct":Direct,"self":Self
     }
 
     print()
