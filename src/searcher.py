@@ -299,6 +299,8 @@ def redditSearcher(posts,SINGLE_POST=False):
     orderCount = 0
     global gfycatCount
     gfycatCount = 0
+    global redgifsCount
+    redgifsCount = 0
     global imgurCount
     imgurCount = 0
     global eromeCount
@@ -382,7 +384,7 @@ def redditSearcher(posts,SINGLE_POST=False):
                 f"\n\nTotal of {len(subList)} submissions found!"
             )
             print(
-                f"{gfycatCount} GFYCATs, {imgurCount} IMGURs, " \
+                f"{gfycatCount} GFYCATs, {redgifsCount} REDGIFSs, {imgurCount} IMGURs, " \
                 f"{eromeCount} EROMEs, {directCount} DIRECTs " \
                 f"and {selfCount} SELF POSTS",noPrint=True
             )
@@ -394,6 +396,7 @@ def redditSearcher(posts,SINGLE_POST=False):
 
 def checkIfMatching(submission):
     global gfycatCount
+    global redgifsCount
     global imgurCount
     global eromeCount
     global directCount
@@ -413,7 +416,12 @@ def checkIfMatching(submission):
         details['postType'] = 'gfycat'
         gfycatCount += 1
         return details
-
+      
+    elif 'redgifs' in submission.domain:
+        details['postType'] = 'redgifs'
+        redgifsCount += 1
+        return details
+      
     elif 'imgur' in submission.domain:
         details['postType'] = 'imgur'
         imgurCount += 1
