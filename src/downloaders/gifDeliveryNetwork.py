@@ -39,8 +39,9 @@ class GifDeliveryNetwork:
             tempDir = directory / (POST['postId']+".tmp")
 
             getFile(fileDir,tempDir,POST['mediaURL'])
-      
-    def getLink(self, url):
+    
+    @staticmethod
+    def getLink(url):
         """Extract direct link to the video from page's source
         and return it
         """
@@ -60,6 +61,7 @@ class GifDeliveryNetwork:
         content = soup.find("source",attrs=attributes)
 
         if content is None:
+            
             raise NotADownloadableLinkError("Could not read the page source")
 
         return content["src"]

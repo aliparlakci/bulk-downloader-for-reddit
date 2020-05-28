@@ -8,6 +8,7 @@ from src.errors import (FileNameTooLong, AlbumNotDownloadedCompletely,
                         NotADownloadableLinkError, FileAlreadyExistsError)
 from src.utils import nameCorrector
 from src.utils import printToFile as print
+from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
 
 class Gfycat:
     def __init__(self,directory,POST):
@@ -39,8 +40,9 @@ class Gfycat:
             tempDir = directory / (POST['postId']+".tmp")
 
             getFile(fileDir,tempDir,POST['mediaURL'])
-      
-    def getLink(self, url):
+    
+    @staticmethod
+    def getLink(url):
         """Extract direct link to the video from page's source
         and return it
         """
@@ -60,6 +62,6 @@ class Gfycat:
         content = soup.find("script",attrs=attributes)
 
         if content is None:
-            raise NotADownloadableLinkError("Could not read the page source")
+            return GifDeliveryNetwork.getLink(url)
 
         return json.loads(content.contents[0])["video"]["contentUrl"]
