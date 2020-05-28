@@ -40,7 +40,7 @@ class Gfycat:
 
             getFile(fileDir,tempDir,POST['mediaURL'])
       
-    def getLink(self, url, query='<source id="mp4Source" src=', lineNumber=105):
+    def getLink(self, url):
         """Extract direct link to the video from page's source
         and return it
         """

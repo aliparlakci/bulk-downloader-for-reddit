@@ -20,6 +20,7 @@ from src.downloaders.Gfycat import Gfycat
 from src.downloaders.Imgur import Imgur
 from src.downloaders.redgifs import Redgifs
 from src.downloaders.selfPost import SelfPost
+from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
 from src.errors import *
 from src.parser import LinkDesigner
 from src.searcher import getPosts
@@ -502,7 +503,7 @@ def downloadPost(SUBMISSION):
 
     downloaders = {
         "imgur":Imgur,"gfycat":Gfycat,"erome":Erome,"direct":Direct,"self":SelfPost,
-        "redgifs":Redgifs
+        "redgifs":Redgifs, "gifdeliverynetwork": GifDeliveryNetwork
     }
 
     print()

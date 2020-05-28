@@ -305,6 +305,8 @@ def redditSearcher(posts,SINGLE_POST=False):
     imgurCount = 0
     global eromeCount
     eromeCount = 0
+    global gifDeliveryNetworkCount
+    gifDeliveryNetworkCount = 0
     global directCount
     directCount = 0
     global selfCount
@@ -400,6 +402,7 @@ def checkIfMatching(submission):
     global imgurCount
     global eromeCount
     global directCount
+    global gifDeliveryNetworkCount
     global selfCount
 
     try:
@@ -430,6 +433,11 @@ def checkIfMatching(submission):
     elif 'redgifs' in submission.domain:
         details['postType'] = 'redgifs'
         redgifsCount += 1
+        return details
+
+    elif 'gifdeliverynetwork' in submission.domain:
+        details['postType'] = 'gifdeliverynetwork'
+        gifDeliveryNetworkCount += 1
         return details
 
     elif submission.is_self:
