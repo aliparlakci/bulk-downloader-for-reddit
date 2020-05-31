@@ -148,17 +148,17 @@ When the programs starts, you will be prompted to type a default directory. You 
 Example usage: **`--set-default-directory`**
   
 ## **`--use-local-config`**
-Sets the program to use config.json file in the current directory. Creates it if it does not exists. Useful for having different configurations.
-
+Sets the program to use config.json file in the current directory. Creates it if it does not exists. Useful for having different configurations. **Does not take any parameter.**
+  
 Example usage: **`--use-local-config`**
   
 ## **`--no-dupes`**
-Skips the same posts in different subreddits.
+Skips the same posts in different subreddits. Does not take any parameter.
 
 Example usage: **`--no-dupes`**
   
 ## **`--downloaded-posts`**
-Takes a file directory as a parameter and skips the posts if it matches with the post IDs inside the file. It also saves the newly downloaded posts to a file.
+Takes a file directory as a parameter and skips the posts if it matches with the post IDs inside the file. It also saves the newly downloaded posts to a file. Does not take any parameter.
 
 Example usage: **`--downloaded-posts D:\bdfr\ALL_POSTS.txt`**
   
