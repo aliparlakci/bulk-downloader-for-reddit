@@ -256,7 +256,7 @@ def extractDetails(posts,SINGLE_POST=False):
                 except AttributeError:
                     continue
 
-                result = matchWithDownloader(submission,skip=GLOBAL.arguments.skip)
+                result = matchWithDownloader(submission)
 
                 if result is not None:
                     details = {**details, **result}
@@ -274,9 +274,9 @@ def extractDetails(posts,SINGLE_POST=False):
     else:
         raise NoMatchingSubmissionFound("No matching submission was found")
 
-def matchWithDownloader(submission,skip=[]):
+def matchWithDownloader(submission):
 
-    if 'v.redd.it' in submission.domain and 'v.redd.it' not in skip:
+    if 'v.redd.it' in submission.domain:
         bitrates = ["DASH_1080","DASH_720","DASH_600", \
                     "DASH_480","DASH_360","DASH_240"]
                     
@@ -291,29 +291,28 @@ def matchWithDownloader(submission,skip=[]):
             if responseCode == 200:
                 return {'TYPE': 'v.redd.it', 'CONTENTURL': videoURL}    
 
-    if 'gfycat' in submission.domain and 'gfycat' not in skip:
+    if 'gfycat' in submission.domain:
         return {'TYPE': 'gfycat'}
 
     if 'youtube' in submission.domain \
-        and 'watch' in submission.url \
-        and 'youtube' not in skip:
+        and 'watch' in submission.url:
         return {'TYPE': 'youtube'}
 
-    if 'youtu.be' in submission.domain  and 'youtube' not in skip:
+    if 'youtu.be' in submission.domain:
         url = urllib.request.urlopen(submission.url).geturl()
         if 'watch' in url:
             return {'TYPE': 'youtube'}
 
-    elif 'imgur' in submission.domain and 'imgur' not in skip:
+    elif 'imgur' in submission.domain:
         return {'TYPE': 'imgur'}
 
-    elif 'erome' in submission.domain and 'erome' not in skip:
+    elif 'erome' in submission.domain:
         return {'TYPE': 'erome'}
 
-    elif 'redgifs' in submission.domain and 'redgifs' not in skip:
+    elif 'redgifs' in submission.domain:
         return {'TYPE': 'redgifs'}
 
-    elif 'gifdeliverynetwork' in submission.domain and 'gifdeliverynetwork' not in skip:
+    elif 'gifdeliverynetwork' in submission.domain:
         return {'TYPE': 'gifdeliverynetwork'}
 
     elif submission.is_self and 'self' not in skip:
@@ -321,9 +320,8 @@ def matchWithDownloader(submission,skip=[]):
                 'CONTENT': submission.selftext}
 
     try:
-        if 'direct' not in skip:
-            return {'TYPE': 'direct',
-                    'CONTENTURL': extractDirectLink(submission.url)}
+        return {'TYPE': 'direct',
+                'CONTENTURL': extractDirectLink(submission.url)}
     except DirectLinkNotFound:
         return None        
 

@@ -24,7 +24,7 @@ from src.downloaders.selfPost import SelfPost
 from src.downloaders.vreddit import VReddit
 from src.downloaders.youtube import Youtube
 from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
-from src.errors import ImgurLimitError, NoSuitablePost, FileAlreadyExistsError, ImgurLoginError, NotADownloadableLinkError, NoSuitablePost, InvalidJSONFile, full_exc_info
+from src.errors import ImgurLimitError, NoSuitablePost, FileAlreadyExistsError, ImgurLoginError, NotADownloadableLinkError, NoSuitablePost, InvalidJSONFile, FailedToDownload, DomainInSkip, full_exc_info
 from src.parser import LinkDesigner
 from src.searcher import getPosts
 from src.utils import (GLOBAL, createLogFile, nameCorrector,
@@ -156,7 +156,7 @@ def download(submissions):
     subsLenght = len(submissions)
     global lastRequestTime
     lastRequestTime = 0
-    downloadedCount = subsLenght
+    downloadedCount = 9
     duplicates = 0
 
     FAILED_FILE = createLogFile("FAILED")
@@ -183,7 +183,12 @@ def download(submissions):
             print(GLOBAL.config['filename'].format(**details))
             print("It already exists")
             duplicates += 1
-            downloadedCount -= 1
+            continue
+
+        if any(domain in submissions[i]['CONTENTURL'] for domain in GLOBAL.arguments.skip):
+            print()
+            print(submissions[i]['CONTENTURL'])
+            print("Domain found in skip domains, skipping post...")
             continue
 
         try:
@@ -194,11 +199,12 @@ def download(submissions):
             except InsufficientScope:
                 reddit = Reddit().begin()
                 reddit.submission(id=details['POSTID']).unsave()
-        
+              
+            downloadedCount += 1
+              
         except FileAlreadyExistsError:
             print("It already exists")
             duplicates += 1
-            downloadedCount -= 1
 
         except ImgurLoginError:
             print(
@@ -214,7 +220,6 @@ def download(submissions):
                 ),
                 details
             ]})
-            downloadedCount -= 1
 
         except NotADownloadableLinkError as exception:
             print(
@@ -228,11 +233,17 @@ def download(submissions):
                 ),
                 submissions[i]
             ]})
-            downloadedCount -= 1
+
+        except DomainInSkip:
+            print()
+            print(submissions[i]['CONTENTURL'])
+            print("Domain found in skip domains, skipping post...")
 
         except NoSuitablePost:
             print("No match found, skipping...")
-            downloadedCount -= 1
+
+        except FailedToDownload:
+            print("Failed to download the posts, skipping...")
         
         except Exception as exc:
             print(
@@ -251,7 +262,6 @@ def download(submissions):
                 ),
                 submissions[i]
             ]})
-            downloadedCount -= 1
 
     if duplicates:
         print(f"\nThere {'were' if duplicates > 1 else 'was'} " \

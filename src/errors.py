@@ -95,3 +95,9 @@ class DirectLinkNotFound(Exception):
 
 class InvalidJSONFile(Exception):
     pass
+
+class FailedToDownload(Exception):
+    pass
+
+class DomainInSkip(Exception):
+    pass

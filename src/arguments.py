@@ -103,11 +103,7 @@ class Arguments:
 
         parser.add_argument("--skip",
                             nargs="+",
-                            help="Skip given posts from domain",
-                            choices=[
-                                "gfycat","imgur","redgifs",
-                                "erome","gifdelverynetwork","direct","self"
-                            ],
+                            help="Skip posts with given domain",
                             type=str,
                             default=[])   
 
