@@ -158,7 +158,7 @@ Skips the same posts in different subreddits. Does not take any parameter.
 Example usage: **`--no-dupes`**
   
 ## **`--downloaded-posts`**
-Takes a file directory as a parameter and skips the posts if it matches with the post IDs inside the file. It also saves the newly downloaded posts to a file. Does not take any parameter.
+Takes a file directory as a parameter and skips the posts if it matches with the post IDs inside the file. It also saves the newly downloaded posts to the given file. Does not take any parameter.
 
 Example usage: **`--downloaded-posts D:\bdfr\ALL_POSTS.txt`**
   
