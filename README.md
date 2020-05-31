@@ -40,7 +40,7 @@ OR install it through a package manager such as **Chocolatey** in Windows, **apt
 
 Some of the below features are available only through command-line.
   
-Open the [Command Promt](https://youtu.be/bgSSJQolR0E?t=18), [Powershell](https://youtu.be/bgSSJQolR0E?t=18) or [Terminal](https://youtu.be/Pz4yHAB3G8w?t=31) in the folder that contain bulk-downloader-for-reddit file (click on the links to see how)
+Open the [Command Promt](https://youtu.be/bgSSJQolR0E?t=18), [Powershell](https://youtu.be/bgSSJQolR0E?t=18) or [Terminal](https://youtu.be/Pz4yHAB3G8w?t=31) in the folder that contains bulk-downloader-for-reddit file (click on the links to see how)
   
 After you type **`bulk-downloader-for-reddit.exe`**, type the preffered options.
 
