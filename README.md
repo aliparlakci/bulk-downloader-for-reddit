@@ -1,8 +1,19 @@
 # 📥 Bulk Downloader for Reddit
 
 Downloads reddit posts. Made by [u/aliparlakci](https://reddit.com/u/aliparlakci)
+  
+Please give feedback *(errors, feature requests, etc.)* on the [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) page. I will try to resolve them ASAP.
 
 ## [Download the latest release here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
+
+## 🚀 How to use
+If you run **Windows**, after you extract the zip file, double-click on the *bulk-downloader-for-reddit.exe*. The program will guide you through. Also, take a look at the [Setting up the program](#🔨-setting-up-the-program) section. **However**, Bulk Dowloader for Reddit has a plenty of features which can only be activated via command line arguments. See [Options](#⚙-Options) for it.
+
+If you run **Linux**, there is a binary of the program which can be used through the Terminal. The program should still guide you through if you don't pass any arguments but you can also use [Options](#⚙-Options).
+
+Unfortunately, there is no binary for **MacOS**. If you are a MacOS user, you must use the program from the source code. See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page.
+
+OR, regardless of your operating system, you can fire up the program from the **source code**. See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page.
 
 ## 🔨 Setting up the program
 ### 🖼 IMGUR API
@@ -31,7 +42,9 @@ Some of the below features are available only through command-line.
   
 Open the [Command Promt](https://youtu.be/bgSSJQolR0E?t=18), [Powershell](https://youtu.be/bgSSJQolR0E?t=18) or [Terminal](https://youtu.be/Pz4yHAB3G8w?t=31) in the folder that contain bulk-downloader-for-reddit file (click on the links to see how)
   
-Then put 
+After you type **`bulk-downloader-for-reddit.exe`**, type the preffered options.
+
+Example: **`bulk-downloader-for-reddit.exe --subreddit pics --sort top --limit 10`**
 
 ## **`--subreddit`** 
 Downloads posts from given subreddit(s). Takes number of subreddit names as a paramater.
@@ -166,16 +179,7 @@ Example usage: **`--downloaded-posts D:\bdfr\ALL_POSTS.txt`**
 - Each dot means that 100 posts are scanned.
 
 ### Getting posts takes too long.
-- You can press *Ctrl+C* to interrupt it and start downloadingw.
-
-### How are the filenames formatted?
-- **Self posts** and **images** that do not belong to an album and **album folders** are formatted as:  
-  `[SUBMITTER NAME]_[POST TITLE]_[REDDIT ID]`  
-  You can use *reddit id* to go to post's reddit page by going to link reddit.com/[REDDIT ID]
-
-- An **image in an album** is formatted as:  
-  `[ITEM NUMBER]_[IMAGE TITLE]_[IMGUR ID]`  
-  Similarly, you can use *imgur id* to go to image's imgur page by going to link imgur.com/[IMGUR ID].
+- You can press *Ctrl+C* to interrupt it and start downloading.
 
 ### How do I open self post files?
 - Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings.
