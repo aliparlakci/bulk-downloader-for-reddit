@@ -11,7 +11,7 @@ from src. errors import RedditLoginFailed
 class Reddit:
     
     def __init__(self,refresh_token=None):
-        self.SCOPES = ['identity','history','read']
+        self.SCOPES = ['identity','history','read','save']
         self.PORT = 7634
         self.refresh_token = refresh_token
         self.redditInstance = None

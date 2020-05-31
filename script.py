@@ -13,6 +13,7 @@ import time
 import webbrowser
 from io import StringIO
 from pathlib import Path, PurePath
+from prawcore.exceptions import InsufficientScope
 
 from src.downloaders.Direct import Direct
 from src.downloaders.Erome import Erome
@@ -32,6 +33,7 @@ from src.jsonHelper import JsonFile
 from src.config import Config
 from src.arguments import Arguments
 from src.programMode import ProgramMode
+from src.reddit import Reddit
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
@@ -159,6 +161,9 @@ def download(submissions):
 
     FAILED_FILE = createLogFile("FAILED")
 
+    if GLOBAL.arguments.unsave:
+        reddit = Reddit(GLOBAL.config['credentials']['reddit']).begin()
+        
     for i in range(len(submissions)):
         print(f"\n({i+1}/{subsLenght})",end=" — ")
         print(submissions[i]['POSTID'],
@@ -183,6 +188,12 @@ def download(submissions):
 
         try:
             downloadPost(details,directory)
+            try:
+                if GLOBAL.arguments.unsave:
+                    reddit.submission(id=details['POSTID']).unsave()
+            except InsufficientScope:
+                reddit = Reddit().begin()
+                reddit.submission(id=details['POSTID']).unsave()
         
         except FileAlreadyExistsError:
             print("It already exists")

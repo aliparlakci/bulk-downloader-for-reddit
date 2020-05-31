@@ -31,7 +31,12 @@ class Arguments:
 
         parser.add_argument("--saved",
                             action="store_true",
+                            required="--unsave" in sys.argv,
                             help="Triggers saved mode")
+
+        parser.add_argument("--unsave",
+                            action="store_true",
+                            help="Unsaves downloaded posts")
 
         parser.add_argument("--submitted",
                             action="store_true",
