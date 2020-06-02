@@ -101,3 +101,6 @@ class FailedToDownload(Exception):
 
 class DomainInSkip(Exception):
     pass
+
+class ImageNotFound(Exception):
+    pass

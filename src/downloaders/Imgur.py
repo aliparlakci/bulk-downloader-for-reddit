@@ -7,7 +7,7 @@ import requests
 from src.utils import GLOBAL, nameCorrector
 from src.downloaders.Direct import Direct
 from src.downloaders.downloaderUtils import getFile
-from src.errors import FileNotFoundError, FileAlreadyExistsError, AlbumNotDownloadedCompletely, NotADownloadableLinkError
+from src.errors import FileNotFoundError, FileAlreadyExistsError, AlbumNotDownloadedCompletely, ImageNotFound
 
 class Imgur:
 
@@ -50,12 +50,17 @@ class Imgur:
             folderDir = self.directory / self.post['POSTID']
             os.makedirs(folderDir)
 
+        print(folderName)
+
         for i in range(imagesLenght):
-            imageURL = self.IMGUR_IMAGE_DOMAIN + images["images"][i]["hash"] + images["images"][i]["ext"]
+
+            extension = self.validateExtension(images["images"][i]["ext"])
+
+            imageURL = self.IMGUR_IMAGE_DOMAIN + images["images"][i]["hash"] + extension
 
             filename = "_".join([
                 str(i+1), nameCorrector(images["images"][i]['title']), images["images"][i]['hash']
-            ]) + images["images"][i]["ext"]
+            ]) + extension
             shortFilename = str(i+1) + "_" + images["images"][i]['hash']
 
             print("\n  ({}/{})".format(i+1,imagesLenght))
@@ -87,7 +92,7 @@ class Imgur:
             )           
 
     def download(self, image):        
-        extension = image["ext"]
+        extension = self.validateExtension(image["ext"])
         imageURL = self.IMGUR_IMAGE_DOMAIN + image["hash"] + extension
 
         filename = GLOBAL.config['filename'].format(**self.post) + extension
@@ -103,7 +108,8 @@ class Imgur:
     def getData(link):
         
         cookies = {"over18": "1"}
-        requests.get(link, cookies=cookies)
+        res = requests.get(link, cookies=cookies)
+        if res.status_code != 200: raise ImageNotFound("Server did not respond succesfully")
         pageSource = requests.get(link, cookies=cookies).text
 
         STARTING_STRING = "image               : "
@@ -116,4 +122,11 @@ class Imgur:
         data = pageSource[startIndex:endIndex].strip()[:-1]
 
         return json.loads(data)
+
+    @staticmethod
+    def validateExtension(string):
+        POSSIBLE_EXTENSIONS = [".jpg", ".png", ".mp4"]
+
+        for extension in POSSIBLE_EXTENSIONS:
+            if extension in string: return extension
 
