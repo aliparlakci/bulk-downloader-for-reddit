@@ -231,7 +231,8 @@ def extractDetails(posts,SINGLE_POST=False):
 
         if result is not None:
             details = {**details, **result}
-            postList.append(details)
+            if not any(domain in submission.domain for domain in GLOBAL.arguments.skip_domain):
+                postList.append(details)
 
         postsFile.add({postCount:details})
 
@@ -268,7 +269,8 @@ def extractDetails(posts,SINGLE_POST=False):
 
                 if result is not None:
                     details = {**details, **result}
-                    postList.append(details)
+                    if not any(domain in submission.domain for domain in GLOBAL.arguments.skip_domain):
+                        postList.append(details)
 
                 allPosts[postCount] = details
         except KeyboardInterrupt:
@@ -283,9 +285,6 @@ def extractDetails(posts,SINGLE_POST=False):
         raise NoMatchingSubmissionFound("No matching submission was found")
 
 def matchWithDownloader(submission):
-
-    if any(domain in submission.domain for domain in GLOBAL.arguments.skip_domain):
-        return None
 
     if 'v.redd.it' in submission.domain:
         bitrates = ["DASH_1080","DASH_720","DASH_600", \
