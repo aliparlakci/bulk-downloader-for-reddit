@@ -40,6 +40,12 @@ def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
     if any(domain in imageURL for domain in GLOBAL.arguments.skip):
         raise DomainInSkip
 
+    if ".mp4" in imageURL and "videos" in GLOBAL.arguments.skip:
+        raise DomainInSkip
+
+    if ".jpeg" in imageURL and "images" in GLOBAL.arguments.skip:
+        raise DomainInSkip
+
     headers = [
         ("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 "\

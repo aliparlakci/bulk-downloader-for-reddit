@@ -165,6 +165,7 @@ def download(submissions):
         reddit = Reddit(GLOBAL.config['credentials']['reddit']).begin()
 
     submissions = list(filter(lambda x: x['POSTID'] not in GLOBAL.downloadedPosts(), submissions))
+    submissions = list(filter(lambda x: not any(domain in x['CONTENTURL'] for domain in GLOBAL.arguments.skip), submissions))
     subsLenght = len(submissions)
         
     for i in range(len(submissions)):
