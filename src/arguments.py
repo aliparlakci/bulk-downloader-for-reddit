@@ -103,6 +103,13 @@ class Arguments:
 
         parser.add_argument("--skip",
                             nargs="+",
+                            help="Skip posts with given type",
+                            type=str,
+                            choices=["images","videos","gifs","self"],
+                            default=[])   
+
+        parser.add_argument("--skip-domain",
+                            nargs="+",
                             help="Skip posts with given domain",
                             type=str,
                             default=[])   

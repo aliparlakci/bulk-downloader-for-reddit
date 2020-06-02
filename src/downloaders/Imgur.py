@@ -4,7 +4,7 @@ import imgurpython
 
 from src.downloaders.downloaderUtils import getExtension, getFile
 from src.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError,
-                        FileNameTooLong)
+                        FileNameTooLong, TypeInSkip)
 from src.utils import GLOBAL, nameCorrector
 from src.utils import printToFile as print
 
@@ -75,6 +75,10 @@ class Imgur:
                 except FileAlreadyExistsError:
                     print("  The file already exists" + " "*10,end="\n\n")
                     duplicates += 1
+                    howManyDownloaded -= 1
+
+                except TypeInSkip:
+                    print("  Skipping..." + " "*10,end="\n\n")
                     howManyDownloaded -= 1
 
                 except Exception as exception:

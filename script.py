@@ -24,7 +24,7 @@ from src.downloaders.selfPost import SelfPost
 from src.downloaders.vreddit import VReddit
 from src.downloaders.youtube import Youtube
 from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
-from src.errors import ImgurLimitError, NoSuitablePost, FileAlreadyExistsError, ImgurLoginError, NotADownloadableLinkError, NoSuitablePost, InvalidJSONFile, FailedToDownload, DomainInSkip, full_exc_info
+from src.errors import ImgurLimitError, NoSuitablePost, FileAlreadyExistsError, ImgurLoginError, NotADownloadableLinkError, NoSuitablePost, InvalidJSONFile, FailedToDownload, TypeInSkip, full_exc_info
 from src.parser import LinkDesigner
 from src.searcher import getPosts
 from src.utils import (GLOBAL, createLogFile, nameCorrector,
@@ -164,8 +164,9 @@ def download(submissions):
     if GLOBAL.arguments.unsave:
         reddit = Reddit(GLOBAL.config['credentials']['reddit']).begin()
 
+    # TODO Move this filtering into the creation of submissions in searcher.py
     submissions = list(filter(lambda x: x['POSTID'] not in GLOBAL.downloadedPosts(), submissions))
-    submissions = list(filter(lambda x: not any(domain in x['CONTENTURL'] for domain in GLOBAL.arguments.skip), submissions))
+    submissions = list(filter(lambda x: not any(domain in x['CONTENTURL'] for domain in GLOBAL.arguments.skip_domain), submissions))
     subsLenght = len(submissions)
         
     for i in range(len(submissions)):
@@ -251,10 +252,10 @@ def download(submissions):
                 submissions[i]
             ]})
 
-        except DomainInSkip:
+        except TypeInSkip:
             print()
             print(submissions[i]['CONTENTURL'])
-            print("Domain found in skip domains, skipping post...")
+            print("Skipping post...")
 
         except NoSuitablePost:
             print("No match found, skipping...")

@@ -8,7 +8,7 @@ import hashlib
 
 from src.utils import nameCorrector, GLOBAL
 from src.utils import printToFile as print
-from src.errors import FileAlreadyExistsError, FileNameTooLong, FailedToDownload, DomainInSkip
+from src.errors import FileAlreadyExistsError, FileNameTooLong, FailedToDownload, TypeInSkip
 
 def dlProgress(count, blockSize, totalSize):
     """Function for writing download progress to console
@@ -37,14 +37,16 @@ def getExtension(link):
 
 def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
 
-    if any(domain in imageURL for domain in GLOBAL.arguments.skip):
-        raise DomainInSkip
+    FORMATS = {
+        "videos": [".mp4", ".webm"],
+        "images": [".jpg",".jpeg",".png",".bmp"],
+        "gifs": [".gif"]
+    }
 
-    if ".mp4" in imageURL and "videos" in GLOBAL.arguments.skip:
-        raise DomainInSkip
-
-    if ".jpeg" in imageURL and "images" in GLOBAL.arguments.skip:
-        raise DomainInSkip
+    for type in GLOBAL.arguments.skip:
+        for extension in FORMATS[type]:
+            if extension in filename:
+                raise TypeInSkip
 
     headers = [
         ("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
