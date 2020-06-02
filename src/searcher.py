@@ -284,6 +284,9 @@ def extractDetails(posts,SINGLE_POST=False):
 
 def matchWithDownloader(submission):
 
+    if any(domain in submission.domain for domain in GLOBAL.arguments.skip_domain):
+        return None
+
     if 'v.redd.it' in submission.domain:
         bitrates = ["DASH_1080","DASH_720","DASH_600", \
                     "DASH_480","DASH_360","DASH_240"]

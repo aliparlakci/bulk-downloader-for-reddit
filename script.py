@@ -164,9 +164,7 @@ def download(submissions):
     if GLOBAL.arguments.unsave:
         reddit = Reddit(GLOBAL.config['credentials']['reddit']).begin()
 
-    # TODO Move this filtering into the creation of submissions in searcher.py
     submissions = list(filter(lambda x: x['POSTID'] not in GLOBAL.downloadedPosts(), submissions))
-    submissions = list(filter(lambda x: not any(domain in x['CONTENTURL'] for domain in GLOBAL.arguments.skip_domain), submissions))
     subsLenght = len(submissions)
         
     for i in range(len(submissions)):
