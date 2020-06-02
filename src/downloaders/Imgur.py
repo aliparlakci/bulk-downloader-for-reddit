@@ -1,6 +1,8 @@
 import urllib
 import json
 import os
+import time
+import requests
 
 from src.utils import GLOBAL, nameCorrector
 from src.downloaders.Direct import Direct
@@ -20,18 +22,18 @@ class Imgur:
             Direct(directory, {**post, 'CONTENTURL': link})
             return None
 
-        try:
-            self.rawData = self.getData(link)
-        except:
-            raise NotADownloadableLinkError("Could not read the page source")
+        self.rawData = self.getData(link)
 
         self.directory = directory
         self.post = post
 
         if self.isAlbum:
-            self.downloadAlbum(self.rawData["album_images"])
+            if self.rawData["album_images"]["count"] != 1:
+                self.downloadAlbum(self.rawData["album_images"])
+            else:
+                self.download(self.rawData["album_images"]["images"][0])
         else:
-            self.download()
+            self.download(self.rawData)
 
     def downloadAlbum(self, images):
         folderName = GLOBAL.config['filename'].format(**self.post)
@@ -49,11 +51,12 @@ class Imgur:
             os.makedirs(folderDir)
 
         for i in range(imagesLenght):
-            imageURL = self.IMGUR_IMAGE_DOMAIN + images[i]["hash"]
+            imageURL = self.IMGUR_IMAGE_DOMAIN + images["images"][i]["hash"] + images["images"][i]["ext"]
+
             filename = "_".join([
-                str(i+1), nameCorrector(images[i]['title']), images[i]['hash']
-            ]) + images[i]["ext"]
-            shortFilename = str(i+1) + "_" + images[i]['hash']
+                str(i+1), nameCorrector(images["images"][i]['title']), images["images"][i]['hash']
+            ]) + images["images"][i]["ext"]
+            shortFilename = str(i+1) + "_" + images["images"][i]['hash']
 
             print("\n  ({}/{})".format(i+1,imagesLenght))
 
@@ -83,33 +86,32 @@ class Imgur:
                 "Album Not Downloaded Completely"
             )           
 
-    def download(self):        
-        imageURL = self.IMGUR_IMAGE_DOMAIN + self.rawData["hash"] + self.rawData["ext"]
+    def download(self, image):        
+        extension = image["ext"]
+        imageURL = self.IMGUR_IMAGE_DOMAIN + image["hash"] + extension
 
-        extension = self.rawData["ext"]
-        filename = GLOBAL.config['filename'].format(**self.post)+extension
+        filename = GLOBAL.config['filename'].format(**self.post) + extension
         shortFilename = self.post['POSTID']+extension
         
         getFile(filename,shortFilename,self.directory,imageURL)
 
     @property
     def isAlbum(self):
-        if "album_images" in self.rawData:
-            if self.rawData["album_images"]["count"] != 1:
-                return True
-        return False
+        return "album_images" in self.rawData
 
     @staticmethod 
     def getData(link):
-        pageSource = urllib.request.urlopen(link).read().decode("utf8")
+        
+        cookies = {"over18": "1"}
+        requests.get(link, cookies=cookies)
+        pageSource = requests.get(link, cookies=cookies).text
 
         STARTING_STRING = "image               : "
         ENDING_STRING = "group               :"
 
         STARTING_STRING_LENGHT = len(STARTING_STRING)
-
-        startIndex = pageSource.find(STARTING_STRING) + STARTING_STRING_LENGHT
-        endIndex = pageSource.find(ENDING_STRING)
+        startIndex = pageSource.index(STARTING_STRING) + STARTING_STRING_LENGHT
+        endIndex = pageSource.index(ENDING_STRING)
 
         data = pageSource[startIndex:endIndex].strip()[:-1]
 
