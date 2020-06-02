@@ -113,9 +113,14 @@ Example usage: **`--limit 500`**
 ---
 
 ## **`--skip`**
-Takes a number of domains as a parameter to skip the posts from those domains. Use self to imply text posts.
+Takes a number of file types as a parameter to skip the posts from those domains. Valid file types are `images`, `videos`, `gifs`, `self`
+  
+Example usage: **`--skip self videos`**
+  
+## **`--skip-domain`**
+Takes a number of domains as a parameter to skip the posts from those domains.
 
-Example usage: **`--skip v.redd.it youtube.com youtu.be self`**
+Example usage: **`--skip v.redd.it youtube.com youtu.be`**
   
 ## **`--quit`**
 Automatically quits the application after it finishes. Otherwise, it will wait for an input to quit.
