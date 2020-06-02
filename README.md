@@ -22,14 +22,6 @@ OR, regardless of your operating system, you can fire up the program from the **
 See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page for more information.
 
 ## 🔨 Setting up the program
-### 🖼 IMGUR API
-
-You need to create an imgur developer app in order API to work. Go to https://api.imgur.com/oauth2/addclient and login.
-
-IMGUR will redirect you to homepage instead of API form page. After you log in, open the above link manually. Fill the form in the link (It does not really matter what you fill it with. You can write www.google.com to the callback url)
-
-After you send the form, it will redirect you to a page where it shows your **imgur_client_id** and **imgur_client_secret**. Type in those values into program respectively.
-
 ### 📽 ffmpeg Library
   
 Program needs **ffmpeg software** to add audio to some video files. However, installing it is **voluntary**. Although the program can still run with no errors without the ffmpeg library, some video files might have no sound.

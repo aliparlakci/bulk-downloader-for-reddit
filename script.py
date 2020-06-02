@@ -95,59 +95,9 @@ def downloadPost(SUBMISSION,directory):
 
     print()
     if SUBMISSION['TYPE'] in downloaders:
-
-        # WORKAROUND FOR IMGUR API LIMIT
-        if SUBMISSION['TYPE'] == "imgur":
-            
-            while int(time.time() - lastRequestTime) <= 2:
-                pass
-
-            credit = Imgur.get_credits()
-
-            IMGUR_RESET_TIME = credit['UserReset']-time.time()
-            USER_RESET = ("after " \
-                            + str(int(IMGUR_RESET_TIME/60)) \
-                            + " Minutes " \
-                            + str(int(IMGUR_RESET_TIME%60)) \
-                            + " Seconds") 
-            
-            if credit['ClientRemaining'] < 25 or credit['UserRemaining'] < 25:
-                printCredit = {"noPrint":False}
-            else:
-                printCredit = {"noPrint":True}
-
-            print(
-                "==> Client: {} - User: {} - Reset {}\n".format(
-                    credit['ClientRemaining'],
-                    credit['UserRemaining'],
-                    USER_RESET
-                ),end="",**printCredit
-            )
-
-            if not (credit['UserRemaining'] == 0 or \
-                    credit['ClientRemaining'] == 0):
-
-                """This block of code is needed for API workaround
-                """
-                while int(time.time() - lastRequestTime) <= 2:
-                    pass
-
-                lastRequestTime = time.time()
-
-            else:
-                if credit['UserRemaining'] == 0:
-                    KEYWORD = "user"
-                elif credit['ClientRemaining'] == 0:
-                    KEYWORD = "client"
-
-                raise ImgurLimitError('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
-
         downloaders[SUBMISSION['TYPE']] (directory,SUBMISSION)
-
     else:
         raise NoSuitablePost
-
-    return None
 
 def download(submissions):
     """Analyze list of submissions and call the right function

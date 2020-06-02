@@ -52,6 +52,8 @@ def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
         ("Connection", "keep-alive")
     ]
 
+    if not os.path.exists(folderDir): os.makedirs(folderDir)
+
     opener = urllib.request.build_opener()
     if not "imgur" in imageURL:
         opener.addheaders = headers

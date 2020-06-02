@@ -105,9 +105,6 @@ Existing default options:""", None if "options" not in self.file.read() else sel
 
     def _validateCredentials(self):
         """Read credentials from config.json file"""
-
-        keys = ['imgur_client_id',
-                'imgur_client_secret']
         try:
             content = self.file.read()["credentials"]
         except:
@@ -120,25 +117,6 @@ Existing default options:""", None if "options" not in self.file.read() else sel
             pass
         else:
             Reddit().begin()
-
-        if not all(content.get(key,False) for key in keys):
-            print(
-                "---Setting up the Imgur API---\n\n" \
-                "Go to this URL and fill the form:\n" \
-                "https://api.imgur.com/oauth2/addclient\n" \
-                "Then, enter the client id and client secret here\n" \
-                "Press Enter to open the link in the browser"
-            )
-            input()
-            webbrowser.open("https://api.imgur.com/oauth2/addclient",new=2)
-
-        for key in keys:
-            try:
-                if content[key] == "":
-                    raise KeyError
-            except KeyError:
-                self.file.add({key:input("\t"+key+": ")},
-                              "credentials")
         print()
 
     def setDefaultDirectory(self):
