@@ -213,14 +213,14 @@ def download(submissions):
         
         except Exception as exc:
             print(
-                "{class_name}: {info} See CONSOLE_LOG.txt for more information".format(
+                "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
                     class_name=exc.__class__.__name__,info=str(exc)
                 )
             )
 
             logging.error(sys.exc_info()[0].__name__,
                           exc_info=full_exc_info(sys.exc_info()))
-            print(log_stream.getvalue(),noPrint=True)
+            print(GLOBAL.log_stream.getvalue(),noPrint=True)
 
             FAILED_FILE.add({int(i+1):[
                 "{class_name}: {info}".format(
@@ -317,7 +317,7 @@ def main():
     except Exception as exc:
         logging.error(sys.exc_info()[0].__name__,
                       exc_info=full_exc_info(sys.exc_info()))
-        print(log_stream.getvalue(),noPrint=True)
+        print(GLOBAL.log_stream.getvalue(),noPrint=True)
         print(exc)
         sys.exit()
 
@@ -329,8 +329,8 @@ def main():
 
 if __name__ == "__main__":
 
-    log_stream = StringIO()    
-    logging.basicConfig(stream=log_stream, level=logging.INFO)
+    GLOBAL.log_stream = StringIO()    
+    logging.basicConfig(stream=GLOBAL.log_stream, level=logging.INFO)
 
     try:
         VanillaPrint = print
@@ -350,6 +350,6 @@ if __name__ == "__main__":
             GLOBAL.directory = Path("..\\")
         logging.error(sys.exc_info()[0].__name__,
                       exc_info=full_exc_info(sys.exc_info()))
-        print(log_stream.getvalue())
+        print(GLOBAL.log_stream.getvalue())
 
     if not GLOBAL.arguments.quit: input("\nPress enter to quit\n")

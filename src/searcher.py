@@ -284,6 +284,11 @@ def extractDetails(posts,SINGLE_POST=False):
 
 def matchWithDownloader(submission):
 
+    directLink = extractDirectLink(submission.url)
+    if directLink:
+        return {'TYPE': 'direct',
+                'CONTENTURL': directLink}
+
     if 'v.redd.it' in submission.domain:
         bitrates = ["DASH_1080","DASH_720","DASH_600", \
                     "DASH_480","DASH_360","DASH_240"]
@@ -325,13 +330,7 @@ def matchWithDownloader(submission):
 
     elif submission.is_self and 'self' not in GLOBAL.arguments.skip:
         return {'TYPE': 'self',
-                'CONTENT': submission.selftext}
-
-    try:
-        return {'TYPE': 'direct',
-                'CONTENTURL': extractDirectLink(submission.url)}
-    except DirectLinkNotFound:
-        return None        
+                'CONTENT': submission.selftext}     
 
 def extractDirectLink(URL):
     """Check if link is a direct image link.
@@ -346,26 +345,8 @@ def extractDirectLink(URL):
     if "i.reddituploads.com" in URL:
         return URL
 
-    elif "v.redd.it" in URL:
-        bitrates = ["DASH_1080","DASH_720","DASH_600", \
-                    "DASH_480","DASH_360","DASH_240"]
-                    
-        for bitrate in bitrates:
-            videoURL = URL+"/"+bitrate
-
-            try:
-                responseCode = urllib.request.urlopen(videoURL).getcode()
-            except urllib.error.HTTPError:
-                responseCode = 0
-
-            if responseCode == 200:
-                return videoURL
-
-        else:
-            raise DirectLinkNotFound
-
     for extension in imageTypes:
         if extension in URL.split("/")[-1]:
             return URL
     else:
-        raise DirectLinkNotFound
+        return None

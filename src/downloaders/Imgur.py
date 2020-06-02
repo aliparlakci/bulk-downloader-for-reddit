@@ -7,7 +7,7 @@ import requests
 from src.utils import GLOBAL, nameCorrector
 from src.downloaders.Direct import Direct
 from src.downloaders.downloaderUtils import getFile
-from src.errors import FileNotFoundError, FileAlreadyExistsError, AlbumNotDownloadedCompletely, ImageNotFound
+from src.errors import FileNotFoundError, FileAlreadyExistsError, AlbumNotDownloadedCompletely, ImageNotFound, ExtensionError, NotADownloadableLinkError
 
 class Imgur:
 
@@ -77,12 +77,13 @@ class Imgur:
                 print("\n  Could not get the file")
                 print(
                     "  "
-                    + "{class_name}: {info}".format(
+                    + "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
                         class_name=exception.__class__.__name__,
                         info=str(exception)
                     )
                     + "\n"
                 )
+                print(GLOBAL.log_stream.getvalue(),noPrint=True)
 
         if duplicates == imagesLenght:
             raise FileAlreadyExistsError
@@ -109,15 +110,18 @@ class Imgur:
         
         cookies = {"over18": "1"}
         res = requests.get(link, cookies=cookies)
-        if res.status_code != 200: raise ImageNotFound("Server did not respond succesfully")
+        if res.status_code != 200: raise ImageNotFound(f"Server responded with {res.status_code} to {link}")
         pageSource = requests.get(link, cookies=cookies).text
 
         STARTING_STRING = "image               : "
         ENDING_STRING = "group               :"
 
         STARTING_STRING_LENGHT = len(STARTING_STRING)
-        startIndex = pageSource.index(STARTING_STRING) + STARTING_STRING_LENGHT
-        endIndex = pageSource.index(ENDING_STRING)
+        try:
+            startIndex = pageSource.index(STARTING_STRING) + STARTING_STRING_LENGHT
+            endIndex = pageSource.index(ENDING_STRING)
+        except ValueError:
+            raise NotADownloadableLinkError(f"Could not read the page source on {link}")
 
         data = pageSource[startIndex:endIndex].strip()[:-1]
 
@@ -125,8 +129,9 @@ class Imgur:
 
     @staticmethod
     def validateExtension(string):
-        POSSIBLE_EXTENSIONS = [".jpg", ".png", ".mp4"]
+        POSSIBLE_EXTENSIONS = [".jpg", ".png", ".mp4", ".gif"]
 
         for extension in POSSIBLE_EXTENSIONS:
             if extension in string: return extension
+        else: raise ExtensionError(f"\"{string}\" is not recognized as a valid extension.")
 

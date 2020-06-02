@@ -22,6 +22,8 @@ class GLOBAL:
     downloadedPosts = lambda: []
     printVanilla = print
 
+    log_stream = None
+
 def createLogFile(TITLE):
     """Create a log file with given name
     inside a folder time stampt in its name and
