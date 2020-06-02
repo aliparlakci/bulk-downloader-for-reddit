@@ -72,12 +72,12 @@ def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
                                            tempDir,
                                            reporthook=dlProgress)
 
+                fileHash = createHash(tempDir)
                 if GLOBAL.arguments.no_dupes:
-                    fileHash = createHash(tempDir)
-                    if fileHash in GLOBAL.hashList:
+                    if fileHash in GLOBAL.downloadedPosts():
                         os.remove(tempDir)
                         raise FileAlreadyExistsError
-                    GLOBAL.hashList.add(fileHash)
+                GLOBAL.downloadedPosts.add(fileHash)
 
                 os.rename(tempDir,fileDir)
                 if not silent: print(" "*indent+"Downloaded"+" "*10)

@@ -18,7 +18,6 @@ class GLOBAL:
     configDirectory = ""
     reddit_client_id = "U-6gk4ZCh3IeNQ"
     reddit_client_secret = "7CZHY6AmKweZME5s50SfDGylaPg"
-    hashList = set()
     downloadedPosts = lambda: []
     printVanilla = print
 
