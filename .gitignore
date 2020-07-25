@@ -7,3 +7,4 @@ src/__pycache__/
 config.json
 env/
 .vscode/
+.pyc
