@@ -269,7 +269,6 @@ def main():
     except InvalidJSONFile as exception:
         VanillaPrint(str(exception.__class__.__name__),">>",str(exception))
         VanillaPrint("Resolve it or remove it to proceed")
-        input("\nPress enter to quit")
         sys.exit()
 
     sys.argv = sys.argv + GLOBAL.config["options"].split()
@@ -361,5 +360,5 @@ if __name__ == "__main__":
                       exc_info=full_exc_info(sys.exc_info()))
         print(GLOBAL.log_stream.getvalue())
 
-    if not GLOBAL.arguments.quit: input("\nPress enter to quit\n")
+    if not GLOBAL.arguments.quit: print("\nComplete\n")
               
