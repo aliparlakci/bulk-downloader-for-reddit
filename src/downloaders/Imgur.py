@@ -113,7 +113,7 @@ class Imgur:
 
     @staticmethod 
     def getData(link):
-        
+        link = link.replace("https://imgur.com","https://imgur.com/beta/disable?redirect=")        
         cookies = {"over18": "1"}
         res = requests.get(link, cookies=cookies)
         if res.status_code != 200: raise ImageNotFound(f"Server responded with {res.status_code} to {link}")
