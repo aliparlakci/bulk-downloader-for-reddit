@@ -5,14 +5,12 @@ This program downloads imgur, gfycat and direct image and video links of
 saved posts from a reddit account. It is written in Python 3.
 """
 
-import argparse
 import logging
 import os
 import sys
 import time
-import webbrowser
 from io import StringIO
-from pathlib import Path, PurePath
+from pathlib import Path
 
 from prawcore.exceptions import InsufficientScope
 
@@ -32,7 +30,6 @@ from src.errors import (AlbumNotDownloadedCompletely, DomainInSkip, FailedToDown
                         ImgurLimitError, ImgurLoginError, InvalidJSONFile, NoSuitablePost, NotADownloadableLinkError,
                         TypeInSkip, full_exc_info)
 from src.jsonHelper import JsonFile
-from src.parser import LinkDesigner
 from src.programMode import ProgramMode
 from src.reddit import Reddit
 from src.searcher import getPosts
