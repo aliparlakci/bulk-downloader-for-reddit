@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-This program downloads imgur, gfycat and direct image and video links of 
+This program downloads imgur, gfycat and direct image and video links of
 saved posts from a reddit account. It is written in Python 3.
 """
 
@@ -13,29 +13,31 @@ import time
 import webbrowser
 from io import StringIO
 from pathlib import Path, PurePath
+
 from prawcore.exceptions import InsufficientScope
 
+from src.arguments import Arguments
+from src.config import Config
 from src.downloaders.Direct import Direct
 from src.downloaders.Erome import Erome
+from src.downloaders.gallery import gallery
 from src.downloaders.Gfycat import Gfycat
+from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
 from src.downloaders.Imgur import Imgur
 from src.downloaders.redgifs import Redgifs
 from src.downloaders.selfPost import SelfPost
 from src.downloaders.vreddit import VReddit
 from src.downloaders.youtube import Youtube
-from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
-from src.downloaders.gallery import gallery
-from src.errors import ImgurLimitError, NoSuitablePost, FileAlreadyExistsError, ImgurLoginError, NotADownloadableLinkError, NoSuitablePost, InvalidJSONFile, FailedToDownload, TypeInSkip, DomainInSkip, AlbumNotDownloadedCompletely, full_exc_info
-from src.parser import LinkDesigner
-from src.searcher import getPosts
-from src.utils import (GLOBAL, createLogFile, nameCorrector,
-                       printToFile)
+from src.errors import (AlbumNotDownloadedCompletely, DomainInSkip, FailedToDownload, FileAlreadyExistsError,
+                        ImgurLimitError, ImgurLoginError, InvalidJSONFile, NoSuitablePost, NotADownloadableLinkError,
+                        TypeInSkip, full_exc_info)
 from src.jsonHelper import JsonFile
-from src.config import Config
-from src.arguments import Arguments
+from src.parser import LinkDesigner
 from src.programMode import ProgramMode
 from src.reddit import Reddit
+from src.searcher import getPosts
 from src.store import Store
+from src.utils import GLOBAL, createLogFile, nameCorrector, printToFile
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
@@ -43,12 +45,13 @@ __version__ = "1.9.4"
 __maintainer__ = "Ali Parlakci"
 __email__ = "parlakciali@gmail.com"
 
-def postFromLog(fileName):
+
+def postFromLog(filename):
     """Analyze a log file and return a list of dictionaries containing
     submissions
     """
-    if Path.is_file(Path(fileName)):
-        content = JsonFile(fileName).read()
+    if Path.is_file(Path(filename)):
+        content = JsonFile(filename).read()
     else:
         print("File not found")
         sys.exit()
@@ -61,21 +64,22 @@ def postFromLog(fileName):
     posts = []
 
     for post in content:
-        if not content[post][-1]['TYPE'] == None:
+        if not content[post][-1]['TYPE'] is None:
             posts.append(content[post][-1])
 
     return posts
 
-def isPostExists(POST,directory):
+
+def isPostExists(post, directory):
     """Figure out a file's name and checks if the file already exists"""
 
-    filename = GLOBAL.config['filename'].format(**POST)
+    filename = GLOBAL.config['filename'].format(**post)
 
-    possibleExtensions = [".jpg",".png",".mp4",".gif",".webm",".md",".mkv",".flv"]
+    possible_extensions = [".jpg", ".png", ".mp4", ".gif", ".webm", ".md", ".mkv", ".flv"]
 
-    for extension in possibleExtensions:
+    for extension in possible_extensions:
 
-        path = directory / Path(filename+extension)
+        path = directory / Path(filename + extension)
 
         if path.exists():
             return True
@@ -83,62 +87,64 @@ def isPostExists(POST,directory):
     else:
         return False
 
-def downloadPost(SUBMISSION,directory):
+
+def downloadPost(submission, directory):
 
     downloaders = {
-        "imgur":Imgur,"gfycat":Gfycat,"erome":Erome,"direct":Direct,"self":SelfPost,
-        "redgifs":Redgifs, "gifdeliverynetwork": GifDeliveryNetwork,
+        "imgur": Imgur, "gfycat": Gfycat, "erome": Erome, "direct": Direct, "self": SelfPost,
+        "redgifs": Redgifs, "gifdeliverynetwork": GifDeliveryNetwork,
         "v.redd.it": VReddit, "youtube": Youtube, "gallery": gallery
     }
 
     print()
-    if SUBMISSION['TYPE'] in downloaders:
-        downloaders[SUBMISSION['TYPE']] (directory,SUBMISSION)
+    if submission['TYPE'] in downloaders:
+        downloaders[submission['TYPE']](directory, submission)
     else:
         raise NoSuitablePost
 
     return None
+
 
 def download(submissions):
     """Analyze list of submissions and call the right function
     to download each one, catch errors, update the log files
     """
 
-    downloadedCount = 0
+    downloaded_count = 0
     duplicates = 0
 
-    FAILED_FILE = createLogFile("FAILED")
+    failed_file = createLogFile("FAILED")
 
     if GLOBAL.arguments.unsave:
         reddit = Reddit(GLOBAL.config['credentials']['reddit']).begin()
 
-    subsLenght = len(submissions)
-        
+    subs_length = len(submissions)
+
     for i in range(len(submissions)):
-        print(f"\n({i+1}/{subsLenght})",end=" — ")
+        print(f"\n({i+1}/{subs_length})", end=" — ")
         print(submissions[i]['POSTID'],
               f"r/{submissions[i]['SUBREDDIT']}",
               f"u/{submissions[i]['REDDITOR']}",
               submissions[i]['FLAIR'] if submissions[i]['FLAIR'] else "",
               sep=" — ",
               end="")
-        print(f" – {submissions[i]['TYPE'].upper()}",end="",noPrint=True)
+        print(f" – {submissions[i]['TYPE'].upper()}", end="", noPrint=True)
 
         directory = GLOBAL.directory / GLOBAL.config["folderpath"].format(**submissions[i])
         details = {
-            **submissions[i], 
+            **submissions[i],
             **{
                 "TITLE": nameCorrector(
                     submissions[i]['TITLE'],
-                    reference = str(directory)
-                                + GLOBAL.config['filename'].format(**submissions[i])
-                                + ".ext"
+                    reference=str(directory)
+                    + GLOBAL.config['filename'].format(**submissions[i])
+                    + ".ext"
                 )
             }
         }
         filename = GLOBAL.config['filename'].format(**details)
 
-        if isPostExists(details,directory):
+        if isPostExists(details, directory):
             print()
             print(directory)
             print(filename)
@@ -153,7 +159,7 @@ def download(submissions):
             continue
 
         try:
-            downloadPost(details,directory)
+            downloadPost(details, directory)
             GLOBAL.downloadedPosts.add(details['POSTID'])
             try:
                 if GLOBAL.arguments.unsave:
@@ -161,9 +167,9 @@ def download(submissions):
             except InsufficientScope:
                 reddit = Reddit().begin()
                 reddit.submission(id=details['POSTID']).unsave()
-              
-            downloadedCount += 1
-              
+
+            downloaded_count += 1
+
         except FileAlreadyExistsError:
             print("It already exists")
             GLOBAL.downloadedPosts.add(details['POSTID'])
@@ -171,15 +177,15 @@ def download(submissions):
 
         except ImgurLoginError:
             print(
-                "Imgur login failed. \nQuitting the program "\
+                "Imgur login failed. \nQuitting the program "
                 "as unexpected errors might occur."
             )
             sys.exit()
 
         except ImgurLimitError as exception:
-            FAILED_FILE.add({int(i+1):[
+            failed_file.add({int(i + 1): [
                 "{class_name}: {info}".format(
-                    class_name=exception.__class__.__name__,info=str(exception)
+                    class_name=exception.__class__.__name__, info=str(exception)
                 ),
                 details
             ]})
@@ -187,12 +193,12 @@ def download(submissions):
         except NotADownloadableLinkError as exception:
             print(
                 "{class_name}: {info}".format(
-                    class_name=exception.__class__.__name__,info=str(exception)
+                    class_name=exception.__class__.__name__, info=str(exception)
                 )
             )
-            FAILED_FILE.add({int(i+1):[
+            failed_file.add({int(i + 1): [
                 "{class_name}: {info}".format(
-                    class_name=exception.__class__.__name__,info=str(exception)
+                    class_name=exception.__class__.__name__, info=str(exception)
                 ),
                 submissions[i]
             ]})
@@ -214,61 +220,63 @@ def download(submissions):
             print("Failed to download the posts, skipping...")
         except AlbumNotDownloadedCompletely:
             print("Album did not downloaded completely.")
-            FAILED_FILE.add({int(i+1):[
+            failed_file.add({int(i + 1): [
                 "{class_name}: {info}".format(
-                    class_name=exc.__class__.__name__,info=str(exc)
+                    class_name=exc.__class__.__name__, info=str(exc)
                 ),
                 submissions[i]
             ]})
-        
+
         except Exception as exc:
             print(
                 "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
-                    class_name=exc.__class__.__name__,info=str(exc)
+                    class_name=exc.__class__.__name__, info=str(exc)
                 )
             )
 
             logging.error(sys.exc_info()[0].__name__,
                           exc_info=full_exc_info(sys.exc_info()))
-            print(GLOBAL.log_stream.getvalue(),noPrint=True)
+            print(GLOBAL.log_stream.getvalue(), noPrint=True)
 
-            FAILED_FILE.add({int(i+1):[
+            failed_file.add({int(i + 1): [
                 "{class_name}: {info}".format(
-                    class_name=exc.__class__.__name__,info=str(exc)
+                    class_name=exc.__class__.__name__, info=str(exc)
                 ),
                 submissions[i]
             ]})
 
     if duplicates:
-        print(f"\nThere {'were' if duplicates > 1 else 'was'} " \
+        print(f"\nThere {'were' if duplicates > 1 else 'was'} "
               f"{duplicates} duplicate{'s' if duplicates > 1 else ''}")
 
-    if downloadedCount == 0:
+    if downloaded_count == 0:
         print("Nothing is downloaded :(")
 
     else:
-        print(f"Total of {downloadedCount} " \
-              f"link{'s' if downloadedCount > 1 else ''} downloaded!")
+        print(f"Total of {downloaded_count} "
+              f"link{'s' if downloaded_count > 1 else ''} downloaded!")
+
 
 def printLogo():
     VanillaPrint(
-        f"\nBulk Downloader for Reddit v{__version__}\n" \
-        f"Written by Ali PARLAKCI – parlakciali@gmail.com\n\n" \
+        f"\nBulk Downloader for Reddit v{__version__}\n"
+        f"Written by Ali PARLAKCI – parlakciali@gmail.com\n\n"
         f"https://github.com/aliparlakci/bulk-downloader-for-reddit/\n"
     )
 
+
 def main():
-    
+
     if Path("config.json").exists():
         GLOBAL.configDirectory = Path("config.json")
     else:
         if not Path(GLOBAL.defaultConfigDirectory).is_dir():
             os.makedirs(GLOBAL.defaultConfigDirectory)
-        GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory  / "config.json"
+        GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory / "config.json"
     try:
         GLOBAL.config = Config(GLOBAL.configDirectory).generate()
     except InvalidJSONFile as exception:
-        VanillaPrint(str(exception.__class__.__name__),">>",str(exception))
+        VanillaPrint(str(exception.__class__.__name__), ">>", str(exception))
         VanillaPrint("Resolve it or remove it to proceed")
         input("\nPress enter to quit")
         sys.exit()
@@ -297,7 +305,7 @@ def main():
     if arguments.use_local_config:
         JsonFile("config.json").add(GLOBAL.config)
         sys.exit()
-        
+
     if arguments.directory:
         GLOBAL.directory = Path(arguments.directory.strip())
     elif "default_directory" in GLOBAL.config and GLOBAL.config["default_directory"] != "":
@@ -311,22 +319,21 @@ def main():
         GLOBAL.downloadedPosts = Store()
 
     printLogo()
-    print("\n"," ".join(sys.argv),"\n",noPrint=True)
+    print("\n", " ".join(sys.argv), "\n", noPrint=True)
 
     if arguments.log is not None:
-        logDir = Path(arguments.log)
-        download(postFromLog(logDir))
+        log_dir = Path(arguments.log)
+        download(postFromLog(log_dir))
         sys.exit()
 
-
-    programMode = ProgramMode(arguments).generate()
+    program_mode = ProgramMode(arguments).generate()
 
     try:
-        posts = getPosts(programMode)
+        posts = getPosts(program_mode)
     except Exception as exc:
         logging.error(sys.exc_info()[0].__name__,
                       exc_info=full_exc_info(sys.exc_info()))
-        print(GLOBAL.log_stream.getvalue(),noPrint=True)
+        print(GLOBAL.log_stream.getvalue(), noPrint=True)
         print(exc)
         sys.exit()
 
@@ -334,27 +341,30 @@ def main():
         print("I could not find any posts in that URL")
         sys.exit()
 
-    if GLOBAL.arguments.no_download: pass
-    else: download(posts)
+    if GLOBAL.arguments.no_download:
+        pass
+    else:
+        download(posts)
+
 
 if __name__ == "__main__":
 
-    GLOBAL.log_stream = StringIO()    
+    GLOBAL.log_stream = StringIO()
     logging.basicConfig(stream=GLOBAL.log_stream, level=logging.INFO)
 
     try:
         VanillaPrint = print
         print = printToFile
         GLOBAL.RUN_TIME = str(time.strftime(
-                                      "%d-%m-%Y_%H-%M-%S",
-                                      time.localtime(time.time())
-                                      ))
+            "%d-%m-%Y_%H-%M-%S",
+            time.localtime(time.time())
+        ))
         main()
 
     except KeyboardInterrupt:
         if GLOBAL.directory is None:
             GLOBAL.directory = Path("..\\")
-        
+
     except Exception as exception:
         if GLOBAL.directory is None:
             GLOBAL.directory = Path("..\\")
@@ -362,5 +372,5 @@ if __name__ == "__main__":
                       exc_info=full_exc_info(sys.exc_info()))
         print(GLOBAL.log_stream.getvalue())
 
-    if not GLOBAL.arguments.quit: input("\nPress enter to quit\n")
-              
+    if not GLOBAL.arguments.quit:
+        input("\nPress enter to quit\n")
