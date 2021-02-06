@@ -7,70 +7,71 @@ from html.parser import HTMLParser
 from src.downloaders.downloaderUtils import getFile
 from src.downloaders.downloaderUtils import getExtension
 
-from src.errors import (FileNameTooLong, AlbumNotDownloadedCompletely, 
+from src.errors import (FileNameTooLong, AlbumNotDownloadedCompletely,
                         NotADownloadableLinkError, FileAlreadyExistsError, full_exc_info)
 from src.utils import GLOBAL
 from src.utils import printToFile as print
 
+
 class Erome:
-    def __init__(self,directory,post):
+    def __init__(self, directory, post):
         try:
-            IMAGES = self.getLinks(post['CONTENTURL'])
+            images = self.getLinks(post['CONTENTURL'])
         except urllib.error.HTTPError:
             raise NotADownloadableLinkError("Not a downloadable link")
 
-        imagesLenght = len(IMAGES)
-        howManyDownloaded = imagesLenght
+        images_length = len(images)
+        how_many_downloaded = images_length
         duplicates = 0
 
-        if imagesLenght == 1:
-            
-            extension = getExtension(IMAGES[0])
+        if images_length == 1:
+
+            extension = getExtension(images[0])
 
             """Filenames are declared here"""
 
-            filename = GLOBAL.config['filename'].format(**post)+post["EXTENSION"]
-            shortFilename = post['POSTID'] + extension
+            filename = GLOBAL.config['filename'].format(**post) + post["EXTENSION"]
+            short_filename = post['POSTID'] + extension
 
-            imageURL = IMAGES[0]
-            if 'https://' not in imageURL or 'http://' not in imageURL:
-                imageURL = "https://" + imageURL
+            image_url = images[0]
+            if 'https://' not in image_url or 'http://' not in image_url:
+                image_url = "https://" + image_url
 
-            getFile(filename,shortFilename,directory,imageURL)
+            getFile(filename, short_filename, directory, image_url)
 
         else:
             filename = GLOBAL.config['filename'].format(**post)
 
             print(filename)
 
-            folderDir = directory / filename
+            folder_dir = directory / filename
 
             try:
-                if not os.path.exists(folderDir):
-                    os.makedirs(folderDir)
+                if not os.path.exists(folder_dir):
+                    os.makedirs(folder_dir)
             except FileNotFoundError:
-                folderDir = directory / post['POSTID']
-                os.makedirs(folderDir)
+                folder_dir = directory / post['POSTID']
+                os.makedirs(folder_dir)
 
-            for i in range(imagesLenght):
-                
-                extension = getExtension(IMAGES[i])
+            for i in range(images_length):
 
-                filename = str(i+1)+extension
-                imageURL = IMAGES[i]
-                if 'https://' not in imageURL and 'http://' not in imageURL:
-                    imageURL = "https://" + imageURL
+                extension = getExtension(images[i])
 
-                print("  ({}/{})".format(i+1,imagesLenght))
+                filename = str(i + 1) + extension
+                image_url = images[i]
+                if 'https://' not in image_url and 'http://' not in image_url:
+                    image_url = "https://" + image_url
+
+                print("  ({}/{})".format(i + 1, images_length))
                 print("  {}".format(filename))
 
                 try:
-                    getFile(filename,filename,folderDir,imageURL,indent=2)
+                    getFile(filename, filename, folder_dir, image_url, indent=2)
                     print()
                 except FileAlreadyExistsError:
-                    print("  The file already exists" + " "*10,end="\n\n")
+                    print("  The file already exists" + " " * 10, end="\n\n")
                     duplicates += 1
-                    howManyDownloaded -= 1
+                    how_many_downloaded -= 1
 
                 except Exception as exception:
                     # raise exception
@@ -83,53 +84,54 @@ class Erome:
                         )
                         + "\n"
                     )
-                    howManyDownloaded -= 1
+                    how_many_downloaded -= 1
 
-            if duplicates == imagesLenght:
+            if duplicates == images_length:
                 raise FileAlreadyExistsError
-            elif howManyDownloaded + duplicates < imagesLenght:
+            elif how_many_downloaded + duplicates < images_length:
                 raise AlbumNotDownloadedCompletely(
                     "Album Not Downloaded Completely"
                 )
 
-    def getLinks(self,url,lineNumber=129):
- 
+    def getLinks(self, url, line_number=129):
+
         content = []
-        lineNumber = None
+        line_number = None
 
         class EromeParser(HTMLParser):
             tag = None
-            def handle_starttag(self, tag, attrs):
-                self.tag = {tag:{attr[0]: attr[1] for attr in attrs}}
 
-        pageSource = (urllib.request.urlopen(url).read().decode().split('\n'))
+            def handle_starttag(self, tag, attrs):
+                self.tag = {tag: {attr[0]: attr[1] for attr in attrs}}
+
+        page_source = (urllib.request.urlopen(url).read().decode().split('\n'))
 
         """ FIND WHERE ALBUM STARTS IN ORDER NOT TO GET WRONG LINKS"""
-        for i in range(len(pageSource)):
+        for i in range(len(page_source)):
             obj = EromeParser()
-            obj.feed(pageSource[i])
+            obj.feed(page_source[i])
             tag = obj.tag
-            
+
             if tag is not None:
                 if "div" in tag:
                     if "id" in tag["div"]:
                         if tag["div"]["id"] == "album":
-                            lineNumber = i
+                            line_number = i
                             break
 
-        for line in pageSource[lineNumber:]:
+        for line in page_source[line_number:]:
             obj = EromeParser()
             obj.feed(line)
             tag = obj.tag
             if tag is not None:
                 if "img" in tag:
                     if "class" in tag["img"]:
-                        if tag["img"]["class"]=="img-front":
+                        if tag["img"]["class"] == "img-front":
                             content.append(tag["img"]["src"])
                 elif "source" in tag:
                     content.append(tag["source"]["src"])
-                    
+
         return [
-            link for link in content \
+            link for link in content
             if link.endswith("_480p.mp4") or not link.endswith(".mp4")
         ]
