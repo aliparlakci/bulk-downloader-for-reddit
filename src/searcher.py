@@ -1,22 +1,14 @@
-import os
 import sys
-import random
-import socket
 import time
-import webbrowser
 import urllib.request
 from urllib.error import HTTPError
 
-import praw
-from prawcore.exceptions import NotFound, ResponseException, Forbidden
+from prawcore.exceptions import Forbidden, NotFound
 
+from src.errors import (InsufficientPermission, InvalidSortingType, MultiredditNotFound, NoMatchingSubmissionFound,
+                        NoPrawSupport)
 from src.reddit import Reddit
 from src.utils import GLOBAL, createLogFile, printToFile
-from src.jsonHelper import JsonFile
-from src.errors import (NoMatchingSubmissionFound, NoPrawSupport,
-                        NoRedditSupport, MultiredditNotFound,
-                        InvalidSortingType, RedditLoginFailed,
-                        InsufficientPermission, DirectLinkNotFound)
 
 print = printToFile
 
