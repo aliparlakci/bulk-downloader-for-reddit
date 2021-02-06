@@ -63,7 +63,7 @@ def getPosts(program_mode):
                     sort=program_mode["sort"],
                     subreddit=program_mode["subreddit"],
                     time=program_mode["time"]
-                ).upper(), noPrint=True
+                ).upper(), no_print=True
             )
             return extractDetails(
                 reddit.subreddit(program_mode["subreddit"]).search(
@@ -91,7 +91,7 @@ def getPosts(program_mode):
             "saved posts\nuser:{username}\nlimit={limit}\n".format(
                 username=reddit.user.me(),
                 limit=program_mode["limit"]
-            ).upper(), noPrint=True
+            ).upper(), no_print=True
         )
         return extractDetails(reddit.user.me().saved(limit=program_mode["limit"]))
 
@@ -106,7 +106,7 @@ def getPosts(program_mode):
                     sort=program_mode["sort"],
                     subreddit=program_mode["subreddit"],
                     time=program_mode["time"]
-                ).upper(), noPrint=True
+                ).upper(), no_print=True
             )
             return extractDetails(
                 getattr(reddit.front, program_mode["sort"])(**keyword_params)
@@ -120,7 +120,7 @@ def getPosts(program_mode):
                     sort=program_mode["sort"],
                     subreddit=program_mode["subreddit"],
                     time=program_mode["time"]
-                ).upper(), noPrint=True
+                ).upper(), no_print=True
             )
             return extractDetails(
                 getattr(
@@ -138,7 +138,7 @@ def getPosts(program_mode):
                 sort=program_mode["sort"],
                 multireddit=program_mode["multireddit"],
                 time=program_mode["time"]
-            ).upper(), noPrint=True
+            ).upper(), no_print=True
         )
         try:
             return extractDetails(
@@ -159,7 +159,7 @@ def getPosts(program_mode):
                 sort=program_mode["sort"],
                 user=program_mode["user"],
                 time=program_mode["time"]
-            ).upper(), noPrint=True
+            ).upper(), no_print=True
         )
         return extractDetails(
             getattr(
@@ -172,7 +172,7 @@ def getPosts(program_mode):
             "upvoted posts of {user}\nlimit: {limit}\n".format(
                 user=program_mode["user"],
                 limit=program_mode["limit"]
-            ).upper(), noPrint=True
+            ).upper(), no_print=True
         )
         try:
             return extractDetails(
@@ -182,7 +182,7 @@ def getPosts(program_mode):
             raise InsufficientPermission("You do not have permission to do that")
 
     elif "post" in program_mode:
-        print("post: {post}\n".format(post=program_mode["post"]).upper(), noPrint=True)
+        print("post: {post}\n".format(post=program_mode["post"]).upper(), no_print=True)
         return extractDetails(
             reddit.submission(url=program_mode["post"]), single_post=True
         )
@@ -271,7 +271,7 @@ def extractDetails(posts, single_post=False):
                     post_count += 1
 
         except KeyboardInterrupt:
-            print("\nKeyboardInterrupt", noPrint=True)
+            print("\nKeyboardInterrupt", no_print=True)
 
         posts_file.add(all_posts)
 

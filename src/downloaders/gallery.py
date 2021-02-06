@@ -109,7 +109,7 @@ class gallery:
                     )
                     + "\n"
                 )
-                print(GLOBAL.log_stream.getvalue(),noPrint=True)
+                print(GLOBAL.log_stream.getvalue(), no_print=True)
 
         if duplicates == count:
             raise FileAlreadyExistsError

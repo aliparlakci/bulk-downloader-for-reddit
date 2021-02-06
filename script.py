@@ -125,7 +125,7 @@ def download(submissions):
               submissions[i]['FLAIR'] if submissions[i]['FLAIR'] else "",
               sep=" — ",
               end="")
-        print(f" – {submissions[i]['TYPE'].upper()}", end="", noPrint=True)
+        print(f" – {submissions[i]['TYPE'].upper()}", end="", no_print=True)
 
         directory = GLOBAL.directory / GLOBAL.config["folderpath"].format(**submissions[i])
         details = {
@@ -233,7 +233,7 @@ def download(submissions):
 
             logging.error(sys.exc_info()[0].__name__,
                           exc_info=full_exc_info(sys.exc_info()))
-            print(GLOBAL.log_stream.getvalue(), noPrint=True)
+            print(GLOBAL.log_stream.getvalue(), no_print=True)
 
             failed_file.add({int(i + 1): [
                 "{class_name}: {info}".format(
@@ -316,7 +316,7 @@ def main():
         GLOBAL.downloadedPosts = Store()
 
     printLogo()
-    print("\n", " ".join(sys.argv), "\n", noPrint=True)
+    print("\n", " ".join(sys.argv), "\n", no_print=True)
 
     if arguments.log is not None:
         log_dir = Path(arguments.log)
@@ -330,7 +330,7 @@ def main():
     except Exception as exc:
         logging.error(sys.exc_info()[0].__name__,
                       exc_info=full_exc_info(sys.exc_info()))
-        print(GLOBAL.log_stream.getvalue(), noPrint=True)
+        print(GLOBAL.log_stream.getvalue(), no_print=True)
         print(exc)
         sys.exit()
 
