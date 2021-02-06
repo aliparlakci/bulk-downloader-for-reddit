@@ -1,14 +1,14 @@
-import urllib
 import json
 import os
-import time
+
 import requests
 
-from src.utils import GLOBAL, nameCorrector
-from src.utils import printToFile as print
 from src.downloaders.Direct import Direct
 from src.downloaders.downloaderUtils import getFile
-from src.errors import FileAlreadyExistsError, AlbumNotDownloadedCompletely, ImageNotFound, ExtensionError, NotADownloadableLinkError, TypeInSkip
+from src.errors import (AlbumNotDownloadedCompletely, ExtensionError, FileAlreadyExistsError, ImageNotFound,
+                        NotADownloadableLinkError, TypeInSkip)
+from src.utils import GLOBAL, nameCorrector
+from src.utils import printToFile as print
 
 
 class Imgur:
