@@ -3,7 +3,7 @@ import sys
 
 import youtube_dl
 
-from src.downloaders.downloaderUtils import createHash, dlProgress, getExtension
+from src.downloaders.downloaderUtils import createHash
 from src.errors import FileAlreadyExistsError
 from src.utils import GLOBAL
 from src.utils import printToFile as print
