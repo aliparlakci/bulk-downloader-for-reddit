@@ -130,14 +130,11 @@ def download(submissions):
         directory = GLOBAL.directory / GLOBAL.config["folderpath"].format(**submissions[i])
         details = {
             **submissions[i],
-            **{
-                "TITLE": nameCorrector(
-                    submissions[i]['TITLE'],
-                    reference=str(directory)
-                    + GLOBAL.config['filename'].format(**submissions[i])
-                    + ".ext"
-                )
-            }
+            **{"TITLE": nameCorrector(
+                submissions[i]['TITLE'],
+                reference=str(directory)
+                + GLOBAL.config['filename'].format(**submissions[i])
+                + ".ext")}
         }
         filename = GLOBAL.config['filename'].format(**details)
 
@@ -173,30 +170,18 @@ def download(submissions):
             duplicates += 1
 
         except ImgurLoginError:
-            print(
-                "Imgur login failed. \nQuitting the program "
-                "as unexpected errors might occur."
-            )
+            print("Imgur login failed. \nQuitting the program as unexpected errors might occur.")
             sys.exit()
 
         except ImgurLimitError as exception:
             failed_file.add({int(i + 1): [
-                "{class_name}: {info}".format(
-                    class_name=exception.__class__.__name__, info=str(exception)
-                ),
-                details
+                "{class_name}: {info}".format(class_name=exception.__class__.__name__, info=str(exception)), details
             ]})
 
         except NotADownloadableLinkError as exception:
-            print(
-                "{class_name}: {info}".format(
-                    class_name=exception.__class__.__name__, info=str(exception)
-                )
-            )
+            print("{class_name}: {info}".format(class_name=exception.__class__.__name__, info=str(exception)))
             failed_file.add({int(i + 1): [
-                "{class_name}: {info}".format(
-                    class_name=exception.__class__.__name__, info=str(exception)
-                ),
+                "{class_name}: {info}".format(class_name=exception.__class__.__name__, info=str(exception)),
                 submissions[i]
             ]})
 
@@ -218,52 +203,41 @@ def download(submissions):
         except AlbumNotDownloadedCompletely:
             print("Album did not downloaded completely.")
             failed_file.add({int(i + 1): [
-                "{class_name}: {info}".format(
-                    class_name=exc.__class__.__name__, info=str(exc)
-                ),
+                "{class_name}: {info}".format(class_name=exc.__class__.__name__, info=str(exc)),
                 submissions[i]
             ]})
 
         except Exception as exc:
-            print(
-                "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
-                    class_name=exc.__class__.__name__, info=str(exc)
-                )
+            print("{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
+                class_name=exc.__class__.__name__, info=str(exc))
             )
 
-            logging.error(sys.exc_info()[0].__name__,
-                          exc_info=full_exc_info(sys.exc_info()))
+            logging.error(sys.exc_info()[0].__name__, exc_info=full_exc_info(sys.exc_info()))
             print(GLOBAL.log_stream.getvalue(), no_print=True)
 
             failed_file.add({int(i + 1): [
-                "{class_name}: {info}".format(
-                    class_name=exc.__class__.__name__, info=str(exc)
-                ),
+                "{class_name}: {info}".format(class_name=exc.__class__.__name__, info=str(exc)),
                 submissions[i]
             ]})
 
     if duplicates:
-        print(f"\nThere {'were' if duplicates > 1 else 'was'} "
-              f"{duplicates} duplicate{'s' if duplicates > 1 else ''}")
+        print(f"\nThere {'were' if duplicates > 1 else 'was'} {duplicates} duplicate{'s' if duplicates > 1 else ''}")
 
     if downloaded_count == 0:
         print("Nothing is downloaded :(")
 
     else:
-        print(f"Total of {downloaded_count} "
-              f"link{'s' if downloaded_count > 1 else ''} downloaded!")
+        print(f"Total of {downloaded_count} link{'s' if downloaded_count > 1 else ''} downloaded!")
 
 
 def printLogo():
-    VanillaPrint(
-        f"\nBulk Downloader for Reddit v{__version__}\n"
-        f"Written by Ali PARLAKCI – parlakciali@gmail.com\n\n"
-        f"https://github.com/aliparlakci/bulk-downloader-for-reddit/\n"
-    )
+    VanillaPrint(f"\nBulk Downloader for Reddit v{__version__}\n"
+                 f"Written by Ali PARLAKCI – parlakciali@gmail.com\n\n"
+                 f"https://github.com/aliparlakci/bulk-downloader-for-reddit/\n"
+                 )
 
 
 def main():
-
     if Path("config.json").exists():
         GLOBAL.configDirectory = Path("config.json")
     else:
@@ -328,8 +302,7 @@ def main():
     try:
         posts = getPosts(program_mode)
     except Exception as exc:
-        logging.error(sys.exc_info()[0].__name__,
-                      exc_info=full_exc_info(sys.exc_info()))
+        logging.error(sys.exc_info()[0].__name__, exc_info=full_exc_info(sys.exc_info()))
         print(GLOBAL.log_stream.getvalue(), no_print=True)
         print(exc)
         sys.exit()
@@ -352,10 +325,7 @@ if __name__ == "__main__":
     try:
         VanillaPrint = print
         print = printToFile
-        GLOBAL.RUN_TIME = str(time.strftime(
-            "%d-%m-%Y_%H-%M-%S",
-            time.localtime(time.time())
-        ))
+        GLOBAL.RUN_TIME = str(time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime(time.time())))
         main()
 
     except KeyboardInterrupt:
@@ -365,8 +335,7 @@ if __name__ == "__main__":
     except Exception as exception:
         if GLOBAL.directory is None:
             GLOBAL.directory = Path("..\\")
-        logging.error(sys.exc_info()[0].__name__,
-                      exc_info=full_exc_info(sys.exc_info()))
+        logging.error(sys.exc_info()[0].__name__, exc_info=full_exc_info(sys.exc_info()))
         print(GLOBAL.log_stream.getvalue())
 
     if not GLOBAL.arguments.quit:

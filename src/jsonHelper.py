@@ -6,9 +6,7 @@ from src.errors import InvalidJSONFile
 
 class JsonFile:
     """ Write and read JSON files
-
     Use add(self,toBeAdded) to add to files
-
     Use delete(self,*deletedKeys) to delete keys
     """
 
@@ -31,7 +29,6 @@ class JsonFile:
         It uses new key's value if a key already exists.
         Returns the new content as a dictionary.
         """
-
         data = self.read()
         if sub:
             data[sub] = {**data[sub], **to_be_added}
@@ -44,7 +41,6 @@ class JsonFile:
         """Delete given keys from JSON file.
         Returns the new content as a dictionary.
         """
-
         data = self.read()
         for deleteKey in delete_keys:
             if deleteKey in data:

@@ -40,7 +40,6 @@ class VReddit:
 
     @staticmethod
     def _mergeAudio(video, audio, filename, short_filename, directory):
-
         input_video = str(directory / video)
         input_audio = str(directory / audio)
 

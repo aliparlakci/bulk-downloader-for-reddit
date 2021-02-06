@@ -21,11 +21,9 @@ class Erome:
         duplicates = 0
 
         if images_length == 1:
-
             extension = getExtension(images[0])
 
             """Filenames are declared here"""
-
             filename = GLOBAL.config['filename'].format(**post) + post["EXTENSION"]
             short_filename = post['POSTID'] + extension
 
@@ -37,7 +35,6 @@ class Erome:
 
         else:
             filename = GLOBAL.config['filename'].format(**post)
-
             print(filename)
 
             folder_dir = directory / filename
@@ -50,7 +47,6 @@ class Erome:
                 os.makedirs(folder_dir)
 
             for i in range(images_length):
-
                 extension = getExtension(images[i])
 
                 filename = str(i + 1) + extension
@@ -74,10 +70,7 @@ class Erome:
                     print("\n  Could not get the file")
                     print(
                         "  "
-                        + "{class_name}: {info}".format(
-                            class_name=exception.__class__.__name__,
-                            info=str(exception)
-                        )
+                        + "{class_name}: {info}".format(class_name=exception.__class__.__name__, info=str(exception))
                         + "\n"
                     )
                     how_many_downloaded -= 1
@@ -85,12 +78,9 @@ class Erome:
             if duplicates == images_length:
                 raise FileAlreadyExistsError
             elif how_many_downloaded + duplicates < images_length:
-                raise AlbumNotDownloadedCompletely(
-                    "Album Not Downloaded Completely"
-                )
+                raise AlbumNotDownloadedCompletely("Album Not Downloaded Completely")
 
     def getLinks(self, url):
-
         content = []
         line_number = None
 
@@ -127,7 +117,4 @@ class Erome:
                 elif "source" in tag:
                     content.append(tag["source"]["src"])
 
-        return [
-            link for link in content
-            if link.endswith("_480p.mp4") or not link.endswith(".mp4")
-        ]
+        return [link for link in content if link.endswith("_480p.mp4") or not link.endswith(".mp4")]

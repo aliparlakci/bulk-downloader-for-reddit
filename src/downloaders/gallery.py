@@ -13,7 +13,6 @@ from src.utils import printToFile as print
 
 class Gallery:
     def __init__(self, directory, post):
-
         link = post['CONTENTURL']
         self.raw_data = self.getData(link)
 
@@ -38,7 +37,6 @@ class Gallery:
 
     @staticmethod
     def getData(link):
-
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",

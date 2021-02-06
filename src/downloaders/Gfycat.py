@@ -32,7 +32,6 @@ class Gfycat:
         """Extract direct link to the video from page's source
         and return it
         """
-
         if '.webm' in url or '.mp4' in url or '.gif' in url:
             return url
 

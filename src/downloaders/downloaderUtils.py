@@ -1,18 +1,17 @@
-import sys
+import hashlib
 import os
+import sys
 import urllib.request
 from pathlib import Path
-import hashlib
 
+from src.errors import DomainInSkip, FailedToDownload, FileAlreadyExistsError, TypeInSkip
 from src.utils import GLOBAL
 from src.utils import printToFile as print
-from src.errors import FileAlreadyExistsError, FailedToDownload, TypeInSkip, DomainInSkip
 
 
 def dlProgress(count, block_size, total_size):
     """Function for writing download progress to console
     """
-
     download_mbs = int(count * block_size * (10 ** (-6)))
     file_size = int(total_size * (10 ** (-6)))
     sys.stdout.write("{}Mb/{}Mb\r".format(download_mbs, file_size))
@@ -23,7 +22,6 @@ def getExtension(link):
     """Extract file extension from image link.
     If didn't find any, return '.jpg'
     """
-
     image_types = ['jpg', 'png', 'mp4', 'webm', 'gif']
     parsed = link.split('.')
     for fileType in image_types:
@@ -37,7 +35,6 @@ def getExtension(link):
 
 
 def getFile(filename, short_filename, folder_dir, image_url, indent=0, silent=False):
-
     formats = {
         "videos": [".mp4", ".webm"],
         "images": [".jpg", ".jpeg", ".png", ".bmp"],
@@ -74,9 +71,7 @@ def getFile(filename, short_filename, folder_dir, image_url, indent=0, silent=Fa
     urllib.request.install_opener(opener)
 
     if not silent:
-        print(" " * indent + str(folder_dir),
-              " " * indent + str(filename),
-              sep="\n")
+        print(" " * indent + str(folder_dir), " " * indent + str(filename), sep="\n")
 
     for i in range(3):
         file_dir = Path(folder_dir) / filename
@@ -84,9 +79,7 @@ def getFile(filename, short_filename, folder_dir, image_url, indent=0, silent=Fa
 
         if not (os.path.isfile(file_dir)):
             try:
-                urllib.request.urlretrieve(image_url,
-                                           temp_dir,
-                                           reporthook=dlProgress)
+                urllib.request.urlretrieve(image_url, temp_dir, reporthook=dlProgress)
 
                 file_hash = createHash(temp_dir)
                 if GLOBAL.arguments.no_dupes:

@@ -1,12 +1,13 @@
-import praw
 import random
 import socket
 import webbrowser
+
+import praw
 from prawcore.exceptions import ResponseException
 
-from src.utils import GLOBAL
+from src.errors import RedditLoginFailed
 from src.jsonHelper import JsonFile
-from src. errors import RedditLoginFailed
+from src.utils import GLOBAL
 
 
 class Reddit:
@@ -23,7 +24,6 @@ class Reddit:
         }
 
     def begin(self):
-
         if self.refresh_token:
             self.arguments["refresh_token"] = self.refresh_token
             self.redditInstance = praw.Reddit(**self.arguments)
@@ -39,11 +39,8 @@ class Reddit:
             self.redditInstance = praw.Reddit(**self.arguments)
             reddit, refresh_token = self.getRefreshToken(*self.SCOPES)
 
-        JsonFile(GLOBAL.configDirectory).add({
-            "reddit_username": str(reddit.user.me()),
-            "reddit": refresh_token
-        }, "credentials")
-
+        JsonFile(GLOBAL.configDirectory).add({"reddit_username": str(
+            reddit.user.me()), "reddit": refresh_token}, "credentials")
         return self.redditInstance
 
     def recieve_connection(self):
@@ -60,9 +57,7 @@ class Reddit:
 
     def send_message(self, client, message):
         """Send message to client and close the connection."""
-        client.send(
-            'HTTP/1.1 200 OK\r\n\r\n{}'.format(message).encode('utf-8')
-        )
+        client.send('HTTP/1.1 200 OK\r\n\r\n{}'.format(message).encode('utf-8'))
         client.close()
 
     def getRefreshToken(self, *scopes):
@@ -76,15 +71,9 @@ class Reddit:
         data = client.recv(1024).decode('utf-8')
         str(data)
         param_tokens = data.split(' ', 2)[1].split('?', 1)[1].split('&')
-        params = {
-            key: value for (key, value) in [token.split('=')
-                                            for token in param_tokens]
-        }
+        params = {key: value for (key, value) in [token.split('=') for token in param_tokens]}
         if state != params['state']:
-            self.send_message(
-                client, 'State mismatch. Expected: {} Received: {}'
-                .format(state, params['state'])
-            )
+            self.send_message(client, 'State mismatch. Expected: {} Received: {}'.format(state, params['state']))
             raise RedditLoginFailed
         elif 'error' in params:
             self.send_message(client, params['error'])

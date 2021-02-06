@@ -40,8 +40,7 @@ def LinkParser(link):
 
     try:
         if (splitted_link[-2].endswith("reddit.com") and
-            splitted_link[-1] == "") or \
-           splitted_link[-1].endswith("reddit.com"):
+                splitted_link[-1] == "") or splitted_link[-1].endswith("reddit.com"):
 
             result["sort"] = "best"
             return result
@@ -75,9 +74,7 @@ def LinkParser(link):
 
         else:
             for index in range(len(splitted_link)):
-                if splitted_link[index] == "u" or \
-                   splitted_link[index] == "user":
-
+                if splitted_link[index] == "u" or splitted_link[index] == "user":
                     result["user"] = splitted_link[index + 1]
 
                 elif splitted_link[index] == "me":
@@ -94,8 +91,7 @@ def LinkParser(link):
                 result["subreddit"] = "frontpage"
 
         elif splitted_link[index] in ["submitted", "saved", "posts", "upvoted"]:
-            if splitted_link[index] == "submitted" or \
-               splitted_link[index] == "posts":
+            if splitted_link[index] == "submitted" or splitted_link[index] == "posts":
                 result["submitted"] = {}
 
             elif splitted_link[index] == "saved":
@@ -122,15 +118,13 @@ def LinkParser(link):
     if not ("upvoted" in result or
             "saved" in result or
             "submitted" in result or
-            "multireddit" in result) and \
-       "user" in result:
+            "multireddit" in result) and "user" in result:
         result["submitted"] = {}
 
     return result
 
 
 def LinkDesigner(link):
-
     attributes = LinkParser(link)
     mode = {}
 
@@ -170,16 +164,14 @@ def LinkDesigner(link):
             mode["sort"] = "relevance"
 
         if "include_over_18" in attributes["search"]:
-            if attributes["search"]["include_over_18"] == 1 or \
-               attributes["search"]["include_over_18"] == "on":
+            if attributes["search"]["include_over_18"] == 1 or attributes["search"]["include_over_18"] == "on":
                 mode["nsfw"] = True
             else:
                 mode["nsfw"] = False
 
     else:
         if "queries" in attributes:
-            if not ("submitted" in attributes or
-                    "posts" in attributes):
+            if not ("submitted" in attributes or "posts" in attributes):
 
                 if "t" in attributes["queries"]:
                     mode["time"] = attributes["queries"]["t"]

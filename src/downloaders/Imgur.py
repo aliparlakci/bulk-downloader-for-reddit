@@ -16,7 +16,6 @@ class Imgur:
     imgur_image_domain = "https://i.imgur.com/"
 
     def __init__(self, directory, post):
-
         link = post['CONTENTURL']
 
         if link.endswith(".gifv"):
@@ -55,14 +54,11 @@ class Imgur:
         print(folder_name)
 
         for i in range(images_length):
-
             extension = self.validateExtension(images["images"][i]["ext"])
-
             image_url = self.imgur_image_domain + images["images"][i]["hash"] + extension
-
-            filename = "_".join([
-                str(i + 1), nameCorrector(images["images"][i]['title']), images["images"][i]['hash']
-            ]) + extension
+            filename = "_".join([str(i + 1),
+                                 nameCorrector(images["images"][i]['title']),
+                                 images["images"][i]['hash']]) + extension
             short_filename = str(i + 1) + "_" + images["images"][i]['hash']
 
             print("\n  ({}/{})".format(i + 1, images_length))
@@ -95,9 +91,7 @@ class Imgur:
         if duplicates == images_length:
             raise FileAlreadyExistsError
         elif how_many_downloaded + duplicates < images_length:
-            raise AlbumNotDownloadedCompletely(
-                "Album Not Downloaded Completely"
-            )
+            raise AlbumNotDownloadedCompletely("Album Not Downloaded Completely")
 
     def download(self, image):
         extension = self.validateExtension(image["ext"])
@@ -114,7 +108,6 @@ class Imgur:
 
     @staticmethod
     def getData(link):
-
         cookies = {"over18": "1", "postpagebeta": "0"}
         res = requests.get(link, cookies=cookies)
         if res.status_code != 200:

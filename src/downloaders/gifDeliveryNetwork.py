@@ -30,7 +30,6 @@ class GifDeliveryNetwork:
         """Extract direct link to the video from page's source
         and return it
         """
-
         if '.webm' in url.split('/')[-1] or '.mp4' in url.split('/')[-1] or '.gif' in url.split('/')[-1]:
             return url
 
@@ -38,7 +37,6 @@ class GifDeliveryNetwork:
             url = url[:-1]
 
         url = "https://www.gifdeliverynetwork.com/" + url.split('/')[-1]
-
         page_source = (urllib.request.urlopen(url).read().decode())
 
         soup = BeautifulSoup(page_source, "html.parser")
