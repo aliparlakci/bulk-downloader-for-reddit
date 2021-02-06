@@ -1,8 +1,7 @@
 import os
 import subprocess
 
-from src.downloaders.downloaderUtils import getExtension, getFile
-from src.errors import FileNameTooLong
+from src.downloaders.downloaderUtils import getFile
 from src.utils import GLOBAL
 from src.utils import printToFile as print
 
