@@ -1,15 +1,14 @@
-import io
-import os
 import json
+import os
 import urllib
-import requests
-from pathlib import Path
 
-from src.utils import GLOBAL, nameCorrector
-from src.utils import printToFile as print
-from src.downloaders.Direct import Direct
+import requests
+
 from src.downloaders.downloaderUtils import getFile
-from src.errors import FileAlreadyExistsError, AlbumNotDownloadedCompletely, ImageNotFound, ExtensionError, NotADownloadableLinkError, TypeInSkip
+from src.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound, NotADownloadableLinkError,
+                        TypeInSkip)
+from src.utils import GLOBAL
+from src.utils import printToFile as print
 
 
 class Gallery:
@@ -103,7 +102,7 @@ class Gallery:
             except Exception as exception:
                 print("\n  Could not get the file")
                 print("  " + "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
-                        class_name=exception.__class__.__name__, info=str(exception)) + "\n"
+                    class_name=exception.__class__.__name__, info=str(exception)) + "\n"
                 )
                 print(GLOBAL.log_stream.getvalue(), no_print=True)
 
