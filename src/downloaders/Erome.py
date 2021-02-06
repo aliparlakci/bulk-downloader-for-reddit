@@ -1,14 +1,10 @@
 import os
-import logging
-import sys
+import urllib.error
 import urllib.request
 from html.parser import HTMLParser
 
-from src.downloaders.downloaderUtils import getFile
-from src.downloaders.downloaderUtils import getExtension
-
-from src.errors import (FileNameTooLong, AlbumNotDownloadedCompletely,
-                        NotADownloadableLinkError, FileAlreadyExistsError, full_exc_info)
+from src.downloaders.downloaderUtils import getExtension, getFile
+from src.errors import AlbumNotDownloadedCompletely, FileAlreadyExistsError, NotADownloadableLinkError
 from src.utils import GLOBAL
 from src.utils import printToFile as print
 
@@ -93,7 +89,7 @@ class Erome:
                     "Album Not Downloaded Completely"
                 )
 
-    def getLinks(self, url, line_number=129):
+    def getLinks(self, url):
 
         content = []
         line_number = None
