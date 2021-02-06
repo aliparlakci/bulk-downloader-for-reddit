@@ -1,5 +1,4 @@
 from src.errors import SearchModeError, RedditorNameError, ProgramModeError, InvalidSortingType
-from src.utils import GLOBAL
 from src.parser import LinkDesigner
 from pathlib import Path
 import sys
