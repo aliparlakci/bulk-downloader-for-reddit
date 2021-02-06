@@ -1,12 +1,11 @@
 import os
 import urllib.request
+
 from bs4 import BeautifulSoup
 
-from src.downloaders.downloaderUtils import getFile, getExtension
-from src.errors import (FileNameTooLong, AlbumNotDownloadedCompletely,
-                        NotADownloadableLinkError, FileAlreadyExistsError)
+from src.downloaders.downloaderUtils import getExtension, getFile
+from src.errors import NotADownloadableLinkError
 from src.utils import GLOBAL
-from src.utils import printToFile as print
 
 
 class GifDeliveryNetwork:
