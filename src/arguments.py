@@ -1,31 +1,29 @@
 import argparse
 import sys
 
+
 class Arguments:
     @staticmethod
-    def parse(arguments=[]):
+    def parse(arguments=None):
         """Initialize argparse and add arguments"""
 
         parser = argparse.ArgumentParser(allow_abbrev=False,
-                                        description="This program downloads " \
-                                                    "media from reddit " \
-                                                    "posts")
-        parser.add_argument("--directory","-d",
-                            help="Specifies the directory where posts will be " \
-                            "downloaded to",
+                                         description="This program downloads media from reddit posts")
+        parser.add_argument("--directory", "-d",
+                            help="Specifies the directory where posts will be downloaded to",
                             metavar="DIRECTORY")
-        
-        parser.add_argument("--verbose","-v",
+
+        parser.add_argument("--verbose", "-v",
                             help="Verbose Mode",
                             action="store_true",
                             default=False)
-        
-        parser.add_argument("--quit","-q",
+
+        parser.add_argument("--quit", "-q",
                             help="Auto quit afer the process finishes",
                             action="store_true",
                             default=False)
 
-        parser.add_argument("--link","-l",
+        parser.add_argument("--link", "-l",
                             help="Get posts from link",
                             metavar="link")
 
@@ -47,30 +45,26 @@ class Arguments:
                             help="Gets upvoted posts of --user")
 
         parser.add_argument("--log",
-                            help="Takes a log file which created by itself " \
-                                "(json files), reads posts and tries downloadin" \
-                                "g them again.",
+                            help="Takes a log file which created by itself (json files),reads posts and tries "
+                                 "downloading them again.",
                             # type=argparse.FileType('r'),
                             metavar="LOG FILE")
 
         parser.add_argument("--subreddit",
                             nargs="+",
-                            help="Triggers subreddit mode and takes subreddit's " \
-                                "name without r/. use \"frontpage\" for frontpage",
+                            help="Triggers subreddit mode and takes subreddit's name without r/. use \"frontpage\" "
+                                 "for frontpage",
                             metavar="SUBREDDIT",
                             type=str)
-        
+
         parser.add_argument("--multireddit",
-                            help="Triggers multireddit mode and takes "\
-                                "multireddit's name without m/",
+                            help="Triggers multireddit mode and takes multireddit's name without m",
                             metavar="MULTIREDDIT",
                             type=str)
 
         parser.add_argument("--user",
-                            help="reddit username if needed. use \"me\" for " \
-                                "current user",
-                            required="--multireddit" in sys.argv or \
-                                    "--submitted" in sys.argv,
+                            help="reddit username if needed. use \"me\" for current user",
+                            required="--multireddit" in sys.argv or "--submitted" in sys.argv,
                             metavar="redditor",
                             type=str)
 
@@ -80,12 +74,8 @@ class Arguments:
                             type=str)
 
         parser.add_argument("--sort",
-                            help="Either hot, top, new, controversial, rising " \
-                                "or relevance default: hot",
-                            choices=[
-                                "hot","top","new","controversial","rising",
-                                "relevance"
-                            ],
+                            help="Either hot, top, new, controversial, rising or relevance default: hot",
+                            choices=["hot", "top", "new", "controversial", "rising", "relevance"],
                             metavar="SORT TYPE",
                             type=str)
 
@@ -95,9 +85,8 @@ class Arguments:
                             type=int)
 
         parser.add_argument("--time",
-                            help="Either hour, day, week, month, year or all." \
-                                " default: all",
-                            choices=["all","hour","day","week","month","year"],
+                            help="Either hour, day, week, month, year or all. default: all",
+                            choices=["all", "hour", "day", "week", "month", "year"],
                             metavar="TIME_LIMIT",
                             type=str)
 
@@ -105,25 +94,25 @@ class Arguments:
                             nargs="+",
                             help="Skip posts with given type",
                             type=str,
-                            choices=["images","videos","gifs","self"],
-                            default=[])   
+                            choices=["images", "videos", "gifs", "self"],
+                            default=[])
 
         parser.add_argument("--skip-domain",
                             nargs="+",
                             help="Skip posts with given domain",
                             type=str,
-                            default=[])   
+                            default=[])
 
         parser.add_argument("--set-folderpath",
                             action="store_true",
                             help="Set custom folderpath"
-                            )                
+                            )
 
         parser.add_argument("--set-filename",
                             action="store_true",
                             help="Set custom filename",
-                            ) 
-        
+                            )
+
         parser.add_argument("--set-default-directory",
                             action="store_true",
                             help="Set a default directory to be used in case no directory is given",
@@ -136,13 +125,14 @@ class Arguments:
 
         parser.add_argument("--use-local-config",
                             action="store_true",
-                            help="Creates a config file in the program's directory and uses it. Useful for having multiple configs",
+                            help="Creates a config file in the program's directory"
+                            " and uses it. Useful for having multiple configs",
                             )
 
         parser.add_argument("--no-dupes",
                             action="store_true",
                             help="Do not download duplicate posts on different subreddits",
-                            ) 
+                            )
 
         parser.add_argument("--downloaded-posts",
                             help="Use a hash file to keep track of downloaded files",
@@ -153,9 +143,8 @@ class Arguments:
                             action="store_true",
                             help="Just saved posts into a the POSTS.json file without downloading"
                             )
-   
 
-        if arguments == []:
+        if not arguments:
             return parser.parse_args()
         else:
             return parser.parse_args(arguments)
