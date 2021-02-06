@@ -4,38 +4,38 @@ from pathlib import Path
 
 from src.errors import FileAlreadyExistsError, TypeInSkip
 from src.utils import GLOBAL
-
-VanillaPrint = print
 from src.utils import printToFile as print
 
+VanillaPrint = print
+
+
 class SelfPost:
-    def __init__(self,directory,post):
+    def __init__(self, directory, post):
+        if "self" in GLOBAL.arguments.skip:
+            raise TypeInSkip
 
-        if "self" in GLOBAL.arguments.skip: raise TypeInSkip
-
-        if not os.path.exists(directory): os.makedirs(directory)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
         filename = GLOBAL.config['filename'].format(**post)
 
-        fileDir = directory / (filename+".md")
-        print(fileDir)
-        print(filename+".md")
+        file_dir = directory / (filename + ".md")
+        print(file_dir)
+        print(filename + ".md")
 
-
-        if Path.is_file(fileDir):
+        if Path.is_file(file_dir):
             raise FileAlreadyExistsError
-            
-        try:
-            self.writeToFile(fileDir,post)
-        except FileNotFoundError:
-            fileDir = post['POSTID']+".md"
-            fileDir = directory / fileDir
 
-            self.writeToFile(fileDir,post)
-    
+        try:
+            self.writeToFile(file_dir, post)
+        except FileNotFoundError:
+            file_dir = post['POSTID'] + ".md"
+            file_dir = directory / file_dir
+
+            self.writeToFile(file_dir, post)
+
     @staticmethod
-    def writeToFile(directory,post):
-        
+    def writeToFile(directory, post):
         """Self posts are formatted here"""
         content = ("## ["
                    + post["TITLE"]
@@ -54,7 +54,6 @@ class SelfPost:
                    + post["REDDITOR"]
                    + ")")
 
-        with io.open(directory,"w",encoding="utf-8") as FILE:
-            VanillaPrint(content,file=FILE)
-        
+        with io.open(directory, "w", encoding="utf-8") as FILE:
+            VanillaPrint(content, file=FILE)
         print("Downloaded")
