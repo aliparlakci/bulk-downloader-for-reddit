@@ -1,14 +1,12 @@
 import sys
 import os
-import time
-from urllib.error import HTTPError
 import urllib.request
 from pathlib import Path
 import hashlib
 
-from src.utils import nameCorrector, GLOBAL
+from src.utils import GLOBAL
 from src.utils import printToFile as print
-from src.errors import FileAlreadyExistsError, FileNameTooLong, FailedToDownload, TypeInSkip, DomainInSkip
+from src.errors import FileAlreadyExistsError, FailedToDownload, TypeInSkip, DomainInSkip
 
 
 def dlProgress(count, block_size, total_size):
