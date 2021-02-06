@@ -1,8 +1,3 @@
-import os
-import socket
-import webbrowser
-import random
-
 from src.reddit import Reddit
 from src.jsonHelper import JsonFile
 from src.utils import nameCorrector
