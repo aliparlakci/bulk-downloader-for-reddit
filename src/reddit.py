@@ -2,7 +2,7 @@ import praw
 import random
 import socket
 import webbrowser
-from prawcore.exceptions import NotFound, ResponseException, Forbidden
+from prawcore.exceptions import ResponseException
 
 from src.utils import GLOBAL
 from src.jsonHelper import JsonFile
