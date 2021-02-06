@@ -4,9 +4,10 @@ from src.parser import LinkDesigner
 from pathlib import Path
 import sys
 
+
 class ProgramMode:
 
-    def __init__(self,arguments):
+    def __init__(self, arguments):
         self.arguments = arguments
 
     def generate(self):
@@ -16,209 +17,205 @@ class ProgramMode:
         except ProgramModeError:
             self._promptUser()
 
-        programMode = {}
+        program_mode = {}
 
         if self.arguments.user is not None:
-            programMode["user"] = self.arguments.user
+            program_mode["user"] = self.arguments.user
 
         if self.arguments.search is not None:
-            programMode["search"] = self.arguments.search
+            program_mode["search"] = self.arguments.search
             if self.arguments.sort == "hot" or \
-            self.arguments.sort == "controversial" or \
-            self.arguments.sort == "rising":
+                    self.arguments.sort == "controversial" or \
+                    self.arguments.sort == "rising":
                 self.arguments.sort = "relevance"
 
         if self.arguments.sort is not None:
-            programMode["sort"] = self.arguments.sort
+            program_mode["sort"] = self.arguments.sort
         else:
             if self.arguments.submitted:
-                programMode["sort"] = "new"
+                program_mode["sort"] = "new"
             else:
-                programMode["sort"] = "hot"
+                program_mode["sort"] = "hot"
 
         if self.arguments.time is not None:
-            programMode["time"] = self.arguments.time
+            program_mode["time"] = self.arguments.time
         else:
-            programMode["time"] = "all"
+            program_mode["time"] = "all"
 
         if self.arguments.link is not None:
 
             self.arguments.link = self.arguments.link.strip("\"")
 
-            programMode = LinkDesigner(self.arguments.link)
+            program_mode = LinkDesigner(self.arguments.link)
 
             if self.arguments.search is not None:
-                programMode["search"] = self.arguments.search
+                program_mode["search"] = self.arguments.search
 
             if self.arguments.sort is not None:
-                programMode["sort"] = self.arguments.sort
+                program_mode["sort"] = self.arguments.sort
 
             if self.arguments.time is not None:
-                programMode["time"] = self.arguments.time
+                program_mode["time"] = self.arguments.time
 
         elif self.arguments.subreddit is not None:
-            if type(self.arguments.subreddit) == list:    
+            if isinstance(self.arguments.subreddit, list):
                 self.arguments.subreddit = "+".join(self.arguments.subreddit)
 
-            programMode["subreddit"] = self.arguments.subreddit
+            program_mode["subreddit"] = self.arguments.subreddit
 
         elif self.arguments.multireddit is not None:
-            programMode["multireddit"] = self.arguments.multireddit
+            program_mode["multireddit"] = self.arguments.multireddit
 
         elif self.arguments.saved is True:
-            programMode["saved"] = True
+            program_mode["saved"] = True
 
         elif self.arguments.upvoted is True:
-            programMode["upvoted"] = True
+            program_mode["upvoted"] = True
 
         elif self.arguments.submitted is not None:
-            programMode["submitted"] = True
+            program_mode["submitted"] = True
 
             if self.arguments.sort == "rising":
                 raise InvalidSortingType("Invalid sorting type has given")
-        
-        programMode["limit"] = self.arguments.limit
 
-        return programMode
+        program_mode["limit"] = self.arguments.limit
+
+        return program_mode
 
     @staticmethod
     def _chooseFrom(choices):
         print()
-        choicesByIndex = list(str(x) for x in range(len(choices)+1))
+        choices_by_index = list(str(x) for x in range(len(choices) + 1))
         for i in range(len(choices)):
             print("{indent}[{order}] {mode}".format(
-                indent=" "*4,order=i+1,mode=choices[i]
+                indent=" " * 4, order=i + 1, mode=choices[i]
             ))
-        print(" "*4+"[0] exit\n")
+        print(" " * 4 + "[0] exit\n")
         choice = input("> ")
-        while not choice.lower() in choices+choicesByIndex+["exit"]:
+        while not choice.lower() in choices + choices_by_index + ["exit"]:
             print("Invalid input\n")
             input("> ")
 
         if choice == "0" or choice == "exit":
             sys.exit()
-        elif choice in choicesByIndex:
-            return choices[int(choice)-1]
+        elif choice in choices_by_index:
+            return choices[int(choice) - 1]
         else:
             return choice
 
     def _promptUser(self):
         print("select program mode:")
-        programModes = [
-            "search","subreddit","multireddit",
-            "submitted","upvoted","saved","log"
+        program_modes = [
+            "search", "subreddit", "multireddit",
+            "submitted", "upvoted", "saved", "log"
         ]
-        programMode = self._chooseFrom(programModes)
+        program_mode = self._chooseFrom(program_modes)
 
-        if programMode == "search":
+        if program_mode == "search":
             self.arguments.search = input("\nquery: ")
             self.arguments.subreddit = input("\nsubreddit: ")
 
             print("\nselect sort type:")
-            sortTypes = [
-                "relevance","top","new"
+            sort_types = [
+                "relevance", "top", "new"
             ]
-            sortType = self._chooseFrom(sortTypes)
-            self.arguments.sort = sortType
+            sort_type = self._chooseFrom(sort_types)
+            self.arguments.sort = sort_type
 
             print("\nselect time filter:")
-            timeFilters = [
-                "hour","day","week","month","year","all"
+            time_filters = [
+                "hour", "day", "week", "month", "year", "all"
             ]
-            timeFilter = self._chooseFrom(timeFilters)
-            self.arguments.time = timeFilter
+            time_filter = self._chooseFrom(time_filters)
+            self.arguments.time = time_filter
 
-        if programMode == "subreddit":
+        if program_mode == "subreddit":
 
-            subredditInput = input("(type frontpage for all subscribed subreddits,\n" \
-                                   " use plus to seperate multi subreddits:" \
-                                   " pics+funny+me_irl etc.)\n\n" \
-                                   "subreddit: ")
-            self.arguments.subreddit = subredditInput
-
-            # while not (subredditInput == "" or subredditInput.lower() == "frontpage"):
-            #     subredditInput = input("subreddit: ")
-            #     self.arguments.subreddit += "+" + subredditInput
+            subreddit_input = input("(type frontpage for all subscribed subreddits,\n"
+                                    " use plus to seperate multi subreddits:"
+                                    " pics+funny+me_irl etc.)\n\n"
+                                    "subreddit: ")
+            self.arguments.subreddit = subreddit_input
 
             if " " in self.arguments.subreddit:
                 self.arguments.subreddit = "+".join(self.arguments.subreddit.split())
 
             # DELETE THE PLUS (+) AT THE END
-            if not subredditInput.lower() == "frontpage" \
-                and self.arguments.subreddit[-1] == "+":
+            if not subreddit_input.lower() == "frontpage" \
+                    and self.arguments.subreddit[-1] == "+":
                 self.arguments.subreddit = self.arguments.subreddit[:-1]
 
             print("\nselect sort type:")
-            sortTypes = [
-                "hot","top","new","rising","controversial"
+            sort_types = [
+                "hot", "top", "new", "rising", "controversial"
             ]
-            sortType = self._chooseFrom(sortTypes)
-            self.arguments.sort = sortType
+            sort_type = self._chooseFrom(sort_types)
+            self.arguments.sort = sort_type
 
-            if sortType in ["top","controversial"]:
+            if sort_type in ["top", "controversial"]:
                 print("\nselect time filter:")
-                timeFilters = [
-                    "hour","day","week","month","year","all"
+                time_filters = [
+                    "hour", "day", "week", "month", "year", "all"
                 ]
-                timeFilter = self._chooseFrom(timeFilters)
-                self.arguments.time = timeFilter
+                time_filter = self._chooseFrom(time_filters)
+                self.arguments.time = time_filter
             else:
                 self.arguments.time = "all"
 
-        elif programMode == "multireddit":
+        elif program_mode == "multireddit":
             self.arguments.user = input("\nmultireddit owner: ")
             self.arguments.multireddit = input("\nmultireddit: ")
-            
-            print("\nselect sort type:")
-            sortTypes = [
-                "hot","top","new","rising","controversial"
-            ]
-            sortType = self._chooseFrom(sortTypes)
-            self.arguments.sort = sortType
 
-            if sortType in ["top","controversial"]:
+            print("\nselect sort type:")
+            sort_types = [
+                "hot", "top", "new", "rising", "controversial"
+            ]
+            sort_type = self._chooseFrom(sort_types)
+            self.arguments.sort = sort_type
+
+            if sort_type in ["top", "controversial"]:
                 print("\nselect time filter:")
-                timeFilters = [
-                    "hour","day","week","month","year","all"
+                time_filters = [
+                    "hour", "day", "week", "month", "year", "all"
                 ]
-                timeFilter = self._chooseFrom(timeFilters)
-                self.arguments.time = timeFilter
+                time_filter = self._chooseFrom(time_filters)
+                self.arguments.time = time_filter
             else:
                 self.arguments.time = "all"
-        
-        elif programMode == "submitted":
+
+        elif program_mode == "submitted":
             self.arguments.submitted = True
             self.arguments.user = input("\nredditor: ")
 
             print("\nselect sort type:")
-            sortTypes = [
-                "hot","top","new","controversial"
+            sort_types = [
+                "hot", "top", "new", "controversial"
             ]
-            sortType = self._chooseFrom(sortTypes)
-            self.arguments.sort = sortType
+            sort_type = self._chooseFrom(sort_types)
+            self.arguments.sort = sort_type
 
-            if sortType == "top":
+            if sort_type == "top":
                 print("\nselect time filter:")
-                timeFilters = [
-                    "hour","day","week","month","year","all"
+                time_filters = [
+                    "hour", "day", "week", "month", "year", "all"
                 ]
-                timeFilter = self._chooseFrom(timeFilters)
-                self.arguments.time = timeFilter
+                time_filter = self._chooseFrom(time_filters)
+                self.arguments.time = time_filter
             else:
                 self.arguments.time = "all"
-        
-        elif programMode == "upvoted":
+
+        elif program_mode == "upvoted":
             self.arguments.upvoted = True
             self.arguments.user = input("\nredditor: ")
-        
-        elif programMode == "saved":
+
+        elif program_mode == "saved":
             self.arguments.saved = True
-        
-        elif programMode == "log":
+
+        elif program_mode == "log":
             while True:
                 self.arguments.log = input("\nlog file directory:")
                 if Path(self.arguments.log).is_file():
-                    break 
+                    break
         while True:
             try:
                 self.arguments.limit = int(input("\nlimit (0 for none): "))
@@ -241,30 +238,30 @@ class ProgramMode:
         search = 1 if self.arguments.search else 0
 
         modes = [
-            "saved","subreddit","submitted","log","link","upvoted","multireddit"
+            "saved", "subreddit", "submitted", "log", "link", "upvoted", "multireddit"
         ]
 
         values = {
-            x: 0 if getattr(self.arguments,x) is None or \
-                    getattr(self.arguments,x) is False \
-                else 1 \
-                for x in modes
+            x: 0 if getattr(self.arguments, x) is None or
+            getattr(self.arguments, x) is False
+            else 1
+            for x in modes
         }
 
         if not sum(values[x] for x in values) == 1:
             raise ProgramModeError("Invalid program mode")
-        
-        if search+values["saved"] == 2:
+
+        if search + values["saved"] == 2:
             raise SearchModeError("You cannot search in your saved posts")
 
-        if search+values["submitted"] == 2:
+        if search + values["submitted"] == 2:
             raise SearchModeError("You cannot search in submitted posts")
 
-        if search+values["upvoted"] == 2:
+        if search + values["upvoted"] == 2:
             raise SearchModeError("You cannot search in upvoted posts")
 
-        if search+values["log"] == 2:
+        if search + values["log"] == 2:
             raise SearchModeError("You cannot search in log files")
 
-        if values["upvoted"]+values["submitted"] == 1 and user == 0:
+        if values["upvoted"] + values["submitted"] == 1 and user == 0:
             raise RedditorNameError("No redditor name given")
