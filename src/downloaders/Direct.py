@@ -1,9 +1,7 @@
 import os
 
 from src.downloaders.downloaderUtils import getExtension, getFile
-from src.errors import FileNameTooLong
 from src.utils import GLOBAL
-from src.utils import printToFile as print
 
 
 class Direct:
