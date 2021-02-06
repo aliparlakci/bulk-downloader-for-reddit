@@ -5,9 +5,8 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 from src.downloaders.downloaderUtils import getExtension, getFile
-from src.errors import AlbumNotDownloadedCompletely, FileAlreadyExistsError, FileNameTooLong, NotADownloadableLinkError
+from src.errors import NotADownloadableLinkError
 from src.utils import GLOBAL
-from src.utils import printToFile as print
 
 
 class Redgifs:
