@@ -18,7 +18,7 @@ from src.arguments import Arguments
 from src.config import Config
 from src.downloaders.Direct import Direct
 from src.downloaders.Erome import Erome
-from src.downloaders.gallery import gallery
+from src.downloaders.gallery import Gallery
 from src.downloaders.Gfycat import Gfycat
 from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
 from src.downloaders.Imgur import Imgur
@@ -90,7 +90,7 @@ def downloadPost(submission, directory):
     downloaders = {
         "imgur": Imgur, "gfycat": Gfycat, "erome": Erome, "direct": Direct, "self": SelfPost,
         "redgifs": Redgifs, "gifdeliverynetwork": GifDeliveryNetwork,
-        "v.redd.it": VReddit, "youtube": Youtube, "gallery": gallery
+        "v.redd.it": VReddit, "youtube": Youtube, "gallery": Gallery
     }
 
     print()
