@@ -211,11 +211,8 @@ class ProgramMode:
 
         search = 1 if self.arguments.search else 0
 
-        modes = ["saved", "subreddit", "submitted", "log", "link", "upvoted", "multireddit"]
+        modes = ["saved", "subreddit", "submitted", "log", "link", "upvoted", "multireddit", "user"]
         
-        if user == 1:
-            modes.append("user")
-
         values = {x: 0 if getattr(self.arguments, x) is None or
                   getattr(self.arguments, x) is False
                   else 1
