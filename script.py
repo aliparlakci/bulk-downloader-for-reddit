@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 This program downloads imgur, gfycat and direct image and video links of 
@@ -25,6 +25,7 @@ from src.downloaders.selfPost import SelfPost
 from src.downloaders.vreddit import VReddit
 from src.downloaders.youtube import Youtube
 from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
+from src.downloaders.gallery import gallery
 from src.errors import ImgurLimitError, NoSuitablePost, FileAlreadyExistsError, ImgurLoginError, NotADownloadableLinkError, NoSuitablePost, InvalidJSONFile, FailedToDownload, TypeInSkip, DomainInSkip, AlbumNotDownloadedCompletely, full_exc_info
 from src.parser import LinkDesigner
 from src.searcher import getPosts
