@@ -9,7 +9,7 @@ from src.downloaders.downloaderUtils import getFile
 from src.errors import FileNotFoundError, FileAlreadyExistsError, AlbumNotDownloadedCompletely, ImageNotFound, NotADownloadableLinkError, TypeInSkip
 
 
-class gallery:
+class Gallery:
     def __init__(self, directory, post):
 
         link = post['CONTENTURL']
