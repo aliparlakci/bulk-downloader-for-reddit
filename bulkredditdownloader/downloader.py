@@ -360,13 +360,15 @@ class RedditDownloader:
                     res.download()
                 except errors.BulkDownloaderException:
                     logger.error(
-                        f'Failed to download resource from {res.url} with downloader {downloader_class.__name__}')
+                        f'Failed to download resource {res.url} with downloader {downloader_class.__name__}')
                     return
                 resource_hash = res.hash.hexdigest()
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 if resource_hash in self.master_hash_list:
                     if self.args.no_dupes:
-                        logger.warning(f'Resource from "{res.url}" and hash "{resource_hash}" downloaded elsewhere')
+                        logger.warning(
+                            f'Resource from "{res.url}" and hash "{resource_hash}" from submission {submission.id}'
+                            ' downloaded elsewhere')
                         return
                     elif self.args.make_hard_links:
                         self.master_hash_list[resource_hash].link_to(destination)
