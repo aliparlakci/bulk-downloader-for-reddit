@@ -1,5 +1,5 @@
 FROM python:3.9
-LABEL Description="This image enables running Buld Downloader for Reddit with in a container environment" Version="2.0.0"
+LABEL Description="This image enables running Buld Downloader for Reddit with in a container enviro$
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -22,5 +22,4 @@ RUN pip install --no-cache-dir -r /requirements.txt \
 COPY . /bdfr
 WORKDIR /bdfr
 
-# Useful so the image doubles as reference to the binary
-#ENTRYPOINT ["bash"]
+ENTRYPOINT ["python3", "-m", "bulkredditdownloader"]
