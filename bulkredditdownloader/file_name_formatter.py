@@ -9,7 +9,6 @@ from typing import Optional
 
 from praw.models import Comment, Submission
 
-from bulkredditdownloader.archive_entry import ArchiveEntry
 from bulkredditdownloader.exceptions import BulkDownloaderException
 from bulkredditdownloader.resource import Resource
 

@@ -8,7 +8,7 @@ import dict2xml
 import praw.models
 import yaml
 
-from bulkredditdownloader.archive_entry import ArchiveEntry
+from bulkredditdownloader.archive_entry.submission_archive_entry import SubmissionArchiveEntry
 from bulkredditdownloader.configuration import Configuration
 from bulkredditdownloader.downloader import RedditDownloader
 from bulkredditdownloader.exceptions import ArchiverError
@@ -28,7 +28,7 @@ class Archiver(RedditDownloader):
                 self._write_submission(submission)
 
     def _write_submission(self, submission: praw.models.Submission):
-        archive_entry = ArchiveEntry(submission)
+        archive_entry = SubmissionArchiveEntry(submission)
         if self.args.format == 'json':
             self._write_submission_json(archive_entry)
         elif self.args.format == 'xml':
@@ -39,18 +39,18 @@ class Archiver(RedditDownloader):
             raise ArchiverError(f'Unknown format {self.args.format} given')
         logger.info(f'Record for submission {submission.id} written to disk')
 
-    def _write_submission_json(self, entry: ArchiveEntry):
-        resource = Resource(entry.submission, '', '.json')
+    def _write_submission_json(self, entry: SubmissionArchiveEntry):
+        resource = Resource(entry.source, '', '.json')
         content = json.dumps(entry.compile())
         self._write_content_to_disk(resource, content)
 
-    def _write_submission_xml(self, entry: ArchiveEntry):
-        resource = Resource(entry.submission, '', '.xml')
+    def _write_submission_xml(self, entry: SubmissionArchiveEntry):
+        resource = Resource(entry.source, '', '.xml')
         content = dict2xml.dict2xml(entry.compile(), wrap='root')
         self._write_content_to_disk(resource, content)
 
-    def _write_submission_yaml(self, entry: ArchiveEntry):
-        resource = Resource(entry.submission, '', '.yaml')
+    def _write_submission_yaml(self, entry: SubmissionArchiveEntry):
+        resource = Resource(entry.source, '', '.yaml')
         content = yaml.dump(entry.compile())
         self._write_content_to_disk(resource, content)
 
