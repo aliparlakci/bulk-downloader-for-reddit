@@ -9,6 +9,12 @@ Some quick reference commands are:
   - `python3 -m bulkredditdownloader download --subreddit 'Python, all, mindustry' -L 10 --make-hard-links`
   - `python3 -m bulkredditdownloader archive --subreddit all --format yaml -L 500 --folder-scheme ''`
 
+## Install
+
+After download run the following commands:
+
+1. `python3 -m pip install .`
+
 ## Usage
 
 The BDFR works by taking submissions from a variety of "sources" from Reddit and then parsing them to download. These sources might be a subreddit, multireddit, a user list, or individual links. These sources are combined and downloaded to disk, according to a naming and organisational scheme defined by the user.
