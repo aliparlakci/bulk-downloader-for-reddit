@@ -184,7 +184,7 @@ def test_cli_archive_subreddit(test_args: list[str], tmp_path: Path):
     test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
-    assert re.search(r'Writing submission .*? to file in .*? format', result.output)
+    assert re.search(r'Writing entry .*? to file in .*? format', result.output)
 
 
 @pytest.mark.online
@@ -200,7 +200,7 @@ def test_cli_archive_long(test_args: list[str], tmp_path: Path):
     test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
-    assert re.search(r'Writing submission .*? to file in .*? format', result.output)
+    assert re.search(r'Writing entry .*? to file in .*? format', result.output)
 
 
 @pytest.mark.online
