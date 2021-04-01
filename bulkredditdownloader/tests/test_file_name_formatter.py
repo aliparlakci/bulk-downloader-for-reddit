@@ -246,7 +246,7 @@ def test_generate_dict_for_comment(test_comment_id: str, expected: dict, reddit_
 @pytest.mark.reddit
 @pytest.mark.parametrize(('test_file_scheme', 'test_folder_scheme', 'test_comment_id', 'expected_name'), (
     ('{POSTID}', '', 'gsoubde', 'gsoubde.json'),
-    ('{REDDITOR}_{POSTID}', '', 'gsoubde', 'mayor-humdinger_gsoubde.json'),
+    ('{REDDITOR}_{POSTID}', '', 'gsoubde', 'DELETED_gsoubde.json'),
 ))
 def test_format_archive_entry_comment(
         test_file_scheme: str,
