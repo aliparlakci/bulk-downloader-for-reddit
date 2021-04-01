@@ -15,8 +15,8 @@ from bulkredditdownloader.archive_entry.submission_archive_entry import Submissi
 def test_get_comments(test_submission_id: str, min_comments: int, reddit_instance: praw.Reddit):
     test_submission = reddit_instance.submission(id=test_submission_id)
     test_archive_entry = SubmissionArchiveEntry(test_submission)
-    test_archive_entry._get_comments()
-    assert len(test_archive_entry.comments) >= min_comments
+    results = test_archive_entry._get_comments()
+    assert len(results) >= min_comments
 
 
 @pytest.mark.online

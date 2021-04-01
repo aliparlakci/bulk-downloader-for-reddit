@@ -13,17 +13,13 @@ logger = logging.getLogger(__name__)
 class SubmissionArchiveEntry(BaseArchiveEntry):
     def __init__(self, submission: praw.models.Submission):
         super(SubmissionArchiveEntry, self).__init__(submission)
-        self.comments: list[dict] = []
 
     def compile(self) -> dict:
-        self._fill_entry()
-        out = self.post_details
-        out['comments'] = self.comments
-        return out
-
-    def _fill_entry(self):
-        self._get_comments()
+        comments = self._get_comments()
         self._get_post_details()
+        out = self.post_details
+        out['comments'] = comments
+        return out
 
     def _get_post_details(self):
         self.post_details = {
@@ -42,8 +38,10 @@ class SubmissionArchiveEntry(BaseArchiveEntry):
             'created_utc': self.source.created_utc,
         }
 
-    def _get_comments(self):
+    def _get_comments(self) -> list[dict]:
         logger.debug(f'Retrieving full comment tree for submission {self.source.id}')
+        comments = []
         self.source.comments.replace_more(0)
         for top_level_comment in self.source.comments:
-            self.comments.append(self._convert_comment_to_dict(top_level_comment))
+            comments.append(self._convert_comment_to_dict(top_level_comment))
+        return comments
