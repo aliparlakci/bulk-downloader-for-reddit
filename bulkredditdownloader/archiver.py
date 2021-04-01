@@ -3,6 +3,7 @@
 
 import json
 import logging
+import re
 
 import dict2xml
 import praw.models
@@ -28,6 +29,17 @@ class Archiver(RedditDownloader):
             for submission in generator:
                 logger.debug(f'Attempting to archive submission {submission.id}')
                 self._write_entry(submission)
+
+    def _get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
+        supplied_submissions = []
+        for sub_id in self.args.link:
+            if len(sub_id) == 6:
+                supplied_submissions.append(self.reddit_instance.submission(id=sub_id))
+            elif re.match(r'^\w{7}$', sub_id):
+                supplied_submissions.append(self.reddit_instance.comment(id=sub_id))
+            else:
+                supplied_submissions.append(self.reddit_instance.submission(url=sub_id))
+        return [supplied_submissions]
 
     @staticmethod
     def _pull_lever_entry_factory(praw_item: (praw.models.Submission, praw.models.Comment)) -> BaseArchiveEntry:
