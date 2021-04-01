@@ -15,5 +15,7 @@ class CommentArchiveEntry(BaseArchiveEntry):
         super(CommentArchiveEntry, self).__init__(comment)
 
     def compile(self) -> dict:
+        self.source.refresh()
         self.post_details = self._convert_comment_to_dict(self.source)
+        self.post_details['submission_title'] = self.source.submission.title
         return self.post_details
