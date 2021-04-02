@@ -244,25 +244,18 @@ def test_get_user_submissions(test_user: str, limit: int, downloader_mock: Magic
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.authenticated
-def test_get_user_upvoted(downloader_mock: MagicMock, authenticated_reddit_instance: praw.Reddit):
+@pytest.mark.parametrize('test_flag', (
+    'upvoted',
+    'saved',
+))
+def test_get_user_authenticated_lists(
+    test_flag: str,
+    downloader_mock: MagicMock,
+    authenticated_reddit_instance: praw.Reddit,
+):
+    downloader_mock.args.__dict__[test_flag] = True
     downloader_mock.reddit_instance = authenticated_reddit_instance
     downloader_mock.args.user = 'me'
-    downloader_mock.args.upvoted = True
-    downloader_mock.args.limit = 10
-    downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
-    downloader_mock.sort_filter = RedditTypes.SortType.HOT
-    RedditDownloader._resolve_user_name(downloader_mock)
-    results = RedditDownloader._get_user_data(downloader_mock)
-    assert_all_results_are_submissions(10, results)
-
-
-@pytest.mark.online
-@pytest.mark.reddit
-@pytest.mark.authenticated
-def test_get_user_saved(downloader_mock: MagicMock, authenticated_reddit_instance: praw.Reddit):
-    downloader_mock.reddit_instance = authenticated_reddit_instance
-    downloader_mock.args.user = 'me'
-    downloader_mock.args.saved = True
     downloader_mock.args.limit = 10
     downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
     downloader_mock.sort_filter = RedditTypes.SortType.HOT
