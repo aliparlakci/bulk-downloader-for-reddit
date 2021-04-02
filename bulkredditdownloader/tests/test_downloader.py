@@ -53,7 +53,7 @@ def test_determine_directories(tmp_path: Path, downloader_mock: MagicMock):
 
 @pytest.mark.parametrize(('skip_extensions', 'skip_domains'), (
     ([], []),
-    (['.test'], ['test.com']),
+    (['.test'], ['test.com'],),
 ))
 def test_create_download_filter(skip_extensions: list[str], skip_domains: list[str], downloader_mock: MagicMock):
     downloader_mock.args.skip = skip_extensions
@@ -310,7 +310,12 @@ def test_download_submission_file_exists(
 
 @pytest.mark.online
 @pytest.mark.reddit
+@pytest.mark.parametrize(('test_submission_id', 'test_hash'), (
+    ('m1hqw6', 'a912af8905ae468e0121e9940f797ad7'),
+))
 def test_download_submission_hash_exists(
+        test_submission_id: str,
+        test_hash: str,
         downloader_mock: MagicMock,
         reddit_instance: praw.Reddit,
         tmp_path: Path,
@@ -322,8 +327,8 @@ def test_download_submission_hash_exists(
     downloader_mock.args.no_dupes = True
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     downloader_mock.download_directory = tmp_path
-    downloader_mock.master_hash_list = {'a912af8905ae468e0121e9940f797ad7': None}
-    submission = downloader_mock.reddit_instance.submission(id='m1hqw6')
+    downloader_mock.master_hash_list = {test_hash: None}
+    submission = downloader_mock.reddit_instance.submission(id=test_submission_id)
     RedditDownloader._download_submission(downloader_mock, submission)
     folder_contents = list(tmp_path.iterdir())
     output = capsys.readouterr()
@@ -366,15 +371,23 @@ def test_split_subreddit_entries(test_subreddit_entries: list[str], expected: se
 
 @pytest.mark.online
 @pytest.mark.reddit
-def test_mark_hard_link(downloader_mock: MagicMock, tmp_path: Path, reddit_instance: praw.Reddit):
+@pytest.mark.parametrize('test_submission_id', (
+    'm1hqw6',
+))
+def test_mark_hard_link(
+        test_submission_id: str,
+        downloader_mock: MagicMock,
+        tmp_path: Path,
+        reddit_instance: praw.Reddit
+):
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.args.make_hard_links = True
     downloader_mock.download_directory = tmp_path
     downloader_mock.args.folder_scheme = ''
     downloader_mock.args.file_scheme = '{POSTID}'
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
-    submission = downloader_mock.reddit_instance.submission(id='m1hqw6')
-    original = Path(tmp_path, 'm1hqw6.png')
+    submission = downloader_mock.reddit_instance.submission(id=test_submission_id)
+    original = Path(tmp_path, f'{test_submission_id}.png')
 
     RedditDownloader._download_submission(downloader_mock, submission)
     assert original.exists()
@@ -383,7 +396,7 @@ def test_mark_hard_link(downloader_mock: MagicMock, tmp_path: Path, reddit_insta
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     RedditDownloader._download_submission(downloader_mock, submission)
     test_file_1_stats = original.stat()
-    test_file_2_inode = Path(tmp_path, 'test2_m1hqw6.png').stat().st_ino
+    test_file_2_inode = Path(tmp_path, f'test2_{test_submission_id}.png').stat().st_ino
 
     assert test_file_1_stats.st_nlink == 2
     assert test_file_1_stats.st_ino == test_file_2_inode
