@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import argparse
 import re
 from pathlib import Path
 from typing import Iterator
@@ -15,7 +14,7 @@ from bulkredditdownloader.__main__ import setup_logging
 from bulkredditdownloader.configuration import Configuration
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.downloader import RedditDownloader, RedditTypes
-from bulkredditdownloader.exceptions import BulkDownloaderException, RedditAuthenticationError, RedditUserError
+from bulkredditdownloader.exceptions import BulkDownloaderException
 from bulkredditdownloader.file_name_formatter import FileNameFormatter
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 
@@ -292,7 +291,8 @@ def test_download_submission_file_exists(
         downloader_mock: MagicMock,
         reddit_instance: praw.Reddit,
         tmp_path: Path,
-        capsys: pytest.CaptureFixture):
+        capsys: pytest.CaptureFixture
+):
     setup_logging(3)
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
@@ -319,7 +319,8 @@ def test_download_submission_hash_exists(
         downloader_mock: MagicMock,
         reddit_instance: praw.Reddit,
         tmp_path: Path,
-        capsys: pytest.CaptureFixture):
+        capsys: pytest.CaptureFixture
+):
     setup_logging(3)
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
