@@ -274,3 +274,23 @@ def test_format_archive_entry_comment(
     test_entry = Resource(test_comment, '', '.json')
     result = test_formatter.format_path(test_entry, tmp_path)
     assert result.name == expected_name
+
+
+@pytest.mark.parametrize(('test_folder_scheme', 'expected'), (
+    ('{REDDITOR}/{SUBREDDIT}', 'person/randomreddit'),
+    ('{POSTID}/{SUBREDDIT}/{REDDITOR}', '12345/randomreddit/person'),
+))
+def test_multilevel_folder_scheme(
+        test_folder_scheme: str,
+        expected: str,
+        tmp_path: Path,
+        submission: MagicMock,
+):
+    test_formatter = FileNameFormatter('{POSTID}', test_folder_scheme)
+    test_resource = MagicMock()
+    test_resource.source_submission = submission
+    test_resource.extension = '.png'
+    result = test_formatter.format_path(test_resource, tmp_path)
+    result = result.relative_to(tmp_path)
+    assert str(result.parent) == expected
+    assert len(result.parents) == (len(expected.split('/')) + 1)

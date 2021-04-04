@@ -30,7 +30,7 @@ class FileNameFormatter:
         if not self.validate_string(file_format_string):
             raise BulkDownloaderException(f'"{file_format_string}" is not a valid format string')
         self.file_format_string = file_format_string
-        self.directory_format_string = directory_format_string
+        self.directory_format_string: list[str] = directory_format_string.split('/')
 
     @staticmethod
     def _format_name(submission: (Comment, Submission), format_string: str) -> str:
@@ -85,7 +85,10 @@ class FileNameFormatter:
             destination_directory: Path,
             index: Optional[int] = None,
     ) -> Path:
-        subfolder = destination_directory / self._format_name(resource.source_submission, self.directory_format_string)
+        subfolder = Path(
+            destination_directory,
+            *[self._format_name(resource.source_submission, part) for part in self.directory_format_string]
+        )
         index = f'_{str(index)}' if index else ''
         if not resource.extension:
             raise BulkDownloaderException(f'Resource from {resource.url} has no extension')
