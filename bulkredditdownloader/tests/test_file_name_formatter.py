@@ -26,7 +26,7 @@ def submission() -> MagicMock:
     return test
 
 
-@pytest.fixture()
+@pytest.fixture(scope='session')
 def reddit_submission(reddit_instance: praw.Reddit) -> praw.models.Submission:
     return reddit_instance.submission(id='lgilgt')
 
@@ -267,7 +267,8 @@ def test_format_archive_entry_comment(
         test_comment_id: str,
         expected_name: str,
         tmp_path: Path,
-        reddit_instance: praw.Reddit):
+        reddit_instance: praw.Reddit,
+):
     test_comment = reddit_instance.comment(id=test_comment_id)
     test_formatter = FileNameFormatter(test_file_scheme, test_folder_scheme)
     test_entry = Resource(test_comment, '', '.json')

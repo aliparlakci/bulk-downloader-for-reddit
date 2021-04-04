@@ -16,7 +16,15 @@ logger = logging.getLogger(__name__)
 
 
 class FileNameFormatter:
-    key_terms = ('title', 'subreddit', 'redditor', 'postid', 'upvotes', 'flair', 'date')
+    key_terms = (
+        'date',
+        'flair',
+        'postid',
+        'redditor',
+        'subreddit',
+        'title',
+        'upvotes',
+    )
 
     def __init__(self, file_format_string: str, directory_format_string: str):
         if not self.validate_string(file_format_string):
@@ -34,8 +42,8 @@ class FileNameFormatter:
             raise BulkDownloaderException(f'Cannot name object {type(submission).__name__}')
         result = format_string
         for key in attributes.keys():
-            if re.search(r'(?i).*{{{}}}.*'.format(key), result):
-                result = re.sub(r'(?i){{{}}}'.format(key), str(attributes.get(key, 'unknown')), result)
+            if re.search(fr'(?i).*{{{key}}}.*', result):
+                result = re.sub(fr'(?i){{{key}}}', str(attributes.get(key, 'unknown')), result)
                 logger.log(9, f'Found key string {key} in name')
 
         result = result.replace('/', '')
@@ -67,7 +75,7 @@ class FileNameFormatter:
             'postid': comment.id,
             'upvotes': comment.score,
             'flair': '',
-            'date': comment.created_utc
+            'date': comment.created_utc,
         }
         return comment_attributes
 
@@ -75,7 +83,8 @@ class FileNameFormatter:
             self,
             resource: Resource,
             destination_directory: Path,
-            index: Optional[int] = None) -> Path:
+            index: Optional[int] = None,
+    ) -> Path:
         subfolder = destination_directory / self._format_name(resource.source_submission, self.directory_format_string)
         index = f'_{str(index)}' if index else ''
         if not resource.extension:
@@ -102,8 +111,11 @@ class FileNameFormatter:
             filename = filename[:-1]
         return filename + ending
 
-    def format_resource_paths(self, resources: list[Resource],
-                              destination_directory: Path) -> list[tuple[Path, Resource]]:
+    def format_resource_paths(
+            self,
+            resources: list[Resource],
+            destination_directory: Path,
+    ) -> list[tuple[Path, Resource]]:
         out = []
         if len(resources) == 1:
             out.append((self.format_path(resources[0], destination_directory, None), resources[0]))
@@ -121,7 +133,8 @@ class FileNameFormatter:
         if result:
             if 'POSTID' not in test_string:
                 logger.warning(
-                    f'Post ID not included in this file scheme, so file names are not guaranteed to be unique')
+                    'Some files might not be downloaded due to name conflicts as filenames are'
+                    ' not guaranteed to be be unique without {POSTID}')
             return True
         else:
             return False
