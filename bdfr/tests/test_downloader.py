@@ -268,7 +268,6 @@ def test_get_user_authenticated_lists(
 @pytest.mark.reddit
 @pytest.mark.parametrize(('test_submission_id', 'expected_files_len'), (
     ('ljyy27', 4),
-    ('mpsrds', 1),
 ))
 def test_download_submission(
         test_submission_id: str,
