@@ -210,13 +210,13 @@ class RedditDownloader:
         return match.group(1)
 
     @staticmethod
-    def _split_args_input(subreddit_entries: list[str]) -> set[str]:
-        all_subreddits = []
+    def _split_args_input(entries: list[str]) -> set[str]:
+        all_entries = []
         split_pattern = re.compile(r'[,;]\s?')
-        for entry in subreddit_entries:
+        for entry in entries:
             results = re.split(split_pattern, entry)
-            all_subreddits.extend([RedditDownloader._sanitise_subreddit_name(name) for name in results])
-        return set(all_subreddits)
+            all_entries.extend([RedditDownloader._sanitise_subreddit_name(name) for name in results])
+        return set(all_entries)
 
     def _get_subreddits(self) -> list[praw.models.ListingGenerator]:
         if self.args.subreddit:
