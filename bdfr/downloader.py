@@ -93,6 +93,9 @@ class RedditDownloader:
         self.authenticator = self._create_authenticator()
         logger.log(9, 'Created site authenticator')
 
+        self.args.skip_subreddit = self._split_args_input(self.args.skip_subreddit)
+        self.args.skip_subreddit = set([sub.lower() for sub in self.args.skip_subreddit])
+
     def _read_config(self):
         """Read any cfg values that need to be processed"""
         if self.args.max_wait_time is None:
@@ -354,8 +357,10 @@ class RedditDownloader:
         for generator in self.reddit_lists:
             for submission in generator:
                 if submission.id in self.excluded_submission_ids:
-                    logger.debug(f'Submission {submission.id} in exclusion list, skipping')
+                    logger.debug(f'Object {submission.id} in exclusion list, skipping')
                     continue
+                elif submission.subreddit.display_name.lower() in self.args.skip_subreddit:
+                    logger.debug(f'Submission {submission.id} in {submission.subreddit.display_name} in skip list')
                 else:
                     logger.debug(f'Attempting to download submission {submission.id}')
                     self._download_submission(submission)
