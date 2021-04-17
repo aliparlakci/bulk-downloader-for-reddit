@@ -1,12 +1,12 @@
 # Bulk Downloader for Reddit v2 \[BETA\]
 [![Python Test](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml/badge.svg?branch=v2)](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml)
 
-This is a tool to download submissions or submission data from Reddit. It can be used to archive data or even crawl Reddit to gather research data. The BDFR is flexible and can be used in scripts if needed through an extensive command-line interface. [List of currently supported sources](#list-of-currenlty-supported-sources)
+This is a tool to download submissions or submission data from Reddit. It can be used to archive data or even crawl Reddit to gather research data. The BDFR is flexible and can be used in scripts if needed through an extensive command-line interface. [List of currently supported sources](#list-of-currently-supported-sources)
 
 If you wish to open an issue, please read [the guide on opening issues](docs/CONTRIBUTING.md#opening-an-issue) to ensure that your issue is clear and contains everything it needs to for the developers to investigate.
 
 ## Installation
-Bulk Downloader for Reddit requires Python 3.9.x and it is distributed via pip. Install it as such:
+*Bulk Downloader for Reddit* **requires** Python 3.9.x and it is distributed via `pip`. Install it as such:
 ```bash
 pip install bdfr
 ```
@@ -21,10 +21,10 @@ There are two modes to the BDFR: download, and archive. Each one has a command t
 
 After installation, run the program from any directory as shown below:
 ```bash
-python -m bdfr download
+python3 -m bdfr download
 ```
 ```bash
-python -m bdfr archive
+python3 -m bdfr archive
 ```
 
 However, these commands are not enough. You should chain parameters in [Options](#options) according to your use case. Don't forget that some parameters can be provided multiple times. Some quick reference commands are:
