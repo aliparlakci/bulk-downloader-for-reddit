@@ -9,15 +9,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.9]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.9
       env:
         token: ${{ secrets.REDDIT_TEST_TOKEN }}
     - name: Install dependencies
@@ -30,6 +27,7 @@ jobs:
         cp bdfr/default_config.cfg ./test_config.cfg
         echo "" >> ./test_config.cfg
         echo "user_token = $token" >> ./test_config.cfg
+        cat ./test_config.cfg
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
