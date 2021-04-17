@@ -24,14 +24,16 @@ jobs:
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Setup config file
+    - env:
+        token: ${{ secrets.REDDIT_TEST_TOKEN }}
       run: |
         cp bdfr/default_config.cfg ./test_config.cfg
         echo "" >> ./test_config.cfg
-        echo "user_token = $REDDIT_TEST_TOKEN" >> ./test_config.cfg
+        echo "user_token = $token" >> ./test_config.cfg
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - name: Test with pytest
       run: |
-        pytest -m 'not slow'
+        pytest -m 'not slow' --verbose
