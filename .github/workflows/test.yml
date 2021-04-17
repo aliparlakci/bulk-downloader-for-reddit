@@ -7,13 +7,11 @@ on:
     branches: [ v2 ]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.9]
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -25,6 +23,10 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Setup config file
+      run: |
+        cp bdfr/default_config.cfg ./test_config.cfg
+        echo "user_token = $REDDIT_TEST_TOKEN" >> ./test_config.cfg
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
