@@ -26,7 +26,7 @@ jobs:
     - name: Setup config file
       run: |
         cp bdfr/default_config.cfg ./test_config.cfg
-        echo "user_token = $REDDIT_TEST_TOKEN" >> ./test_config.cfg
+        echo "\nuser_token = $REDDIT_TEST_TOKEN" >> ./test_config.cfg
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
