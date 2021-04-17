@@ -45,6 +45,7 @@ class RedditTypes:
         RISING = auto()
         CONTROVERSIAL = auto()
         NEW = auto()
+        TOP = auto()
         RELEVENCE = auto()
 
     class TimeType(Enum):
@@ -230,12 +231,13 @@ class RedditDownloader:
                             reddit.search(
                                 self.args.search,
                                 sort=self.sort_filter.name.lower(),
+                                time_filter=self.time_filter.name.lower(),
                                 limit=self.args.limit,
                             ))
                         logger.debug(
                             f'Added submissions from subreddit {reddit} with the search term "{self.args.search}"')
                     else:
-                        out.append(sort_function(reddit, limit=self.args.limit))
+                        out.append(sort_function(reddit, time_filter=self.time_filter.name.lower(), limit=self.args.limit))
                         logger.debug(f'Added submissions from subreddit {reddit}')
                 except (errors.BulkDownloaderException, praw.exceptions.PRAWException) as e:
                     logger.error(f'Failed to get submissions for subreddit {reddit}: {e}')
@@ -268,6 +270,8 @@ class RedditDownloader:
             sort_function = praw.models.Subreddit.rising
         elif self.sort_filter is RedditTypes.SortType.CONTROVERSIAL:
             sort_function = praw.models.Subreddit.controversial
+        elif self.sort_filter is RedditTypes.SortType.TOP:
+            sort_function = praw.models.Subreddit.top
         else:
             sort_function = praw.models.Subreddit.hot
         return sort_function
@@ -281,7 +285,7 @@ class RedditDownloader:
                     multi = self.reddit_instance.multireddit(self.args.user, multi)
                     if not multi.subreddits:
                         raise errors.BulkDownloaderException
-                    out.append(sort_function(multi, limit=self.args.limit))
+                    out.append(sort_function(multi, limit=self.args.limit, time_filter=self.time_filter.name.lower()))
                     logger.debug(f'Added submissions from multireddit {multi}')
                 except (errors.BulkDownloaderException, praw.exceptions.PRAWException, prawcore.PrawcoreException) as e:
                     logger.error(f'Failed to get submissions for multireddit {multi}: {e}')
@@ -303,6 +307,7 @@ class RedditDownloader:
                         sort_function(
                             self.reddit_instance.redditor(self.args.user).submissions,
                             limit=self.args.limit,
+                            time_filter=self.time_filter.name.lower(),
                         ))
                 if not self.authenticated and any((self.args.upvoted, self.args.saved)):
                     logger.warning('Accessing user lists requires authentication')
