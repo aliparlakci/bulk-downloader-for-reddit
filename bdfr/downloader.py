@@ -239,7 +239,7 @@ class RedditDownloader:
                         logger.debug(
                             f'Added submissions from subreddit {reddit} with the search term "{self.args.search}"')
                     else:
-                        out.append(sort_function(reddit, limit=self.args.limit))
+                        out.append(self._create_filtered_listing_generator(reddit))
                         logger.debug(f'Added submissions from subreddit {reddit}')
                 except (errors.BulkDownloaderException, praw.exceptions.PRAWException) as e:
                     logger.error(f'Failed to get submissions for subreddit {reddit}: {e}')
@@ -281,19 +281,25 @@ class RedditDownloader:
     def _get_multireddits(self) -> list[Iterator]:
         if self.args.multireddit:
             out = []
-            sort_function = self._determine_sort_function()
             for multi in self._split_args_input(self.args.multireddit):
                 try:
                     multi = self.reddit_instance.multireddit(self.args.user, multi)
                     if not multi.subreddits:
                         raise errors.BulkDownloaderException
-                    out.append(sort_function(multi, limit=self.args.limit))
+                    out.append(self._create_filtered_listing_generator(multi))
                     logger.debug(f'Added submissions from multireddit {multi}')
                 except (errors.BulkDownloaderException, praw.exceptions.PRAWException, prawcore.PrawcoreException) as e:
                     logger.error(f'Failed to get submissions for multireddit {multi}: {e}')
             return out
         else:
             return []
+
+    def _create_filtered_listing_generator(self, reddit_source) -> Iterator:
+        sort_function = self._determine_sort_function()
+        if self.sort_filter in (RedditTypes.SortType.TOP, RedditTypes.SortType.CONTROVERSIAL):
+            return sort_function(reddit_source, limit=self.args.limit, time_filter=self.time_filter.value)
+        else:
+            return sort_function(reddit_source, limit=self.args.limit)
 
     def _get_user_data(self) -> list[Iterator]:
         if any([self.args.submitted, self.args.upvoted, self.args.saved]):
@@ -302,14 +308,11 @@ class RedditDownloader:
                     logger.error(f'User {self.args.user} does not exist')
                     return []
                 generators = []
-                sort_function = self._determine_sort_function()
                 if self.args.submitted:
                     logger.debug(f'Retrieving submitted posts of user {self.args.user}')
-                    generators.append(
-                        sort_function(
-                            self.reddit_instance.redditor(self.args.user).submissions,
-                            limit=self.args.limit,
-                        ))
+                    generators.append(self._create_filtered_listing_generator(
+                        self.reddit_instance.redditor(self.args.user).submissions,
+                    ))
                 if not self.authenticated and any((self.args.upvoted, self.args.saved)):
                     logger.warning('Accessing user lists requires authentication')
                 else:
