@@ -49,12 +49,12 @@ class RedditTypes:
         TOP = auto()
 
     class TimeType(Enum):
-        HOUR = auto()
-        DAY = auto()
-        WEEK = auto()
-        MONTH = auto()
-        YEAR = auto()
-        ALL = auto()
+        ALL = 'all'
+        DAY = 'day'
+        HOUR = 'hour'
+        MONTH = 'month'
+        WEEK = 'week'
+        YEAR = 'year'
 
 
 class RedditDownloader:
@@ -230,12 +230,12 @@ class RedditDownloader:
                 try:
                     reddit = self.reddit_instance.subreddit(reddit)
                     if self.args.search:
-                        out.append(
-                            reddit.search(
-                                self.args.search,
-                                sort=self.sort_filter.name.lower(),
-                                limit=self.args.limit,
-                            ))
+                        out.append(reddit.search(
+                            self.args.search,
+                            sort=self.sort_filter.name.lower(),
+                            limit=self.args.limit,
+                            time_filter=self.time_filter.value,
+                        ))
                         logger.debug(
                             f'Added submissions from subreddit {reddit} with the search term "{self.args.search}"')
                     else:
