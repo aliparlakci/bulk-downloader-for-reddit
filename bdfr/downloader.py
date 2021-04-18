@@ -41,11 +41,12 @@ def _calc_hash(existing_file: Path):
 
 class RedditTypes:
     class SortType(Enum):
-        HOT = auto()
-        RISING = auto()
         CONTROVERSIAL = auto()
+        HOT = auto()
         NEW = auto()
         RELEVENCE = auto()
+        RISING = auto()
+        TOP = auto()
 
     class TimeType(Enum):
         HOUR = auto()
@@ -271,6 +272,8 @@ class RedditDownloader:
             sort_function = praw.models.Subreddit.rising
         elif self.sort_filter is RedditTypes.SortType.CONTROVERSIAL:
             sort_function = praw.models.Subreddit.controversial
+        elif self.sort_filter is RedditTypes.SortType.TOP:
+            sort_function = praw.models.Subreddit.top
         else:
             sort_function = praw.models.Subreddit.hot
         return sort_function
