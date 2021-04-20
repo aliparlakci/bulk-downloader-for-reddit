@@ -40,4 +40,4 @@ jobs:
 
     - name: Test w/ PyTest
       run: |
-        pytest -m 'not slow' --verbose --cov=. --cov-report term:skip-covered
+        pytest -m 'not slow' --verbose --cov=./bdfr/ --cov-report term:skip-covered
