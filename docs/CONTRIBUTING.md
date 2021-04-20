@@ -107,7 +107,7 @@ pytest -m "not reddit and not authenticated"
   
 ### Configuration for authenticated tests
 
-There should be configuration file `test_config.cfg` in the project's root directory to be able to run the integration tests with reddit authentication. See how to create such files [here](../README.md#configuration). The easiest way of creating this file is copying your existing `default_config.cfg` file from the path stated in the previous link and renaming it to `test_config.cfg`
+There should be configuration file `test_config.cfg` in the project's root directory to be able to run the integration tests with reddit authentication. See how to create such files [here](../README.md#configuration). The easiest way of creating this file is copying your existing `default_config.cfg` file from the path stated in the previous link and renaming it to `test_config.cfg` Be sure that user_token key exists in test_config.cfg.
   
 ---
   
