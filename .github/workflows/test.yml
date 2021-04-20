@@ -25,13 +25,6 @@ jobs:
         python -m pip install --upgrade pip flake8 pytest
         pip install -r requirements.txt
 
-    - name: Setup test configuration for Windows
-      if: ${{ matrix.os == 'windows-latest' }}
-      run: |
-        copy bdfr/default_config.cfg ./test_config.cfg
-        echo >> ./test_config.cfg
-        echo user_token = ${{ secrets.REDDIT_TEST_TOKEN }} >> ./test_config.cfg
-
     - name: Setup test configuration
       if: ${{ matrix.os != 'windows-latest' }}
       run: |
