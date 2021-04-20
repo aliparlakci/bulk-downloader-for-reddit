@@ -12,13 +12,12 @@ jobs:
     strategy:
       matrix:
         python-version: [3.9]
+        os: [ubuntu-latest, macos-latest]
+        copy_cmd: [cp]
         include:
-          - os: ubuntu-latest
-            copy_cmd: cp
           - os: windows-latest
             copy_cmd: copy
-          - os: macos-latest
-            copy_cmd: cp
+            python-version: 3.9
     steps:
     - uses: actions/checkout@v2
     - name: Setup Python
