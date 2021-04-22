@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+import platform
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -25,6 +26,15 @@ def submission() -> MagicMock:
     test.created_utc = datetime(2021, 4, 21, 9, 30, 0).timestamp()
     test.__class__ = praw.models.Submission
     return test
+
+
+def check_result_path(result: Path, expected: str) -> bool:
+    if platform.system() == 'Windows':
+        expected = FileNameFormatter._format_for_windows(expected)
+    if result == Path(expected):
+        return True
+    else:
+        return False
 
 
 @pytest.fixture(scope='session')
@@ -99,11 +109,12 @@ def test_format_full(
         format_string_directory: str,
         format_string_file: str,
         expected: str,
-        reddit_submission: praw.models.Submission):
+        reddit_submission: praw.models.Submission,
+):
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory)
     result = test_formatter.format_path(test_resource, Path('test'))
-    assert str(result) == expected
+    assert check_result_path(result, expected)
 
 
 @pytest.mark.online
@@ -116,7 +127,8 @@ def test_format_full(
 def test_format_full_conform(
         format_string_directory: str,
         format_string_file: str,
-        reddit_submission: praw.models.Submission):
+        reddit_submission: praw.models.Submission,
+):
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory)
     test_formatter.format_path(test_resource, Path('test'))
@@ -140,7 +152,7 @@ def test_format_full_with_index_suffix(
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory)
     result = test_formatter.format_path(test_resource, Path('test'), index)
-    assert str(result) == expected
+    assert check_result_path(result, expected)
 
 
 def test_format_multiple_resources():
@@ -294,10 +306,11 @@ def test_multilevel_folder_scheme(
     test_resource.extension = '.png'
     result = test_formatter.format_path(test_resource, tmp_path)
     result = result.relative_to(tmp_path)
-    assert str(result.parent) == expected
+    assert result.parent == Path(expected)
     assert len(result.parents) == (len(expected.split('/')) + 1)
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Emojis are not valid in Windows filesystem')
 @pytest.mark.parametrize(('test_name_string', 'expected'), (
     ('test', 'test'),
     ('😍', '😍'),
