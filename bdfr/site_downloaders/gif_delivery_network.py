@@ -30,7 +30,7 @@ class GifDeliveryNetwork(BaseDownloader):
             out = content['src']
             if not out:
                 raise KeyError
-        except KeyError:
+        except (KeyError, TypeError):
             raise SiteDownloaderError('Could not find source link')
 
         return out
