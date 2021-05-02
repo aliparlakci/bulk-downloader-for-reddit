@@ -6,9 +6,10 @@ from pathlib import Path
 from typing import Optional
 
 import youtube_dl
+from youtube_dl.utils import UnsupportedError
 from praw.models import Submission
 
-from bdfr.exceptions import SiteDownloaderError
+from bdfr.exceptions import NotADownloadableLinkError, SiteDownloaderError
 from bdfr.resource import Resource
 from bdfr.site_authenticator import SiteAuthenticator
 from bdfr.site_downloaders.base_downloader import BaseDownloader
@@ -38,7 +39,11 @@ class Youtube(BaseDownloader):
                 with youtube_dl.YoutubeDL(ytdl_options) as ydl:
                     ydl.download([self.post.url])
             except youtube_dl.DownloadError as e:
-                raise SiteDownloaderError(f'Youtube download failed: {e}')
+                if type(e.__context__) == UnsupportedError:
+                    raise NotADownloadableLinkError(
+                        f'No downloader module exists for url {self.post.url}')
+                else:
+                    raise SiteDownloaderError(f'Youtube download failed: {e}')
 
             downloaded_file = list(download_path.iterdir())[0]
             extension = downloaded_file.suffix

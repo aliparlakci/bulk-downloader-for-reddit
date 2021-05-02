@@ -48,8 +48,7 @@ class DownloadFactory:
         elif re.match(r'i\.redd\.it.*', sanitised_url):
             return Direct
         else:
-            raise NotADownloadableLinkError(
-                f'No downloader module exists for url {url}')
+            return Youtube
 
     @staticmethod
     def _sanitise_url(url: str) -> str:
