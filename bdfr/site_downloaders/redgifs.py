@@ -37,16 +37,14 @@ class Redgifs(GifDeliveryNetwork):
         page = Redgifs.retrieve_url(url, headers=headers)
 
         soup = BeautifulSoup(page.text, 'html.parser')
-        content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})
+        content = soup.find(property="og:video")
 
         if content is None:
             raise SiteDownloaderError('Could not read the page source')
 
-        try:
-            out = json.loads(content.contents[0])['video']['contentUrl']
-        except (IndexError, KeyError):
-            raise SiteDownloaderError('Failed to find JSON data in page')
-        except json.JSONDecodeError as e:
-            raise SiteDownloaderError(f'Received data was not valid JSON: {e}')
+        out = content.get("content", None)
+
+        if out is None:
+            raise SiteDownloaderError('Could find og:video in page')
 
         return out
