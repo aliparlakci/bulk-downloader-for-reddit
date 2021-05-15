@@ -31,5 +31,5 @@ jobs:
     - name: Upload coverage report
       uses: actions/upload-artifact@v2
       with:
-        name: build
+        name: dist
         path: dist/
