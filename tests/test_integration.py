@@ -333,7 +333,7 @@ def test_cli_download_subreddit_exclusion(test_args: list[str], tmp_path: Path):
     ['--file-scheme', '{TITLE}'],
     ['--file-scheme', '{TITLE}_test_{SUBREDDIT}'],
 ))
-def test_cli_file_scheme_warning(test_args: list[str], tmp_path: Path):
+def test_cli_download_file_scheme_warning(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
     test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
