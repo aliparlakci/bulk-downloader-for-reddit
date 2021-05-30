@@ -8,7 +8,7 @@ import click
 from bdfr.archiver import Archiver
 from bdfr.configuration import Configuration
 from bdfr.downloader import RedditDownloader
-from bdfr.scraper import RedditScraper
+from bdfr.cloner import RedditCloner
 
 logger = logging.getLogger()
 
@@ -102,17 +102,17 @@ def cli_archive(context: click.Context, **_):
         logger.info('Program complete')
 
 
-@cli.command('scrape')
+@cli.command('clone')
 @_add_options(_common_options)
 @_add_options(_archiver_options)
 @_add_options(_downloader_options)
 @click.pass_context
-def cli_scrape(context: click.Context, **_):
+def cli_clone(context: click.Context, **_):
     config = Configuration()
     config.process_click_arguments(context)
     setup_logging(config.verbose)
     try:
-        reddit_scraper = RedditScraper(config)
+        reddit_scraper = RedditCloner(config)
         reddit_scraper.download()
     except Exception:
         logger.exception('Scraper exited unexpectedly')

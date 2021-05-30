@@ -10,9 +10,9 @@ from bdfr.downloader import RedditDownloader
 logger = logging.getLogger(__name__)
 
 
-class RedditScraper(RedditDownloader, Archiver):
+class RedditCloner(RedditDownloader, Archiver):
     def __init__(self, args: Configuration):
-        super(RedditScraper, self).__init__(args)
+        super(RedditCloner, self).__init__(args)
 
     def download(self):
         for generator in self.reddit_lists:
