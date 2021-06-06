@@ -26,7 +26,7 @@ _common_options = [
     click.option('-L', '--limit', default=None, type=int),
     click.option('-l', '--link', multiple=True, default=None, type=str),
     click.option('-m', '--multireddit', multiple=True, default=None, type=str),
-    click.option('-s', '--subreddit', multiple=True, default=None, type=str)
+    click.option('-s', '--subreddit', multiple=True, default=None, type=str),
     click.option('-v', '--verbose', default=None, count=True),
     click.option('-u', '--user', type=str, multiple=True, default=None),
     click.option('-t', '--time', type=click.Choice(('all', 'hour', 'day', 'week', 'month', 'year')), default=None),
