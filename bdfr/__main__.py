@@ -21,7 +21,7 @@ _common_options = [
     click.option('--saved', is_flag=True, default=None),
     click.option('--search', default=None, type=str),
     click.option('--submitted', is_flag=True, default=None),
-    click.option('--time-format', type=str, default=None)
+    click.option('--time-format', type=str, default=None),
     click.option('--upvoted', is_flag=True, default=None),
     click.option('-L', '--limit', default=None, type=int),
     click.option('-l', '--link', multiple=True, default=None, type=str),
