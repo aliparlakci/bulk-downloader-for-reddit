@@ -113,6 +113,14 @@ class RedditDownloader(RedditConnector):
             self.master_hash_list[resource_hash] = destination
             logger.debug(f'Hash added to master list: {resource_hash}')
         logger.info(f'Downloaded submission {submission.id} from {submission.subreddit.display_name}')
+        try:
+            if self.args.unsave:
+                submission.unsave()
+                logger.info(f'Unsaved submission {submission.id}')
+        except Exception as e:
+            logger.exception(e)
+            logger.error(f'Failed to unsave submission {submission.id}')
+            return
 
     @staticmethod
     def scan_existing_files(directory: Path) -> dict[str, Path]:

@@ -36,6 +36,7 @@ class Configuration(Namespace):
         self.subreddit: list[str] = []
         self.time: str = 'all'
         self.time_format = None
+        self.unsave: bool = False
         self.upvoted: bool = False
         self.user: list[str] = []
         self.verbose: int = 0

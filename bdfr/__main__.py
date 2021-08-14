@@ -46,6 +46,7 @@ _downloader_options = [
     click.option('--skip', default=None, multiple=True),
     click.option('--skip-domain', default=None, multiple=True),
     click.option('--skip-subreddit', default=None, multiple=True),
+    click.option('--unsave', is_flag=True, default=None)
 ]
 
 _archiver_options = [
