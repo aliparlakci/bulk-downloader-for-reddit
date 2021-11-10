@@ -150,6 +150,14 @@ def test_imgur_extension_validation_bad(test_extension: str):
         'https://i.imgur.com/uTvtQsw.gifv',
         ('46c86533aa60fc0e09f2a758513e3ac2',),
     ),
+    (
+        'https://i.imgur.com/OGeVuAe.giff',
+        ('77389679084d381336f168538793f218',)
+    )
+    (
+        'https://i.imgur.com/OGeVuAe.gift',
+        ('77389679084d381336f168538793f218',)
+    )
 ))
 def test_find_resources(test_url: str, expected_hashes: list[str]):
     mock_download = Mock()
