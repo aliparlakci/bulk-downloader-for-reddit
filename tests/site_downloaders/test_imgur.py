@@ -153,11 +153,11 @@ def test_imgur_extension_validation_bad(test_extension: str):
     (
         'https://i.imgur.com/OGeVuAe.giff',
         ('77389679084d381336f168538793f218',)
-    )
+    ),
     (
         'https://i.imgur.com/OGeVuAe.gift',
         ('77389679084d381336f168538793f218',)
-    )
+    ),
 ))
 def test_find_resources(test_url: str, expected_hashes: list[str]):
     mock_download = Mock()
