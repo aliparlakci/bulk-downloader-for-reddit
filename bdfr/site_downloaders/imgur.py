@@ -42,9 +42,9 @@ class Imgur(BaseDownloader):
     @staticmethod
     def _get_data(link: str) -> dict:
         link = link.rstrip('?')
-        if re.match(r'(?i).*\.gif.*$', link):
+        if re.match(r'(?i).*\.gif.+$', link):
             link = link.replace('i.imgur', 'imgur')
-            link = re.sub('(?i)\\.gif.*$', '', link)
+            link = re.sub('(?i)\\.gif.+$', '', link)
 
         res = Imgur.retrieve_url(link, cookies={'over18': '1', 'postpagebeta': '0'})
 

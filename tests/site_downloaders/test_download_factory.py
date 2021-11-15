@@ -30,6 +30,7 @@ from bdfr.site_downloaders.youtube import Youtube
     ('https://imgur.com/BuzvZwb.gifv', Imgur),
     ('https://i.imgur.com/6fNdLst.gif', Direct),
     ('https://imgur.com/a/MkxAzeg', Imgur),
+    ('https://i.imgur.com/OGeVuAe.giff', Imgur),
     ('https://www.reddit.com/gallery/lu93m7', Gallery),
     ('https://gfycat.com/concretecheerfulfinwhale', Gfycat),
     ('https://www.erome.com/a/NWGw0F09', Erome),

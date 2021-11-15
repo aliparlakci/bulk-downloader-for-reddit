@@ -24,7 +24,7 @@ class DownloadFactory:
     @staticmethod
     def pull_lever(url: str) -> Type[BaseDownloader]:
         sanitised_url = DownloadFactory.sanitise_url(url)
-        if re.match(r'(i\.)?imgur.*\.gif.*$', sanitised_url):
+        if re.match(r'(i\.)?imgur.*\.gif.+$', sanitised_url):
             return Imgur
         elif re.match(r'.*/.*\.\w{3,4}(\?[\w;&=]*)?$', sanitised_url) and \
                 not DownloadFactory.is_web_resource(sanitised_url):
