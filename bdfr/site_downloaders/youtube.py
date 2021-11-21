@@ -27,10 +27,7 @@ class Youtube(BaseDownloader):
             'nooverwrites': True,
         }
         download_function = self._download_video(ytdl_options)
-        try:
-            extension = self.get_video_attributes(self.post.url)['ext']
-        except KeyError:
-            raise NotADownloadableLinkError(f'Youtube-DL cannot download URL {self.post.url}')
+        extension = self.get_video_attributes(self.post.url)['ext']
         res = Resource(self.post, self.post.url, download_function, extension)
         return [res]
 
@@ -67,6 +64,10 @@ class Youtube(BaseDownloader):
         with yt_dlp.YoutubeDL({'logger': yt_logger, }) as ydl:
             try:
                 result = ydl.extract_info(url, download=False)
-                return result
             except Exception as e:
                 logger.exception(e)
+                raise NotADownloadableLinkError(f'Video info extraction failed for {url}')
+        if 'ext' in result:
+            return result
+        else:
+            raise NotADownloadableLinkError(f'Video info extraction failed for {url}')

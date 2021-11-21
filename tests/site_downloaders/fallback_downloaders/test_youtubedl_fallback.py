@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from bdfr.exceptions import NotADownloadableLinkError
 from bdfr.resource import Resource
 from bdfr.site_downloaders.fallback_downloaders.youtubedl_fallback import YoutubeDlFallback
 
@@ -13,10 +14,20 @@ from bdfr.site_downloaders.fallback_downloaders.youtubedl_fallback import Youtub
     ('https://www.reddit.com/r/specializedtools/comments/n2nw5m/bamboo_splitter/', True),
     ('https://www.youtube.com/watch?v=P19nvJOmqCc', True),
     ('https://www.example.com/test', False),
+    ('https://milesmatrix.bandcamp.com/album/la-boum/', False),
 ))
 def test_can_handle_link(test_url: str, expected: bool):
     result = YoutubeDlFallback.can_handle_link(test_url)
     assert result == expected
+
+
+@pytest.mark.online
+@pytest.mark.parametrize('test_url', (
+    'https://milesmatrix.bandcamp.com/album/la-boum/',
+))
+def test_info_extraction_bad(test_url: str):
+    with pytest.raises(NotADownloadableLinkError):
+        YoutubeDlFallback.get_video_attributes(test_url)
 
 
 @pytest.mark.online

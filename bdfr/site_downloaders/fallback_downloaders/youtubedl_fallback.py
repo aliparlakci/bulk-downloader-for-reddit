@@ -6,6 +6,7 @@ from typing import Optional
 
 from praw.models import Submission
 
+from bdfr.exceptions import NotADownloadableLinkError
 from bdfr.resource import Resource
 from bdfr.site_authenticator import SiteAuthenticator
 from bdfr.site_downloaders.fallback_downloaders.fallback_downloader import BaseFallbackDownloader
@@ -29,8 +30,9 @@ class YoutubeDlFallback(BaseFallbackDownloader, Youtube):
 
     @staticmethod
     def can_handle_link(url: str) -> bool:
-        attributes = YoutubeDlFallback.get_video_attributes(url)
+        try:
+            attributes = YoutubeDlFallback.get_video_attributes(url)
+        except NotADownloadableLinkError:
+            return False
         if attributes:
             return True
-        else:
-            return False
