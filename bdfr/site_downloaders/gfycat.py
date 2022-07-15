@@ -21,7 +21,7 @@ class Gfycat(Redgifs):
         return super().find_resources(authenticator)
 
     @staticmethod
-    def _get_link(url: str) -> str:
+    def _get_link(url: str) -> set[str]:
         gfycat_id = re.match(r'.*/(.*?)/?$', url).group(1)
         url = 'https://gfycat.com/' + gfycat_id
 
@@ -39,4 +39,4 @@ class Gfycat(Redgifs):
             raise SiteDownloaderError(f'Failed to download Gfycat link {url}: {e}')
         except json.JSONDecodeError as e:
             raise SiteDownloaderError(f'Did not receive valid JSON data: {e}')
-        return out
+        return {out,}

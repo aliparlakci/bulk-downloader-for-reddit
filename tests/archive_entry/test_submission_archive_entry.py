@@ -34,7 +34,7 @@ def test_get_comments(test_submission_id: str, min_comments: int, reddit_instanc
         'created_utc': 1615583837,
         'permalink': '/r/australia/comments/m3reby/this_little_guy_fell_out_of_a_tree_and_in_front/'
     }),
-    ('m3kua3', {'author': 'DELETED'}),
+    # TODO: add deleted user test case
 ))
 def test_get_post_details(test_submission_id: str, expected_dict: dict, reddit_instance: praw.Reddit):
     test_submission = reddit_instance.submission(id=test_submission_id)

@@ -58,7 +58,7 @@ class Youtube(BaseDownloader):
         return download
 
     @staticmethod
-    def get_video_attributes(url: str) -> dict:
+    def get_video_data(url: str) -> dict:
         yt_logger = logging.getLogger('youtube-dl')
         yt_logger.setLevel(logging.CRITICAL)
         with yt_dlp.YoutubeDL({'logger': yt_logger, }) as ydl:
@@ -67,6 +67,11 @@ class Youtube(BaseDownloader):
             except Exception as e:
                 logger.exception(e)
                 raise NotADownloadableLinkError(f'Video info extraction failed for {url}')
+        return result
+
+    @staticmethod
+    def get_video_attributes(url: str) -> dict:
+        result = Youtube.get_video_data(url)
         if 'ext' in result:
             return result
         else:

@@ -53,6 +53,12 @@ However, these commands are not enough. You should chain parameters in [Options]
 python3 -m bdfr download ./path/to/output --subreddit Python -L 10
 ```
 ```bash
+python3 -m bdfr download ./path/to/output --user reddituser --submitted -L 100
+```
+```bash
+python3 -m bdfr download ./path/to/output --user reddituser --submitted --all-comments --comment-context
+```
+```bash
 python3 -m bdfr download ./path/to/output --user me --saved --authenticate -L 25 --file-scheme '{POSTID}'
 ```
 ```bash
@@ -92,8 +98,8 @@ The following options are common between both the `archive` and `download` comma
   - This option will make the BDFR use the supplied user's saved posts list as a download source
   - This requires an authenticated Reddit instance, using the `--authenticate` flag, as well as `--user` set to `me`
 - `--search`
-  - This will apply the specified search term to specific lists when scraping submissions
-  - A search term can only be applied to subreddits and multireddits, supplied with the `- s` and `-m` flags respectively
+  - This will apply the input search term to specific lists when scraping submissions
+  - A search term can only be applied when using the `--subreddit` and `--multireddit` flags
 - `--submitted`
   - This will use a user's submissions as a source
   - A user must be specified with `--user`

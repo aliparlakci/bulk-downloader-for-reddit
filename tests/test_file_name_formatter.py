@@ -16,6 +16,7 @@ from bdfr.file_name_formatter import FileNameFormatter
 from bdfr.resource import Resource
 from bdfr.site_downloaders.base_downloader import BaseDownloader
 from bdfr.site_downloaders.fallback_downloaders.ytdlp_fallback import YtdlpFallback
+from bdfr.site_downloaders.self_post import SelfPost
 
 
 @pytest.fixture()
@@ -406,6 +407,7 @@ def test_windows_max_path(tmp_path: Path):
 @pytest.mark.parametrize(('test_reddit_id', 'test_downloader', 'expected_names'), (
     ('gphmnr', YtdlpFallback, {'He has a lot to say today.mp4'}),
     ('d0oir2', YtdlpFallback, {"Crunk's finest moment. Welcome to the new subreddit!.mp4"}),
+    ('jiecu', SelfPost, {'[deleted by user].txt'}),
 ))
 def test_name_submission(
         test_reddit_id: str,
@@ -418,4 +420,4 @@ def test_name_submission(
     test_formatter = FileNameFormatter('{TITLE}', '', '')
     results = test_formatter.format_resource_paths(test_resources, Path('.'))
     results = set([r[0].name for r in results])
-    assert expected_names == results
+    assert results == expected_names

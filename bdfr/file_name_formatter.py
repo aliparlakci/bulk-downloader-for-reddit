@@ -111,6 +111,9 @@ class FileNameFormatter:
         if not resource.extension:
             raise BulkDownloaderException(f'Resource from {resource.url} has no extension')
         file_name = str(self._format_name(resource.source_submission, self.file_format_string))
+
+        file_name = re.sub(r'\n', ' ', file_name)
+
         if not re.match(r'.*\.$', file_name) and not re.match(r'^\..*', resource.extension):
             ending = index + '.' + resource.extension
         else:

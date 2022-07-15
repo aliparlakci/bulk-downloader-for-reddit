@@ -16,7 +16,7 @@ from bdfr.site_downloaders.gfycat import Gfycat
 ))
 def test_get_link(test_url: str, expected_url: str):
     result = Gfycat._get_link(test_url)
-    assert result == expected_url
+    assert result.pop() == expected_url
 
 
 @pytest.mark.online

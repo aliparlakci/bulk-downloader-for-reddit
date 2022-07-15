@@ -17,11 +17,11 @@ class Redgifs(BaseDownloader):
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
-        media_url = self._get_link(self.post.url)
-        return [Resource(self.post, media_url, Resource.retry_download(media_url), '.mp4')]
+        media_urls = self._get_link(self.post.url)
+        return [Resource(self.post, m, Resource.retry_download(m), None) for m in media_urls]
 
     @staticmethod
-    def _get_link(url: str) -> str:
+    def _get_link(url: str) -> set[str]:
         try:
             redgif_id = re.match(r'.*/(.*?)/?$', url).group(1)
         except AttributeError:
@@ -32,16 +32,33 @@ class Redgifs(BaseDownloader):
                           'Chrome/90.0.4430.93 Safari/537.36',
         }
 
-        content = Redgifs.retrieve_url(f'https://api.redgifs.com/v1/gfycats/{redgif_id}', headers=headers)
+        content = Redgifs.retrieve_url(f'https://api.redgifs.com/v2/gifs/{redgif_id}', headers=headers)
 
         if content is None:
             raise SiteDownloaderError('Could not read the page source')
 
         try:
-            out = json.loads(content.text)['gfyItem']['mp4Url']
-        except (KeyError, AttributeError):
-            raise SiteDownloaderError('Failed to find JSON data in page')
+            response_json = json.loads(content.text)
         except json.JSONDecodeError as e:
             raise SiteDownloaderError(f'Received data was not valid JSON: {e}')
+
+        out = set()
+        try:
+            if response_json['gif']['type'] == 1:  # type 1 is a video
+                out.add(response_json['gif']['urls']['hd'])
+            elif response_json['gif']['type'] == 2:  # type 2 is an image
+                if response_json['gif']['gallery']:
+                    content = Redgifs.retrieve_url(
+                        f'https://api.redgifs.com/v2/gallery/{response_json["gif"]["gallery"]}',
+                        headers=headers,
+                    )
+                    response_json = json.loads(content.text)
+                    out = {p['urls']['hd'] for p in response_json['gifs']}
+                else:
+                    out.add(response_json['gif']['urls']['hd'])
+            else:
+                raise KeyError
+        except (KeyError, AttributeError):
+            raise SiteDownloaderError('Failed to find JSON data in page')
 
         return out
