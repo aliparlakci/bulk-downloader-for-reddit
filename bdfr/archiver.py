@@ -34,9 +34,6 @@ class Archiver(RedditConnector):
                         f'Submission {submission.id} in {submission.subreddit.display_name} skipped'
                         f' due to {submission.author.name if submission.author else "DELETED"} being an ignored user')
                     continue
-                if submission.id in self.excluded_submission_ids:
-                    logger.debug(f'Object {submission.id} in exclusion list, skipping')
-                    continue
                 logger.debug(f'Attempting to archive submission {submission.id}')
                 self.write_entry(submission)
 

@@ -16,7 +16,6 @@ from bdfr.site_downloaders.imgur import Imgur
 from bdfr.site_downloaders.pornhub import PornHub
 from bdfr.site_downloaders.redgifs import Redgifs
 from bdfr.site_downloaders.self_post import SelfPost
-from bdfr.site_downloaders.vreddit import VReddit
 from bdfr.site_downloaders.youtube import Youtube
 
 
@@ -43,13 +42,12 @@ from bdfr.site_downloaders.youtube import Youtube
     ('https://i.imgur.com/3SKrQfK.jpg?1', Direct),
     ('https://dynasty-scans.com/system/images_images/000/017/819/original/80215103_p0.png?1612232781', Direct),
     ('https://m.imgur.com/a/py3RW0j', Imgur),
-    ('https://v.redd.it/9z1dnk3xr5k61', VReddit),
+    ('https://v.redd.it/9z1dnk3xr5k61', YtdlpFallback),
     ('https://streamable.com/dt46y', YtdlpFallback),
     ('https://vimeo.com/channels/31259/53576664', YtdlpFallback),
     ('http://video.pbs.org/viralplayer/2365173446/', YtdlpFallback),
     ('https://www.pornhub.com/view_video.php?viewkey=ph5a2ee0461a8d0', PornHub),
     ('https://www.patreon.com/posts/minecart-track-59346560', Gallery),
-    ('https://v.redd.it/9z1dnk3xr5k61', VReddit)
 ))
 def test_factory_lever_good(test_submission_url: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
     result = DownloadFactory.pull_lever(test_submission_url)

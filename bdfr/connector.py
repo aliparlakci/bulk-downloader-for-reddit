@@ -243,19 +243,9 @@ class RedditConnector(metaclass=ABCMeta):
         return set(all_entries)
 
     def get_subreddits(self) -> list[praw.models.ListingGenerator]:
-        out = []
-        subscribed_subreddits = set()
-        if self.args.subscribed:
-            if self.args.authenticate:
-                try:
-                    subscribed_subreddits = list(self.reddit_instance.user.subreddits(limit=None))
-                    subscribed_subreddits = set([s.display_name for s in subscribed_subreddits])
-                except prawcore.InsufficientScope:
-                    logger.error('BDFR has insufficient scope to access subreddit lists')
-            else:
-                logger.error('Cannot find subscribed subreddits without an authenticated instance')
-        if self.args.subreddit or subscribed_subreddits:
-            for reddit in self.split_args_input(self.args.subreddit) | subscribed_subreddits:
+        if self.args.subreddit:
+            out = []
+            for reddit in self.split_args_input(self.args.subreddit):
                 if reddit == 'friends' and self.authenticated is False:
                     logger.error('Cannot read friends subreddit without an authenticated instance')
                     continue
@@ -280,7 +270,9 @@ class RedditConnector(metaclass=ABCMeta):
                         logger.debug(f'Added submissions from subreddit {reddit}')
                 except (errors.BulkDownloaderException, praw.exceptions.PRAWException) as e:
                     logger.error(f'Failed to get submissions for subreddit {reddit}: {e}')
-        return out
+            return out
+        else:
+            return []
 
     def resolve_user_name(self, in_name: str) -> str:
         if in_name == 'me':

@@ -17,7 +17,6 @@ from bdfr.site_downloaders.pornhub import PornHub
 from bdfr.site_downloaders.redgifs import Redgifs
 from bdfr.site_downloaders.self_post import SelfPost
 from bdfr.site_downloaders.vidble import Vidble
-from bdfr.site_downloaders.vreddit import VReddit
 from bdfr.site_downloaders.youtube import Youtube
 
 
@@ -48,8 +47,6 @@ class DownloadFactory:
             return Youtube
         elif re.match(r'i\.redd\.it.*', sanitised_url):
             return Direct
-        elif re.match(r'v\.redd\.it.*', sanitised_url):
-            return VReddit
         elif re.match(r'pornhub\.com.*', sanitised_url):
             return PornHub
         elif re.match(r'vidble\.com', sanitised_url):

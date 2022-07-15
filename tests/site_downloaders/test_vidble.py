@@ -30,8 +30,8 @@ def test_change_med_url(test_url: str, expected: str):
         'https://www.vidble.com/VWuNsnLJMD.jpg',
         'https://www.vidble.com/sMmM8O650W.jpg',
     }),
-    ('https://www.vidble.com/watch?v=joC6b7cgs2Tnucx7dhDoyqKPbr7TQUA5', {
-        'https://www.vidble.com/joC6b7cgs2Tnucx7dhDoyqKPbr7TQUA5.mp4',
+    ('https://vidble.com/watch?v=0q4nWakqM6kzQWxlePD8N62Dsflev0N9', {
+        'https://www.vidble.com/0q4nWakqM6kzQWxlePD8N62Dsflev0N9.mp4',
     }),
     ('https://www.vidble.com/pHuwWkOcEb', {
         'https://www.vidble.com/pHuwWkOcEb.jpg',
@@ -55,8 +55,8 @@ def test_get_links(test_url: str, expected: set[str]):
         'b31a942cd8cdda218ed547bbc04c3a27',
         '6f77c570b451eef4222804bd52267481',
     }),
-    ('https://www.vidble.com/watch?v=joC6b7cgs2Tnucx7dhDoyqKPbr7TQUA5', {
-        'ec5f7a7f74a4dd55c740cbfd4d3bf9ab',
+    ('https://vidble.com/watch?v=0q4nWakqM6kzQWxlePD8N62Dsflev0N9', {
+        'cebe9d5f24dba3b0443e5097f160ca83',
     }),
     ('https://www.vidble.com/pHuwWkOcEb', {
         '585f486dd0b2f23a57bddbd5bf185bc7',
