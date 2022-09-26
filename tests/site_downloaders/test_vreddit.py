@@ -13,7 +13,7 @@ from bdfr.site_downloaders.vreddit import VReddit
 @pytest.mark.online
 @pytest.mark.slow
 @pytest.mark.parametrize(('test_url', 'expected_hash'), (
-    ('https://www.reddit.com/user/Xomb_Forever/comments/u5p2kj/hold_up/', '690cffe27a7884196437926c22897216'),
+    ('https://www.reddit.com/user/Xomb_Forever/comments/u5p2kj/hold_up/', 'cf0be8ac765b3b9af430b29c41cc6878'),
 ))
 def test_find_resources_good(test_url: str, expected_hash: str):
     test_submission = MagicMock()
