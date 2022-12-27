@@ -27,7 +27,9 @@ class Redgifs(BaseDownloader):
         try:
             if url.endswith("/"):
                 url = url.removesuffix("/")
-            redgif_id = re.match(r".*/(.*?)(?:\?.*|\..{0,})?$", url).group(1)
+            redgif_id = re.match(r".*/(.*?)(?:\?.*|\..{0,})?$", url).group(1).lower()
+            if redgif_id.endswith("-mobile"):
+                redgif_id = redgif_id.removesuffix("-mobile")
         except AttributeError:
             raise SiteDownloaderError(f"Could not extract Redgifs ID from {url}")
         return redgif_id

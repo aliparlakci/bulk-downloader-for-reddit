@@ -79,7 +79,3 @@ markers = [
     "slow: test is slow to run",
     "authenticated: test requires an authenticated Reddit instance",
 ]
-
-[tool.refurb]
-disable = [126]
-python-version = [3.9]

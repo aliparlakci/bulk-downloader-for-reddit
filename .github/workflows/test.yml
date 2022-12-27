@@ -14,7 +14,7 @@ on:
 
 jobs:
   test:
-    if: contains(fromJson('["push", "pull_request"]'), github.event_name) || ( ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '>retest-bdfr') )
+    if: contains(fromJson('["push", "pull_request"]'), github.event_name) || ( ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, ">retest-bdfr") )
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

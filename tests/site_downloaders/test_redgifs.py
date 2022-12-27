@@ -16,6 +16,8 @@ from bdfr.site_downloaders.redgifs import Redgifs
         ("https://redgifs.com/watch/frighteningvictorioussalamander", "frighteningvictorioussalamander"),
         ("https://www.redgifs.com/watch/genuineprivateguillemot/", "genuineprivateguillemot"),
         ("https://www.redgifs.com/watch/marriedcrushingcob?rel=u%3Akokiri.girl%3Bo%3Arecent", "marriedcrushingcob"),
+        ("https://thumbs4.redgifs.com/DismalIgnorantDrongo.mp4", "dismalignorantdrongo"),
+        ("https://thumbs4.redgifs.com/DismalIgnorantDrongo-mobile.mp4", "dismalignorantdrongo"),
     ),
 )
 def test_get_id(test_url: str, expected: str):
