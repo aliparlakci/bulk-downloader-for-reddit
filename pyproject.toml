@@ -45,6 +45,7 @@ dev = [
     "isort>=5.10.1",
     "pre-commit>=2.20.0",
     "pytest>=7.1.0",
+    "refurb>=1.9.1",
     "tox>=3.27.1",
 ]
 
@@ -79,3 +80,7 @@ markers = [
     "slow: test is slow to run",
     "authenticated: test requires an authenticated Reddit instance",
 ]
+
+[tool.refurb]
+disable = [126]
+python-version = [3.9]
