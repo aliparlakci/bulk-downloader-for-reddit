@@ -1,8 +1,12 @@
 # Bulk Downloader for Reddit
 
-[![PyPI version](https://img.shields.io/pypi/v/bdfr.svg)](https://pypi.python.org/pypi/bdfr)
-[![PyPI downloads](https://img.shields.io/pypi/dm/bdfr)](https://pypi.python.org/pypi/bdfr)
+[![PyPI Status](https://img.shields.io/pypi/status/bdfr?logo=PyPI)](https://pypi.python.org/pypi/bdfr)
+[![PyPI version](https://img.shields.io/pypi/v/bdfr.svg?logo=PyPI)](https://pypi.python.org/pypi/bdfr)
+[![PyPI downloads](https://img.shields.io/pypi/dm/bdfr?logo=PyPI)](https://pypi.python.org/pypi/bdfr)
+[![AUR version](https://img.shields.io/aur/version/python-bdfr?logo=Arch%20Linux)](https://aur.archlinux.org/packages/python-bdfr)
 [![Python Test](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?logo=Python)](https://github.com/psf/black)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 This is a tool to download submissions or submission data from Reddit. It can be used to archive data or even crawl Reddit to gather research data. The BDFR is flexible and can be used in scripts if needed through an extensive command-line interface. [List of currently supported sources](#list-of-currently-supported-sources)
 

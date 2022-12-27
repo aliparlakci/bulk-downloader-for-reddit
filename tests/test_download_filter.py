@@ -76,4 +76,4 @@ def test_filter_empty_filter(test_url: str):
     download_filter = DownloadFilter()
     test_resource = Resource(MagicMock(), test_url, lambda: None)
     result = download_filter.check_resource(test_resource)
-    assert result is True
+    assert result

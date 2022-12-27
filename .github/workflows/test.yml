@@ -3,11 +3,18 @@ name: Python Test
 on:
   push:
     branches: [ master, development ]
+    paths-ignore:
+      - "*.md"
   pull_request:
     branches: [ master, development ]
+    paths-ignore:
+      - "*.md"
+  issue_comment:
+    types: [ created ]
 
 jobs:
   test:
+    if: contains(fromJson('["push", "pull_request"]'), github.event_name) || ( ${{ github.event.issue.pull_request }} && contains(github.event.comment.body, '>retest-bdfr') )
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
