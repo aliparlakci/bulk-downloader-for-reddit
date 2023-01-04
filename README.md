@@ -143,6 +143,11 @@ The following options are common between both the `archive` and `download` comma
     - Can be specified multiple times
     - Disables certain modules from being used
     - See [Disabling Modules](#disabling-modules) for more information and a list of module names
+- `--hash-file`
+    - Load "hash: path" pairs from the file provided
+    - Format is one pair per line
+    - Automatically sets no-dupes to enabled
+    - Complements exclude-id options but does not require them
 - `--ignore-user`
     - This will add a user to ignore
     - Can be specified multiple times

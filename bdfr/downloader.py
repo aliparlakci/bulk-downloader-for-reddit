@@ -53,6 +53,11 @@ class RedditDownloader(RedditConnector):
                 logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
                 logger.debug("Waiting 60 seconds to continue")
                 sleep(60)
+        if self.args.hash_file:
+            with Path(self.args.hash_file).open("w") as hash_file:
+                for hash, path in self.master_hash_list.items():
+                    hash_file.write(f"{hash}: {path}\n")
+                logger.debug(f"Saved hash file to {self.args.hash_file}")
 
     def _download_submission(self, submission: praw.models.Submission):
         if submission.id in self.excluded_submission_ids:

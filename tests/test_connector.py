@@ -441,6 +441,14 @@ def test_read_submission_ids_from_file(downloader_mock: MagicMock, tmp_path: Pat
     assert results == {"aaaaaa", "bbbbbb"}
 
 
+def test_read_hash_from_file(tmp_path: Path):
+    test_file = tmp_path / "test.txt"
+    test_file.write_text(f"aa299e181b268578979cad176d1bd1d0: {tmp_path}\n338de3c23ee21af056b3a7c154e2478f: {tmp_path}")
+    results = RedditConnector.read_hash_file(str(test_file))
+    assert results["aa299e181b268578979cad176d1bd1d0"] == tmp_path
+    assert results["338de3c23ee21af056b3a7c154e2478f"] == tmp_path
+
+
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.parametrize(

@@ -88,6 +88,8 @@ class RedditConnector(metaclass=ABCMeta):
         self.args.link = list(itertools.chain(self.args.link, self.read_id_files(self.args.include_id_file)))
 
         self.master_hash_list = {}
+        if self.args.hash_file:
+            self.master_hash_list |= self.read_hash_file(self.args.hash_file)
         self.authenticator = self.create_authenticator()
         logger.log(9, "Created site authenticator")
 
@@ -444,3 +446,17 @@ class RedditConnector(metaclass=ABCMeta):
                 for line in file:
                     out.append(line.strip())
         return set(out)
+
+    @staticmethod
+    def read_hash_file(file_location: str) -> dict:
+        out = {}
+        hash_file = Path(file_location).resolve().expanduser()
+        if not hash_file.exists():
+            logger.warning(f"Hash file at {hash_file} does not exist")
+            return out
+        with hash_file.open("r") as file:
+            for line in file:
+                hash, path = line.split(": ", 1)
+                dict = {hash: Path(path.strip())}
+                out.update(dict)
+        return out
