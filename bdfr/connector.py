@@ -90,6 +90,8 @@ class RedditConnector(metaclass=ABCMeta):
         self.master_hash_list = {}
         if self.args.hash_file:
             self.master_hash_list |= self.read_hash_file(self.args.hash_file)
+            logger.debug("hash file provided, setting no-dupes active")
+            self.args.no_dupes = True
         self.authenticator = self.create_authenticator()
         logger.log(9, "Created site authenticator")
 
@@ -109,6 +111,11 @@ class RedditConnector(metaclass=ABCMeta):
             self.args.time_format = option
         if not self.args.disable_module:
             self.args.disable_module = [self.cfg_parser.get("DEFAULT", "disabled_modules", fallback="")]
+        if not self.args.filename_restriction_scheme:
+            self.args.filename_restriction_scheme = self.cfg_parser.get(
+                "DEFAULT", "filename_restriction_scheme", fallback=None
+            )
+            logger.debug(f"Setting filename restriction scheme to '{self.args.filename_restriction_scheme}'")
         # Update config on disk
         with open(self.config_location, "w") as file:
             self.cfg_parser.write(file)
@@ -397,7 +404,9 @@ class RedditConnector(metaclass=ABCMeta):
                 raise errors.BulkDownloaderException(f"User {name} is banned")
 
     def create_file_name_formatter(self) -> FileNameFormatter:
-        return FileNameFormatter(self.args.file_scheme, self.args.folder_scheme, self.args.time_format)
+        return FileNameFormatter(
+            self.args.file_scheme, self.args.folder_scheme, self.args.time_format, self.args.filename_restriction_scheme
+        )
 
     def create_time_filter(self) -> RedditTypes.TimeType:
         try:
@@ -460,3 +469,10 @@ class RedditConnector(metaclass=ABCMeta):
                 dict = {hash: Path(path.strip())}
                 out.update(dict)
         return out
+
+    @staticmethod
+    def write_hash_file(file_location: str, hash_list: dict):
+        with Path(file_location).open("w") as hash_file:
+            for hash, path in hash_list.items():
+                hash_file.write(f"{hash}: {path}\n")
+            logger.debug(f"Saved hash file to {file_location}")

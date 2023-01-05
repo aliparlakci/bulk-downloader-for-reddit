@@ -254,7 +254,7 @@ def test_get_subreddit_time_verification(
     for r in results:
         result_time = datetime.fromtimestamp(r.created_utc)
         time_diff = nowtime - result_time
-        assert time_diff < test_delta
+        assert abs(time_diff - test_delta) < timedelta(minutes=1)
 
 
 @pytest.mark.online

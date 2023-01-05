@@ -23,6 +23,7 @@ class Configuration(Namespace):
         self.exclude_id = []
         self.exclude_id_file = []
         self.file_scheme: str = "{REDDITOR}_{TITLE}_{POSTID}"
+        self.filename_restriction_scheme = None
         self.folder_scheme: str = "{SUBREDDIT}"
         self.hash_file: Optional[str] = None
         self.ignore_user = []
@@ -33,7 +34,7 @@ class Configuration(Namespace):
         self.make_hard_links = False
         self.max_wait_time = None
         self.multireddit: list[str] = []
-        self.no_dupes: bool = False if not self.hash_file else True
+        self.no_dupes: bool = False
         self.saved: bool = False
         self.search: Optional[str] = None
         self.search_existing: bool = False

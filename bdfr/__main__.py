@@ -24,6 +24,7 @@ _common_options = [
     click.option("--exclude-id", type=str, multiple=True, default=None),
     click.option("--exclude-id-file", type=str, multiple=True, default=None),
     click.option("--file-scheme", type=str, default=None),
+    click.option("--filename-restriction-scheme", type=click.Choice(("linux", "windows")), default=None),
     click.option("--folder-scheme", type=str, default=None),
     click.option("--hash-file", type=str, default=None),
     click.option("--ignore-user", type=str, multiple=True, default=None),

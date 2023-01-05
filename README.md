@@ -143,6 +143,10 @@ The following options are common between both the `archive` and `download` comma
     - Can be specified multiple times
     - Disables certain modules from being used
     - See [Disabling Modules](#disabling-modules) for more information and a list of module names
+- `--filename-restriction-scheme`
+    - Can be: `windows`, `linux`
+    - Turns off the OS detection and specifies which system to use when making filenames
+    - See [Filesystem Restrictions](#filesystem-restrictions)
 - `--hash-file`
     - Load "hash: path" pairs from the file provided
     - Format is one pair per line
@@ -377,6 +381,7 @@ The following keys are optional, and defaults will be used if they cannot be fou
 - `max_wait_time`
 - `time_format`
 - `disabled_modules`
+- `filename-restriction-scheme`
 
 All of these should not be modified unless you know what you're doing, as the default values will enable the BDFR to function just fine. A configuration is included in the BDFR when it is installed, and this will be placed in the configuration directory as the default.
 
@@ -426,9 +431,21 @@ Running scenarios concurrently (at the same time) however, is more complicated. 
 
 The way to fix this is to use the `--log` option to manually specify where the logfile is to be stored. If the given location is unique to each instance of the BDFR, then it will run fine.
 
+## Filesystem Restrictions
+
+Different filesystems have different restrictions for what files and directories can be named. Thesse are separated into two broad categories: Linux-based filesystems, which have very few restrictions; and Windows-based filesystems, which are much more restrictive in terms if forbidden characters and length of paths.
+
+During the normal course of operation, the BDFR detects what filesystem it is running on and formats any filenames and directories to conform to the rules that are expected of it. However, there are cases where this will fail. When running on a Linux-based machine, or another system where the home filesystem is permissive, and accessing a share or drive with a less permissive system, the BDFR will assume that the *home* filesystem's rules apply. For example, when downloading to a SAMBA share from Ubuntu, there will be errors as SAMBA is more restrictive than Ubuntu.
+
+The best option would be to always download to a filesystem that is as permission as possible, such as an NFS share or ext4 drive. However, when this is not possible, the BDFR allows for the restriction scheme to be manually specified at either the command-line or in the configuration file. At the command-line, this is done with `--filename-restriction-scheme windows`, or else an option by the same name in the configuration file.
+
 ## Manipulating Logfiles
 
 The logfiles that the BDFR outputs are consistent and quite detailed and in a format that is amenable to regex. To this end, a number of bash scripts have been [included here](./scripts). They show examples for how to extract successfully downloaded IDs, failed IDs, and more besides.
+
+## Unsaving posts
+
+Back in v1 there was an option to unsave posts from your account when downloading, but it was removed from the core BDFR on v2 as it is considered a read-only tool. However, for those missing this functionality, a script was created that uses the log files to achieve this. There is info on how to use this on the README.md file on the scripts subdirectory.
 
 ## List of currently supported sources
 
