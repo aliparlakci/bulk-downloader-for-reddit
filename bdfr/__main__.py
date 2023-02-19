@@ -69,7 +69,7 @@ _archiver_options = [
 
 
 def _add_options(opts: list):  # noqa: ANN202
-    def wrap(func):  # noqa: ANN202
+    def wrap(func):  # noqa: ANN001,ANN202
         for opt in opts:
             func = opt(func)
         return func
@@ -77,7 +77,7 @@ def _add_options(opts: list):  # noqa: ANN202
     return wrap
 
 
-def _check_version(context, _param, value) -> None:
+def _check_version(context: click.core.Context, _param, value: bool) -> None:
     if not value or context.resilient_parsing:
         return
     current = __version__

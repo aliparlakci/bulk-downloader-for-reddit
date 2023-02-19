@@ -14,6 +14,7 @@ from datetime import datetime
 from enum import Enum, auto
 from pathlib import Path
 from time import sleep
+from typing import Union
 
 import appdirs
 import praw
@@ -346,7 +347,9 @@ class RedditConnector(metaclass=ABCMeta):
         else:
             return []
 
-    def create_filtered_listing_generator(self, reddit_source) -> Iterator:
+    def create_filtered_listing_generator(
+        self, reddit_source: Union[praw.models.Subreddit, praw.models.Multireddit, praw.models.Redditor.submissions]
+    ) -> Iterator:
         sort_function = self.determine_sort_function()
         if self.sort_filter in (RedditTypes.SortType.TOP, RedditTypes.SortType.CONTROVERSIAL):
             return sort_function(reddit_source, limit=self.args.limit, time_filter=self.time_filter.value)
