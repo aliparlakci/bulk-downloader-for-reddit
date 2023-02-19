@@ -98,7 +98,7 @@ class RedditConnector(metaclass=ABCMeta):
         for handler in handlers:
             main_logger.addHandler(handler)
 
-    def read_config(self):
+    def read_config(self) -> None:
         """Read any cfg values that need to be processed"""
         if self.args.max_wait_time is None:
             self.args.max_wait_time = self.cfg_parser.getint("DEFAULT", "max_wait_time", fallback=120)
@@ -120,14 +120,14 @@ class RedditConnector(metaclass=ABCMeta):
         with Path(self.config_location).open(mode="w") as file:
             self.cfg_parser.write(file)
 
-    def parse_disabled_modules(self):
+    def parse_disabled_modules(self) -> None:
         disabled_modules = self.args.disable_module
         disabled_modules = self.split_args_input(disabled_modules)
         disabled_modules = {name.strip().lower() for name in disabled_modules}
         self.args.disable_module = disabled_modules
         logger.debug(f"Disabling the following modules: {', '.join(self.args.disable_module)}")
 
-    def create_reddit_instance(self):
+    def create_reddit_instance(self) -> None:
         if self.args.authenticate:
             logger.debug("Using authenticated Reddit instance")
             if not self.cfg_parser.has_option("DEFAULT", "user_token"):
@@ -173,14 +173,14 @@ class RedditConnector(metaclass=ABCMeta):
         logger.log(9, "Retrieved submissions for given links")
         return master_list
 
-    def determine_directories(self):
+    def determine_directories(self) -> None:
         self.download_directory = Path(self.args.directory).resolve().expanduser()
         self.config_directory = Path(self.config_directories.user_config_dir)
 
         self.download_directory.mkdir(exist_ok=True, parents=True)
         self.config_directory.mkdir(exist_ok=True, parents=True)
 
-    def load_config(self):
+    def load_config(self) -> None:
         self.cfg_parser = configparser.ConfigParser()
         if self.args.config:
             if (cfg_path := Path(self.args.config)).exists():
@@ -390,7 +390,7 @@ class RedditConnector(metaclass=ABCMeta):
         else:
             return []
 
-    def check_user_existence(self, name: str):
+    def check_user_existence(self, name: str) -> None:
         user = self.reddit_instance.redditor(name=name)
         try:
             if user.id:
@@ -425,7 +425,7 @@ class RedditConnector(metaclass=ABCMeta):
         return SiteAuthenticator(self.cfg_parser)
 
     @abstractmethod
-    def download(self):
+    def download(self) -> None:
         pass
 
     @staticmethod

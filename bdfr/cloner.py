@@ -17,7 +17,7 @@ class RedditCloner(RedditDownloader, Archiver):
     def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()) -> None:
         super().__init__(args, logging_handlers)
 
-    def download(self):
+    def download(self) -> None:
         for generator in self.reddit_lists:
             try:
                 for submission in generator:

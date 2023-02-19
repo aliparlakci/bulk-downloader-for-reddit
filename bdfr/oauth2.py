@@ -97,7 +97,7 @@ class OAuth2TokenManager(praw.reddit.BaseTokenManager):
         self.config = config
         self.config_location = config_location
 
-    def pre_refresh_callback(self, authorizer: praw.reddit.Authorizer):
+    def pre_refresh_callback(self, authorizer: praw.reddit.Authorizer) -> None:
         if authorizer.refresh_token is None:
             if self.config.has_option("DEFAULT", "user_token"):
                 authorizer.refresh_token = self.config.get("DEFAULT", "user_token")
@@ -105,7 +105,7 @@ class OAuth2TokenManager(praw.reddit.BaseTokenManager):
             else:
                 raise RedditAuthenticationError("No auth token loaded in configuration")
 
-    def post_refresh_callback(self, authorizer: praw.reddit.Authorizer):
+    def post_refresh_callback(self, authorizer: praw.reddit.Authorizer) -> None:
         self.config.set("DEFAULT", "user_token", authorizer.refresh_token)
         with Path(self.config_location).open(mode="w") as file:
             self.config.write(file, True)

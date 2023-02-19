@@ -28,7 +28,7 @@ class Archiver(RedditConnector):
     def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()) -> None:
         super().__init__(args, logging_handlers)
 
-    def download(self):
+    def download(self) -> None:
         for generator in self.reddit_lists:
             try:
                 for submission in generator:
@@ -82,7 +82,7 @@ class Archiver(RedditConnector):
         else:
             raise ArchiverError(f"Factory failed to classify item of type {type(praw_item).__name__}")
 
-    def write_entry(self, praw_item: Union[praw.models.Submission, praw.models.Comment]):
+    def write_entry(self, praw_item: Union[praw.models.Submission, praw.models.Comment]) -> None:
         if self.args.comment_context and isinstance(praw_item, praw.models.Comment):
             logger.debug(f"Converting comment {praw_item.id} to submission {praw_item.submission.id}")
             praw_item = praw_item.submission

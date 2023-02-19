@@ -41,7 +41,7 @@ class RedditDownloader(RedditConnector):
         if self.args.search_existing:
             self.master_hash_list = self.scan_existing_files(self.download_directory)
 
-    def download(self):
+    def download(self) -> None:
         for generator in self.reddit_lists:
             try:
                 for submission in generator:
