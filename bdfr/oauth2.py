@@ -23,7 +23,7 @@ class OAuth2Authenticator:
         self.client_secret = client_secret
 
     @staticmethod
-    def _check_scopes(wanted_scopes: set[str]):
+    def _check_scopes(wanted_scopes: set[str]) -> None:
         try:
             response = requests.get(
                 "https://www.reddit.com/api/v1/scopes.json",
@@ -86,7 +86,7 @@ class OAuth2Authenticator:
         return client
 
     @staticmethod
-    def send_message(client: socket.socket, message: str = ""):
+    def send_message(client: socket.socket, message: str = "") -> None:
         client.send(f"HTTP/1.1 200 OK\r\n\r\n{message}".encode())
         client.close()
 

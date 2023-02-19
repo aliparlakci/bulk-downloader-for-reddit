@@ -93,7 +93,7 @@ class RedditConnector(metaclass=ABCMeta):
         self.args.skip_subreddit = {sub.lower() for sub in self.args.skip_subreddit}
 
     @staticmethod
-    def _apply_logging_handlers(handlers: Iterable[logging.Handler]):
+    def _apply_logging_handlers(handlers: Iterable[logging.Handler]) -> None:
         main_logger = logging.getLogger()
         for handler in handlers:
             main_logger.addHandler(handler)
@@ -429,11 +429,12 @@ class RedditConnector(metaclass=ABCMeta):
         pass
 
     @staticmethod
-    def check_subreddit_status(subreddit: praw.models.Subreddit):
+    def check_subreddit_status(subreddit: praw.models.Subreddit) -> None:
         if subreddit.display_name in ("all", "friends"):
             return
         try:
-            assert subreddit.id
+            if subreddit.id:
+                return
         except prawcore.NotFound:
             raise errors.BulkDownloaderException(f"Source {subreddit.display_name} cannot be found")
         except prawcore.Redirect:
