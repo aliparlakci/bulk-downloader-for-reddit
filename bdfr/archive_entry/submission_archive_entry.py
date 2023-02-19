@@ -20,7 +20,7 @@ class SubmissionArchiveEntry(BaseArchiveEntry):
         out["comments"] = comments
         return out
 
-    def _get_post_details(self):
+    def _get_post_details(self) -> None:
         self.post_details = {
             "title": self.source.title,
             "name": self.source.name,

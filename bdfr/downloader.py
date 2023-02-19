@@ -23,7 +23,7 @@ from bdfr.site_downloaders.download_factory import DownloadFactory
 logger = logging.getLogger(__name__)
 
 
-def _calc_hash(existing_file: Path):
+def _calc_hash(existing_file: Path) -> tuple[Path, str]:
     chunk_size = 1024 * 1024
     md5_hash = hashlib.md5(usedforsecurity=False)
     with existing_file.open("rb") as file:
@@ -54,7 +54,7 @@ class RedditDownloader(RedditConnector):
                 logger.debug("Waiting 60 seconds to continue")
                 sleep(60)
 
-    def _download_submission(self, submission: praw.models.Submission):
+    def _download_submission(self, submission: praw.models.Submission) -> None:
         if submission.id in self.excluded_submission_ids:
             logger.debug(f"Object {submission.id} in exclusion list, skipping")
             return

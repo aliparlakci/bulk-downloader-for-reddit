@@ -63,7 +63,7 @@ class RedditConnector(metaclass=ABCMeta):
 
         self.reddit_lists = self.retrieve_reddit_lists()
 
-    def _setup_internal_objects(self):
+    def _setup_internal_objects(self) -> None:
         self.parse_disabled_modules()
 
         self.download_filter = self.create_download_filter()

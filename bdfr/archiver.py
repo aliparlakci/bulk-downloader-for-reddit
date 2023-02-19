@@ -97,22 +97,22 @@ class Archiver(RedditConnector):
             raise ArchiverError(f"Unknown format {self.args.format!r} given")
         logger.info(f"Record for entry item {praw_item.id} written to disk")
 
-    def _write_entry_json(self, entry: BaseArchiveEntry):
+    def _write_entry_json(self, entry: BaseArchiveEntry) -> None:
         resource = Resource(entry.source, "", lambda: None, ".json")
         content = json.dumps(entry.compile())
         self._write_content_to_disk(resource, content)
 
-    def _write_entry_xml(self, entry: BaseArchiveEntry):
+    def _write_entry_xml(self, entry: BaseArchiveEntry) -> None:
         resource = Resource(entry.source, "", lambda: None, ".xml")
         content = dict2xml.dict2xml(entry.compile(), wrap="root")
         self._write_content_to_disk(resource, content)
 
-    def _write_entry_yaml(self, entry: BaseArchiveEntry):
+    def _write_entry_yaml(self, entry: BaseArchiveEntry) -> None:
         resource = Resource(entry.source, "", lambda: None, ".yaml")
         content = yaml.safe_dump(entry.compile())
         self._write_content_to_disk(resource, content)
 
-    def _write_content_to_disk(self, resource: Resource, content: str):
+    def _write_content_to_disk(self, resource: Resource, content: str) -> None:
         file_path = self.file_name_formatter.format_path(resource, self.download_directory)
         file_path.parent.mkdir(exist_ok=True, parents=True)
         with Path(file_path).open(mode="w", encoding="utf-8") as file:
