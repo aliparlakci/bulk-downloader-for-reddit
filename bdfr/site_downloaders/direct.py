@@ -10,7 +10,7 @@ from bdfr.site_downloaders.base_downloader import BaseDownloader
 
 
 class Direct(BaseDownloader):
-    def __init__(self, post: Submission):
+    def __init__(self, post: Submission) -> None:
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class SubmissionArchiveEntry(BaseArchiveEntry):
-    def __init__(self, submission: praw.models.Submission):
+    def __init__(self, submission: praw.models.Submission) -> None:
         super().__init__(submission)
 
     def compile(self) -> dict:

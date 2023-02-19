@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class OAuth2Authenticator:
-    def __init__(self, wanted_scopes: set[str], client_id: str, client_secret: str):
+    def __init__(self, wanted_scopes: set[str], client_id: str, client_secret: str) -> None:
         self._check_scopes(wanted_scopes)
         self.scopes = wanted_scopes
         self.client_id = client_id
@@ -92,7 +92,7 @@ class OAuth2Authenticator:
 
 
 class OAuth2TokenManager(praw.reddit.BaseTokenManager):
-    def __init__(self, config: configparser.ConfigParser, config_location: Path):
+    def __init__(self, config: configparser.ConfigParser, config_location: Path) -> None:
         super().__init__()
         self.config = config
         self.config_location = config_location

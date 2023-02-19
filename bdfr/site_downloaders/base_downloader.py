@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class BaseDownloader(ABC):
-    def __init__(self, post: Submission, typical_extension: Optional[str] = None):
+    def __init__(self, post: Submission, typical_extension: Optional[str] = None) -> None:
         self.post = post
         self.typical_extension = typical_extension
 

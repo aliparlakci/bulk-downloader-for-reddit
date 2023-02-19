@@ -13,7 +13,7 @@ from bdfr.site_downloaders.base_downloader import BaseDownloader
 
 
 class Imgur(BaseDownloader):
-    def __init__(self, post: Submission):
+    def __init__(self, post: Submission) -> None:
         super().__init__(post)
         self.raw_data = {}
 

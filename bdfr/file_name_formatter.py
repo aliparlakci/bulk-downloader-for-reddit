@@ -35,7 +35,7 @@ class FileNameFormatter:
         directory_format_string: str,
         time_format_string: str,
         restriction_scheme: Optional[str] = None,
-    ):
+    ) -> None:
         if not self.validate_string(file_format_string):
             raise BulkDownloaderException(f"{file_format_string!r} is not a valid format string")
         self.file_format_string = file_format_string

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class CommentArchiveEntry(BaseArchiveEntry):
-    def __init__(self, comment: praw.models.Comment):
+    def __init__(self, comment: praw.models.Comment) -> None:
         super().__init__(comment)
 
     def compile(self) -> dict:

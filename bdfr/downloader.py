@@ -36,7 +36,7 @@ def _calc_hash(existing_file: Path):
 
 
 class RedditDownloader(RedditConnector):
-    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()):
+    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()) -> None:
         super().__init__(args, logging_handlers)
         if self.args.search_existing:
             self.master_hash_list = self.scan_existing_files(self.download_directory)

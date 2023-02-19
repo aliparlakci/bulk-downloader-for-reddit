@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class YtdlpFallback(BaseFallbackDownloader, Youtube):
-    def __init__(self, post: Submission):
+    def __init__(self, post: Submission) -> None:
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:

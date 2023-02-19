@@ -50,7 +50,7 @@ class RedditTypes:
 
 
 class RedditConnector(metaclass=ABCMeta):
-    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()):
+    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()) -> None:
         self.args = args
         self.config_directories = appdirs.AppDirs("bdfr", "BDFR")
         self.determine_directories()

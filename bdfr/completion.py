@@ -8,7 +8,7 @@ import appdirs
 
 
 class Completion:
-    def __init__(self, shell: str):
+    def __init__(self, shell: str) -> None:
         self.shell = shell
         self.env = environ.copy()
         self.share_dir = appdirs.user_data_dir()
