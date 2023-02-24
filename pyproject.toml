@@ -43,10 +43,9 @@ data-files = {"config" = ["bdfr/default_config.cfg",]}
 [project.optional-dependencies]
 dev = [
     "black>=23.1.0",
-    "Flake8-pyproject>=1.2.2",
-    "isort>=5.12.0",
     "pre-commit>=3.0.4",
     "pytest>=7.2.1",
+    "ruff>=0.0.252",
     "tox>=3.27.1",
 ]
 
@@ -87,3 +86,16 @@ markers = [
     "slow: test is slow to run",
     "authenticated: test requires an authenticated Reddit instance",
 ]
+
+[tool.ruff]
+exclude = ["scripts/tests"]
+flake8-annotations = {"allow-star-arg-any" = true, "suppress-dummy-args" = true}
+flake8-pytest-style = {"parametrize-values-type" = "tuple", "mark-parentheses" = false}
+format = "grouped"
+ignore = ["ANN101","B904","N818","RET505"]
+line-length = 120
+per-file-ignores={"tests/*"=["ANN","S101","S105","S106"], "scripts/*"=["INP","S105","S106"]}
+select = ["ANN","B","BLE","E","ERA","F","I","ICN","INP","ISC","N","PT","PTH","Q","RUF","S","TID","UP","W","YTT"]
+show-fixes = true
+show-source = true
+target-version = "py39"
