@@ -20,7 +20,7 @@ def copy_test_config(run_path: Path):
 
 def create_basic_args_for_archive_runner(test_args: list[str], run_path: Path):
     copy_test_config(run_path)
-    out = [
+    out = [  # noqa: RUF005
         "archive",
         str(run_path),
         "-v",

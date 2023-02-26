@@ -19,7 +19,7 @@ def copy_test_config(run_path: Path):
 
 def create_basic_args_for_cloner_runner(test_args: list[str], tmp_path: Path):
     copy_test_config(tmp_path)
-    out = [
+    out = [  # noqa: RUF005
         "clone",
         str(tmp_path),
         "-v",
