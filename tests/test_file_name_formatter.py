@@ -55,7 +55,7 @@ def do_test_path_equality(result: Path, expected: str) -> bool:
         expected = Path(*expected)
     else:
         expected = Path(expected)
-    return str(result).endswith(str(expected))  # noqa: FURB123
+    return str(result).endswith(str(expected))  # noqa: FURB123,RUF100
 
 
 @pytest.fixture(scope="session")
@@ -427,8 +427,8 @@ def test_multilevel_folder_scheme(
         ("test", "test"),
         ("😍", "😍"),
         ("test😍", "test😍"),
-        ("test😍 ’", "test😍 ’"),
-        ("test😍 \\u2019", "test😍 ’"),
+        ("test😍 ’", "test😍 ’"),  # noqa: RUF001
+        ("test😍 \\u2019", "test😍 ’"),  # noqa: RUF001
         ("Using that real good [1\\4]", "Using that real good [1\\4]"),
     ),
 )
@@ -442,8 +442,8 @@ def test_preserve_emojis(test_name_string: str, expected: str, submission: Magic
 @pytest.mark.parametrize(
     ("test_string", "expected"),
     (
-        ("test \\u2019", "test ’"),
-        ("My cat\\u2019s paws are so cute", "My cat’s paws are so cute"),
+        ("test \\u2019", "test ’"),  # noqa: RUF001
+        ("My cat\\u2019s paws are so cute", "My cat’s paws are so cute"),  # noqa: RUF001
     ),
 )
 def test_convert_unicode_escapes(test_string: str, expected: str):
