@@ -18,6 +18,7 @@ from bdfr.archiver import Archiver
         ("m3reby", "xml"),
         ("m3reby", "json"),
         ("m3reby", "yaml"),
+        ("m3reby", "md"),
     ),
 )
 def test_write_submission_json(test_submission_id: str, tmp_path: Path, test_format: str, reddit_instance: praw.Reddit):

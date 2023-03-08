@@ -65,7 +65,7 @@ _downloader_options = [
 _archiver_options = [
     click.option("--all-comments", is_flag=True, default=None),
     click.option("--comment-context", is_flag=True, default=None),
-    click.option("-f", "--format", type=click.Choice(("xml", "json", "yaml")), default=None),
+    click.option("-f", "--format", type=click.Choice(("xml", "json", "yaml", "md")), default=None),
 ]
 
 

@@ -5,6 +5,7 @@ import json
 import logging
 import re
 from collections.abc import Iterable, Iterator
+from datetime import datetime
 from pathlib import Path
 from time import sleep
 from typing import Union
@@ -94,6 +95,8 @@ class Archiver(RedditConnector):
             self._write_entry_xml(archive_entry)
         elif self.args.format == "yaml":
             self._write_entry_yaml(archive_entry)
+        elif self.args.format == "md":
+            self._write_entry_md(archive_entry)
         else:
             raise ArchiverError(f"Unknown format {self.args.format} given")
         logger.info(f"Record for entry item {praw_item.id} written to disk")
@@ -113,6 +116,11 @@ class Archiver(RedditConnector):
         content = yaml.safe_dump(entry.compile())
         self._write_content_to_disk(resource, content)
 
+    def _write_entry_md(self, entry: BaseArchiveEntry):
+        resource = Resource(entry.source, "", lambda: None, ".md")
+        content = self._convert_entry_to_markdown(entry.compile())
+        self._write_content_to_disk(resource, content)
+
     def _write_content_to_disk(self, resource: Resource, content: str):
         file_path = self.file_name_formatter.format_path(resource, self.download_directory)
         file_path.parent.mkdir(exist_ok=True, parents=True)
@@ -122,3 +130,67 @@ class Archiver(RedditConnector):
                 f" format at {file_path}"
             )
             file.write(content)
+
+    def _convert_entry_to_markdown(self, entry):
+        content = ""
+
+        header = f"""
+            # [{entry["title"]}](https://www.reddit.com{entry["permalink"]})
+            {"> ⚠️ NSFW!" if entry["over_18"] else ""}
+            > {entry["score"]} ⬆ - [u/{entry["author"]}](https://reddit.com/u/{entry["author"]}) on {datetime.fromtimestamp(entry["created_utc"]).strftime("%Y-%d-%m %H:%M:%S")}
+        """
+
+        header = "\n".join([line.strip() for line in header.split("\n")])
+
+        content += header
+
+        content += "\n"
+        content += "\n"
+
+        if entry["selftext"] != "":
+            content += entry["selftext"]
+            content += "\n"
+            content += "\n"
+        else:
+            # TODO: Figure out how to link to downloaded media file(s)
+            pass
+
+        content += "---\n"
+        content += "\n"
+        content += "\n"
+        for line in self._build_comment_tree_markdown(entry["comments"]):
+            content += f"{line}\n"
+
+        return content
+
+    def _build_comment_tree_markdown(self, comments):
+
+        fullcommenttree = ""
+
+        firstcomment = True
+
+        for comment in comments:
+
+            if not firstcomment:
+                fullcommenttree += "\n"
+
+            firstcomment = False
+
+            mdcomment = ""
+            mdcomment += f"> {comment['score']} ⬆ - **u/{comment['author']}** on _{datetime.fromtimestamp(comment['created_utc']).strftime('%Y-%d-%m %H:%M:%S')}_\n"
+            mdcomment += ">\n"
+
+            for line in comment["body"].split("\n"):
+                mdcomment += f"> {line.strip()}\n"
+
+            mdcomment += "> \n"
+            if len(comment["replies"]) > 0:
+                mdcomment += "> ---\n"
+                mdcomment += "> \n"
+
+                for line in self._build_comment_tree_markdown(comment["replies"]):
+                    mdcomment += f"> {line.strip()}\n"
+
+            fullcommenttree += mdcomment
+
+        return fullcommenttree.split("\n")
