@@ -41,10 +41,10 @@ class Imgur(BaseDownloader):
                 link = link.removesuffix("/")
             if re.search(r".*/(.*?)(gallery/|a/)", link):
                 imgur_id = re.match(r".*/(?:gallery/|a/)(.*?)(?:/.*|\..{3,4})?$", link).group(1)
-                link = f"https://api.imgur.com/3/album/{imgur_id}"
+                api = f"https://api.imgur.com/3/album/{imgur_id}"
             else:
                 imgur_id = re.match(r".*/(.*?)(?:_d)?(?:\..{0,})?$", link).group(1)
-                link = f"https://api.imgur.com/3/image/{imgur_id}"
+                api = f"https://api.imgur.com/3/image/{imgur_id}"
         except AttributeError:
             raise SiteDownloaderError(f"Could not extract Imgur ID from {link}")
 
@@ -54,7 +54,7 @@ class Imgur(BaseDownloader):
             "content-type": "application/json",
             "Authorization": "Client-ID 546c25a59c58ad7",
         }
-        res = Imgur.retrieve_url(link, headers=headers)
+        res = Imgur.retrieve_url(api, headers=headers, initial=link)
 
         try:
             image_dict = json.loads(res.text)

@@ -54,7 +54,7 @@ class Gfycat(Redgifs):
             "content-type": "application/json",
             "Authorization": f"Bearer {auth_token}",
         }
-        content = Gfycat.retrieve_url(f"https://api.gfycat.com/v1/gfycats/{gfycat_id}", headers=headers)
+        content = Gfycat.retrieve_url(f"https://api.gfycat.com/v1/gfycats/{gfycat_id}", headers=headers, initial=url)
 
         if content is None:
             raise SiteDownloaderError("Could not read the API source")

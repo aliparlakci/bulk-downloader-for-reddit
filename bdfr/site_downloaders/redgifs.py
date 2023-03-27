@@ -53,7 +53,7 @@ class Redgifs(BaseDownloader):
             "content-type": "application/json",
             "Authorization": f"Bearer {auth_token}",
         }
-        content = Redgifs.retrieve_url(f"https://api.redgifs.com/v2/gifs/{redgif_id}", headers=headers)
+        content = Redgifs.retrieve_url(f"https://api.redgifs.com/v2/gifs/{redgif_id}", headers=headers, initial=url)
 
         if content is None:
             raise SiteDownloaderError("Could not read the page source")

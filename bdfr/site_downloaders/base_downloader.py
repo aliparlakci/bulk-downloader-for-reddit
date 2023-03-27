@@ -25,7 +25,7 @@ class BaseDownloader(ABC):
         raise NotImplementedError
 
     @staticmethod
-    def retrieve_url(url: str, cookies: dict = None, headers: dict = None) -> requests.Response:
+    def retrieve_url(url: str, cookies: dict = None, headers: dict = None, initial: str = None) -> requests.Response:
         try:
             res = requests.get(url, cookies=cookies, headers=headers, timeout=10)
         except requests.exceptions.RequestException as e:
@@ -35,6 +35,7 @@ class BaseDownloader(ABC):
             logger.exception(e)
             raise SiteDownloaderError(f"Timeout reached attempting to get page {url}")
         if res.status_code != 200:
+            url = initial or url
             raise ResourceNotFound(f"Server responded with {res.status_code} at {url}")
         return res
 
