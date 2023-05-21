@@ -293,7 +293,7 @@ class RedditConnector(metaclass=ABCMeta):
                     else:
                         out.append(self.create_filtered_listing_generator(reddit))
                         logger.debug(f"Added submissions from subreddit {reddit}")
-                except (errors.BulkDownloaderException, praw.exceptions.PRAWException) as e:
+                except (errors.BulkDownloaderException, prawcore.PrawcoreException, praw.exceptions.PRAWException) as e:
                     logger.error(f"Failed to get submissions for subreddit {reddit}: {e}")
         return out
 
@@ -385,7 +385,7 @@ class RedditConnector(metaclass=ABCMeta):
                         if self.args.saved:
                             logger.debug(f"Retrieving saved posts of user {user}")
                             generators.append(self.reddit_instance.redditor(user).saved(limit=self.args.limit))
-                except prawcore.PrawcoreException as e:
+                except (prawcore.PrawcoreException, praw.exceptions.PRAWException) as e:
                     logger.error(f"User {user} failed to be retrieved due to a PRAW exception: {e}")
                     logger.debug("Waiting 60 seconds to continue")
                     sleep(60)

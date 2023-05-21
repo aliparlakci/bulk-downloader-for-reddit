@@ -9,6 +9,7 @@ from time import sleep
 from typing import Union
 
 import dict2xml
+import praw.exceptions
 import praw.models
 import prawcore
 import yaml
@@ -46,9 +47,9 @@ class Archiver(RedditConnector):
                             continue
                         logger.debug(f"Attempting to archive submission {submission.id}")
                         self.write_entry(submission)
-                    except prawcore.PrawcoreException as e:
+                    except (prawcore.PrawcoreException, praw.exceptions.PRAWException) as e:
                         logger.error(f"Submission {submission.id} failed to be archived due to a PRAW exception: {e}")
-            except prawcore.PrawcoreException as e:
+            except (prawcore.PrawcoreException, praw.exceptions.PRAWException) as e:
                 logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
                 logger.debug("Waiting 60 seconds to continue")
                 sleep(60)
@@ -56,12 +57,15 @@ class Archiver(RedditConnector):
     def get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
         for sub_id in self.args.link:
-            if len(sub_id) == 6:
-                supplied_submissions.append(self.reddit_instance.submission(id=sub_id))
-            elif re.match(r"^\w{7}$", sub_id):
-                supplied_submissions.append(self.reddit_instance.comment(id=sub_id))
-            else:
-                supplied_submissions.append(self.reddit_instance.submission(url=sub_id))
+            try:
+                if len(sub_id) == 6:
+                    supplied_submissions.append(self.reddit_instance.submission(id=sub_id))
+                elif re.match(r"^\w{7}$", sub_id):
+                    supplied_submissions.append(self.reddit_instance.comment(id=sub_id))
+                else:
+                    supplied_submissions.append(self.reddit_instance.submission(url=sub_id))
+            except (prawcore.PrawcoreException, praw.exceptions.PRAWException) as e:
+                logger.error(f"Error getting submission {sub_id} from link: {e}")
         return [supplied_submissions]
 
     def get_user_data(self) -> list[Iterator]:
