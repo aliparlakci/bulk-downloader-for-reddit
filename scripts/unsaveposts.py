@@ -14,27 +14,69 @@ The client ID is the 14 character string under the name you gave your script.
 It'll look like a bunch of random characters like this: pspYLwDoci9z_A
 The client secret is the longer string next to "secret".
 Replace those two fields below. Again keep the quotes around the fields.
+Create a .env file on the same directory of this script and add the following lines:
+
+REDDIT_CLIENTID='<Reddit Client ID>'
+REDDIT_SECRET='<Reddit Client Secret>'
+REDDIT_USERAGENT='Unsave Posts'
+REDDIT_USERNAME='<Your Reddit Username>'
+REDDIT_PASSWORD='<Your Reddit Password>'
+REDDIT_OTP='<Your Reddit OTP Key>'
+REDDIT_MFA='1' <if you use 2FA on Reddit; otherwise, '0'>
+
+Install with pip the following packages: dotenv pyotp
 '''
 
 import praw
+import os
+from dotenv import load_dotenv
+import prawcore
+import pyotp
+import sys
 
 try:
-    r= praw.Reddit(
-        client_id="CLIENTID",
-        client_secret="CLIENTSECRET",
-        password="USERPASSWORD",
-        user_agent="Unsave Posts",
-        username="USERNAME",
-    )
+
+    load_dotenv()
+    reddit_clientid = os.getenv('REDDIT_CLIENTID')
+    reddit_clientsecret = os.getenv('REDDIT_SECRET')
+    reddit_useragent = os.getenv('REDDIT_USERAGENT')
+    reddit_username = os.getenv('REDDIT_USERNAME')
+    reddit_password = os.getenv('REDDIT_PASSWORD')
+
+    if os.getenv('REDDIT_MFA') == '1':
+
+        reddit_otp = os.getenv('REDDIT_OTP')
+
+        totp = pyotp.TOTP(reddit_otp)
+
+        r = praw.Reddit(
+            client_id=reddit_clientid,
+            client_secret=reddit_clientsecret,
+            user_agent=reddit_useragent,
+            username=reddit_username,
+            password="{}:{}".format(reddit_password, totp.now()))
+
+    else:
+
+        r= praw.Reddit(
+            client_id=reddit_clientid,
+            client_secret=reddit_clientsecret,
+            password=reddit_password,
+            user_agent=reddit_useragent,
+            username=reddit_username
+        )
+
+except:
+    print("Failed during authentication. Check .env configuration data")
+
+else:
+
+    print("Authenticated as u/" + str(r.user.me()))
+    r.read_only = False
 
     with open("successfulids", "r") as f:
         for item in f:
             r.submission(id = item.strip()).unsave()
 
-except:
-    print("Something went wrong. Did you install PRAW? Did you change the user login fields?")
-
-
-else:
     print("Done! Thanks for playing!")
 
