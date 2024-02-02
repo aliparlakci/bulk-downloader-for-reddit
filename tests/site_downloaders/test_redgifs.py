@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import re
 from unittest.mock import Mock
@@ -8,6 +7,13 @@ import pytest
 
 from bdfr.resource import Resource
 from bdfr.site_downloaders.redgifs import Redgifs
+
+
+@pytest.mark.online
+def test_auth_cache():
+    auth1 = Redgifs._get_auth_token()
+    auth2 = Redgifs._get_auth_token()
+    assert auth1 == auth2
 
 
 @pytest.mark.parametrize(
@@ -19,6 +25,7 @@ from bdfr.site_downloaders.redgifs import Redgifs
         ("https://thumbs4.redgifs.com/DismalIgnorantDrongo.mp4", "dismalignorantdrongo"),
         ("https://thumbs4.redgifs.com/DismalIgnorantDrongo-mobile.mp4", "dismalignorantdrongo"),
         ("https://v3.redgifs.com/watch/newilliteratemeerkat#rel=user%3Atastynova", "newilliteratemeerkat"),
+        ("https://thumbs46.redgifs.com/BabyishCharmingAidi-medium.jpg", "babyishcharmingaidi"),
     ),
 )
 def test_get_id(test_url: str, expected: str):
@@ -75,6 +82,7 @@ def test_get_link(test_url: str, expected: set[str]):
                 "44fb28f72ec9a5cca63fa4369ab4f672",
             },
         ),
+        ("https://thumbs46.redgifs.com/BabyishCharmingAidi-medium.jpg", {"bf14b9f3d5b630cb5fd271661226f1af"}),
     ),
 )
 def test_download_resource(test_url: str, expected_hashes: set[str]):
@@ -96,11 +104,6 @@ def test_download_resource(test_url: str, expected_hashes: set[str]):
             "https://redgifs.com/watch/flippantmemorablebaiji",
             {"FlippantMemorableBaiji-mobile.mp4"},
             {"41a5fb4865367ede9f65fc78736f497a"},
-        ),
-        (
-            "https://redgifs.com/watch/thirstyunfortunatewaterdragons",
-            {"thirstyunfortunatewaterdragons-mobile.mp4"},
-            {"1a51dad8fedb594bdd84f027b3cbe8af"},
         ),
         (
             "https://redgifs.com/watch/conventionalplainxenopterygii",
