@@ -32,6 +32,8 @@ class BaseDownloader(ABC):
         except requests.exceptions.RequestException as e:
             logger.exception(e)
             raise SiteDownloaderError(f"Failed to get page {url}")
+        if res.status_code == 429:
+            raise ResourceNotFound("\n\nToo many requests\nTry again in a little while\n")
         if res.status_code != 200:
             raise ResourceNotFound(f"Server responded with {res.status_code} to {url}")
         return res

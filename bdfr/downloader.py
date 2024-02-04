@@ -17,6 +17,7 @@ import praw.models
 import prawcore
 
 from bdfr import exceptions as errors
+from bdfr.site_downloaders import redgifs
 from bdfr.configuration import Configuration
 from bdfr.connector import RedditConnector
 from bdfr.site_downloaders.download_factory import DownloadFactory
@@ -107,7 +108,22 @@ class RedditDownloader(RedditConnector):
             content = downloader.find_resources(self.authenticator)
         except errors.SiteDownloaderError as e:
             logger.error(f"Site {downloader_class.__name__} failed to download submission {submission.id}: {e}")
-            return
+            # Redgifs 401 error / temporary auth token handler
+            if (downloader_class.__name__ == "Redgifs") and (str(e).startswith("Server responded with 401")):
+                print("\n-=-=-=-=-=-=-=-=-=-=-=-\nRedgifs temporary API token out of date")
+
+                # Extracting URL from the error message
+                url_start_index = str(e).rfind("https://")
+                redgifs_url = str(e)[url_start_index:]
+
+                # Getting new temp API token
+                redgifs.Redgifs._get_token(redgifs.Redgifs, redgifs_url)
+
+                # Attempted redownload of link that hit the 401 error. Don't think it works though.
+                redgifs.Redgifs._get_link(redgifs_url)
+                return
+            else:
+                return
         for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
             if destination.exists():
                 logger.debug(f"File {destination} from submission {submission.id} already exists, continuing")

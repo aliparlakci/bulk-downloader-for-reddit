@@ -3,6 +3,8 @@
 
 import json
 import re
+import os
+import tempfile
 from typing import Optional
 
 import requests
@@ -15,12 +17,45 @@ from bdfr.site_downloaders.base_downloader import BaseDownloader
 
 
 class Redgifs(BaseDownloader):
+    # Setting temp token path. Probably would be better somewhere else, but os temp works.
+    TOKEN_FILE_PATH = os.path.join(tempfile.gettempdir(), "redgifs_token.txt")
+
     def __init__(self, post: Submission):
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         media_urls = self._get_link(self.post.url)
         return [Resource(self.post, m, Resource.retry_download(m), None) for m in media_urls]
+
+    ### Temporary auth token handling ###
+    def _load_token(self, url) -> Optional[str]:
+        try:
+            with open(self.TOKEN_FILE_PATH, "r") as file:
+                return file.read().strip()
+        except FileNotFoundError:
+            print("\n-=-=-=-=-=-=-=-=-=-=-=-\nRedgifs API token file not found, retrieving new token")
+            self._get_token(self, url)
+            with open(self.TOKEN_FILE_PATH, "r") as file:
+                return file.read().strip()
+
+    def _save_token(self, token: str, url):
+        print(f"Writing Redgifs temporary API token to {self.TOKEN_FILE_PATH}")
+        with open(self.TOKEN_FILE_PATH, "w") as file:
+            file.write(token)
+        print(f"Success!\n\nNew temporary token is: {token}\n-=-=-=-=-=-=-=-=-=-=-=-\n")
+        return token
+
+    def _get_token(self, redgif_id, other=None) -> str:
+        try:
+            print("Attempting to retrieve new temporary Redgifs API token")
+            response = self.retrieve_url("https://api.redgifs.com/v2/auth/temporary")
+            auth_token = json.loads(response.text)["token"]
+
+            self._save_token(self, auth_token, redgif_id)
+        except Exception as e:
+            raise SiteDownloaderError(f"Failed to retrieve Redgifs API token: {e}")
+        return auth_token
+    ### End temporary auth token handling ###
 
     @staticmethod
     def _get_id(url: str) -> str:
@@ -38,9 +73,8 @@ class Redgifs(BaseDownloader):
     def _get_link(url: str) -> set[str]:
         redgif_id = Redgifs._get_id(url)
 
-        auth_token = json.loads(Redgifs.retrieve_url("https://api.redgifs.com/v2/auth/temporary").text)["token"]
-        if not auth_token:
-            raise SiteDownloaderError("Unable to retrieve Redgifs API token")
+        # Passing url here. Probably don't need to.
+        auth_token = Redgifs._load_token(Redgifs, url)
 
         headers = {
             "referer": "https://www.redgifs.com/",

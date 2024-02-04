@@ -7,7 +7,7 @@ import sys
 import click
 import requests
 
-from bdfr import __version__
+from bdfr.__init__ import __version__
 from bdfr.archiver import Archiver
 from bdfr.cloner import RedditCloner
 from bdfr.completion import Completion
